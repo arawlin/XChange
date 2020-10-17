@@ -12,6 +12,10 @@ import org.knowm.xchange.gateiov4.dto.marketdata.GateioFundingRate;
 public interface GateioFutures {
 
   @GET
+  @Path("{settle}/contracts")
+  List<GateioContractInfo> getContractsInfos(@PathParam("settle") String settle);
+
+  @GET
   @Path("{settle}/contracts/{contract}")
   GateioContractInfo getContractsInfoOne(
       @PathParam("settle") String settle, @PathParam("contract") String contract);

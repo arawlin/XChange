@@ -7,7 +7,7 @@ import org.knowm.xchange.gateiov4.dto.marketdata.GateioContractInfo;
 import org.knowm.xchange.gateiov4.dto.marketdata.GateioFundingRate;
 
 /** Created by lin on 2020-10-14. */
-@Path("api/v4/futures")
+@Path("futures")
 @Produces(MediaType.APPLICATION_JSON)
 public interface GateioFutures {
 

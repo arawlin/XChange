@@ -28,6 +28,13 @@ public class GateioFuturesMarketDataServiceRaw extends GateioBaseService<GateioF
             .build();
   }
 
+  public List<GateioContractInfo> getContractsInfos(FuturesSettleType settle) throws IOException {
+    return decorateApiCall(() -> gateio.getContractsInfos(settle.name()))
+        .withRetry(retry("getContractsInfoOne"))
+        .withRateLimiter(rateLimiter(RATE_LIMITER_REQUEST_PER_SECOND_IN_FUTURES), 1)
+        .call();
+  }
+
   public GateioContractInfo getContractsInfoOne(FuturesSettleType settle, CurrencyPair pair)
       throws IOException {
     return decorateApiCall(

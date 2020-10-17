@@ -45,9 +45,14 @@ public class GateioFuturesExchange extends BaseExchange {
     spec.setSslUri(URL_API);
     spec.setHost(HOST);
     spec.setPort(80);
-    spec.setExchangeName("Gateio");
-    spec.setExchangeDescription("Gateio Exchange.");
+    spec.setExchangeName("GateioV4");
+    spec.setExchangeDescription("GateioV4 Exchange.");
     AuthUtils.setApiAndSecretKey(spec, "gateiov4");
     return spec;
+  }
+
+  @Override
+  public String getMetaDataFileName(ExchangeSpecification exchangeSpecification) {
+    return "gateio-v4-futures";
   }
 }

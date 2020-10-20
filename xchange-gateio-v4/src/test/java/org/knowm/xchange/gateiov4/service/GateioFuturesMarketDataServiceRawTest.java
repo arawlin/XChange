@@ -1,7 +1,5 @@
 package org.knowm.xchange.gateiov4.service;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.util.List;
 import org.junit.Before;
@@ -9,7 +7,7 @@ import org.junit.Test;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.gateiov4.GateioFuturesExchange;
-import org.knowm.xchange.gateiov4.dto.marketdata.FuturesSettleType;
+import org.knowm.xchange.gateiov4.dto.FuturesSettleType;
 import org.knowm.xchange.gateiov4.dto.marketdata.GateioContractInfo;
 import org.knowm.xchange.gateiov4.dto.marketdata.GateioFundingRate;
 import org.knowm.xchange.utils.Assert;

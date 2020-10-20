@@ -9,7 +9,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesPremiumIndex;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
@@ -18,11 +17,6 @@ public interface BinanceFutures {
   @GET
   @Path("futures/data/openInterestHist")
   void openInterestHist() throws IOException;
-
-  @GET
-  @Path("v1/premiumIndex")
-  BinanceFuturesPremiumIndex premiumIndex(@QueryParam("symbol") String symbol)
-      throws IOException, BinanceException;
 
   @GET
   @Path("v1/fundingRate")

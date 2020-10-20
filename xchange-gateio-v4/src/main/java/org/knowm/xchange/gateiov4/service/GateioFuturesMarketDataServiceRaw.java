@@ -9,7 +9,7 @@ import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.gateiov4.GateioFutures;
 import org.knowm.xchange.gateiov4.GateioFuturesExchange;
-import org.knowm.xchange.gateiov4.dto.marketdata.FuturesSettleType;
+import org.knowm.xchange.gateiov4.dto.FuturesSettleType;
 import org.knowm.xchange.gateiov4.dto.marketdata.GateioContractInfo;
 import org.knowm.xchange.gateiov4.dto.marketdata.GateioFundingRate;
 

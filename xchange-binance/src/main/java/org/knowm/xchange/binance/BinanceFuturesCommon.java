@@ -14,7 +14,7 @@ import java.util.List;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
-public interface BinanceFutures {
+public interface BinanceFuturesCommon {
 
   @GET
   @Path("futures/data/openInterestHist")
@@ -25,13 +25,4 @@ public interface BinanceFutures {
       @QueryParam("startTime") long startTime,
       @QueryParam("endTime") long endTime
   ) throws IOException, BinanceException;
-
-  @GET
-  @Path("v1/fundingRate")
-  List<BinanceFuturesFundingRate> fundingRate(
-      @QueryParam("symbol") String symbol,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime,
-      @QueryParam("limit") int limit)
-      throws IOException, BinanceException;
 }

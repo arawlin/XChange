@@ -35,8 +35,10 @@ public class BinanceFuturesExchange extends BaseExchange {
       throw new ExchangeException("Must setFuturesSettleType in BinanceExchangeSpecification.");
     }
 
+    BinanceFuturesCommon binanceCommon = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCommon.class, getExchangeSpecification()).build();
+
     this.marketDataService =
-        new BinanceFuturesMarketDataService(this, binance, getResilienceRegistries());
+        new BinanceFuturesMarketDataService(this, binance, binanceCommon, getResilienceRegistries());
   }
 
   public SynchronizedValueFactory<Long> getTimestampFactory() {

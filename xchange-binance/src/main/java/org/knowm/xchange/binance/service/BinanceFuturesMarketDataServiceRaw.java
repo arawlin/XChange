@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.List;
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
+import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesOpenInterest;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesPremiumIndex;
+import org.knowm.xchange.binance.dto.marketdata.KlineInterval;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 
@@ -14,15 +16,18 @@ public class BinanceFuturesMarketDataServiceRaw
     extends BinanceFuturesBaseService<BinanceFuturesExchange> {
 
   protected final BinanceFutures binance;
+  protected final BinanceFuturesCommon binanceCommon;
   protected final BinanceExchangeSpecification specification;
 
   protected BinanceFuturesMarketDataServiceRaw(
       BinanceFuturesExchange exchange,
       BinanceFutures binance,
+      BinanceFuturesCommon binanceCommon,
       ResilienceRegistries resilienceRegistries) {
     super(exchange, resilienceRegistries);
 
     this.binance = binance;
+    this.binanceCommon = binanceCommon;
     this.specification = (BinanceExchangeSpecification) exchange.getExchangeSpecification();
   }
 
@@ -46,6 +51,14 @@ public class BinanceFuturesMarketDataServiceRaw
       String symbol, Long startTime, Long endTime, Integer limit) throws IOException {
     return decorateApiCall(() -> binance.fundingRate(symbol, startTime, endTime, limit))
         .withRetry(retry("fundingRate"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
+        .call();
+  }
+
+  public List<BinanceFuturesOpenInterest> openInterestHist(
+      String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime) throws IOException {
+    return decorateApiCall(() -> binanceCommon.openInterestHist(symbol, period.code(), limit, startTime, endTime))
+        .withRetry(retry("openInterestHist"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
   }

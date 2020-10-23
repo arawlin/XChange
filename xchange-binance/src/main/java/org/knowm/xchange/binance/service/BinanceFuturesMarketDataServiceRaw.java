@@ -5,10 +5,7 @@ import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LI
 import java.io.IOException;
 import java.util.List;
 import org.knowm.xchange.binance.*;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesOpenInterest;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesPremiumIndex;
-import org.knowm.xchange.binance.dto.marketdata.KlineInterval;
+import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 
@@ -59,6 +56,14 @@ public class BinanceFuturesMarketDataServiceRaw
       String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime) throws IOException {
     return decorateApiCall(() -> binanceCommon.openInterestHist(symbol, period.code(), limit, startTime, endTime))
         .withRetry(retry("openInterestHist"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
+        .call();
+  }
+
+  public List<BinanceTopLongShortAccountRatio> topLongShortAccountRatio(
+      String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime) throws IOException {
+    return decorateApiCall(() -> binanceCommon.topLongShortAccountRatio(symbol, period.code(), limit, startTime, endTime))
+        .withRetry(retry("topLongShortAccountRatio"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
   }

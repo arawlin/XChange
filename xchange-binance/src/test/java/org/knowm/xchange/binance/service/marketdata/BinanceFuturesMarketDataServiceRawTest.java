@@ -7,10 +7,7 @@ import org.knowm.xchange.binance.BinanceExchangeSpecification;
 import org.knowm.xchange.binance.BinanceFuturesExchange;
 import org.knowm.xchange.binance.BinanceFuturesUSDT;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesOpenInterest;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesPremiumIndex;
-import org.knowm.xchange.binance.dto.marketdata.KlineInterval;
+import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataServiceRaw;
 import org.knowm.xchange.utils.Assert;
 
@@ -26,6 +23,9 @@ public class BinanceFuturesMarketDataServiceRawTest {
 
   private BinanceFuturesExchange exchange;
   private BinanceFuturesMarketDataServiceRaw service;
+
+  private Long startTime;
+  private Long endTime;
 
   @Before
   public void setUp() throws Exception {
@@ -47,6 +47,14 @@ public class BinanceFuturesMarketDataServiceRawTest {
 
     exchange = (BinanceFuturesExchange) ExchangeFactory.INSTANCE.createExchange(spec);
     service = (BinanceFuturesMarketDataServiceRaw) exchange.getMarketDataService();
+
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    endTime = c.getTimeInMillis();
+
+    c.add(Calendar.DATE, -1);
+    startTime = c.getTimeInMillis();
+
   }
 
   @Test
@@ -57,23 +65,19 @@ public class BinanceFuturesMarketDataServiceRawTest {
 
   @Test
   public void fundingRate() throws ParseException, IOException {
-    SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    long startTime = f.parse("2020-10-18 00:00").getTime();
-    long endTime = f.parse("2020-10-19 00:00").getTime();
     List<BinanceFuturesFundingRate> ls = service.fundingRate("BTCUSD_PERP", startTime, endTime, 10);
     Assert.notNull(ls, "");
   }
 
   @Test
   public void openInterestHist() throws IOException {
-    Calendar c = Calendar.getInstance();
-    c.setTime(new Date());
-    Long now = c.getTimeInMillis();
+    List<BinanceFuturesOpenInterest> ls = service.openInterestHist("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
+    Assert.notNull(ls, "");
+  }
 
-    c.add(Calendar.DATE, -1);
-    Long then = c.getTimeInMillis();
-
-    List<BinanceFuturesOpenInterest> ls = service.openInterestHist("ZECUSDT", KlineInterval.m15, 30, then, now);
+  @Test
+  public void topLongShortAccountRatio() throws IOException {
+    List<BinanceTopLongShortAccountRatio> ls = service.topLongShortAccountRatio("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
     Assert.notNull(ls, "");
   }
 

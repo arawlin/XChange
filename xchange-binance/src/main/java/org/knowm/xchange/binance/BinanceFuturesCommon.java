@@ -3,6 +3,7 @@ package org.knowm.xchange.binance;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesOpenInterest;
+import org.knowm.xchange.binance.dto.marketdata.BinanceTopLongShortAccountRatio;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,4 +26,15 @@ public interface BinanceFuturesCommon {
       @QueryParam("startTime") long startTime,
       @QueryParam("endTime") long endTime
   ) throws IOException, BinanceException;
+
+  @GET
+  @Path("futures/data/topLongShortAccountRatio")
+  List<BinanceTopLongShortAccountRatio> topLongShortAccountRatio(
+      @QueryParam("symbol") String symbol,
+      @QueryParam("period") String period,
+      @QueryParam("limit") int limit,
+      @QueryParam("startTime") long startTime,
+      @QueryParam("endTime") long endTime
+  ) throws IOException, BinanceException;
+
 }

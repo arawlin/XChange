@@ -67,4 +67,20 @@ public class BinanceFuturesMarketDataServiceRaw
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
   }
+
+  public List<BinanceTopLongShortPositionRatio> topLongShortPositionRatio(
+      String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime) throws IOException {
+    return decorateApiCall(() -> binanceCommon.topLongShortPositionRatio(symbol, period.code(), limit, startTime, endTime))
+        .withRetry(retry("topLongShortAccountRatio"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
+        .call();
+  }
+
+  public List<BinanceGlobalLongShortAccountRatio> globalLongShortAccountRatio(
+      String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime) throws IOException {
+    return decorateApiCall(() -> binanceCommon.globalLongShortAccountRatio(symbol, period.code(), limit, startTime, endTime))
+        .withRetry(retry("topLongShortAccountRatio"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
+        .call();
+  }
 }

@@ -13,7 +13,6 @@ import org.knowm.xchange.utils.Assert;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +51,7 @@ public class BinanceFuturesMarketDataServiceRawTest {
     c.setTime(new Date());
     endTime = c.getTimeInMillis();
 
-    c.add(Calendar.DATE, -1);
+    c.add(Calendar.DATE, -10);
     startTime = c.getTimeInMillis();
 
   }
@@ -78,6 +77,18 @@ public class BinanceFuturesMarketDataServiceRawTest {
   @Test
   public void topLongShortAccountRatio() throws IOException {
     List<BinanceTopLongShortAccountRatio> ls = service.topLongShortAccountRatio("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
+    Assert.notNull(ls, "");
+  }
+
+  @Test
+  public void topLongShortPositionRatio() throws IOException {
+    List<BinanceTopLongShortPositionRatio> ls = service.topLongShortPositionRatio("ZECUSDT", KlineInterval.d1, 30, startTime, endTime);
+    Assert.notNull(ls, "");
+  }
+
+  @Test
+  public void globalLongShortAccountRatio() throws IOException {
+    List<BinanceGlobalLongShortAccountRatio> ls = service.globalLongShortAccountRatio("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
     Assert.notNull(ls, "");
   }
 

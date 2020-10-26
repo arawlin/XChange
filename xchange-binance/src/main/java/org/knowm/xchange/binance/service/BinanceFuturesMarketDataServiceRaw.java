@@ -83,4 +83,13 @@ public class BinanceFuturesMarketDataServiceRaw
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
   }
+
+  public List<BinanceTakerLongShortRatio> takerlongshortRatio(
+      String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime) throws IOException {
+    return decorateApiCall(() -> binanceCommon.takerlongshortRatio(symbol, period.code(), limit, startTime, endTime))
+        .withRetry(retry("topLongShortAccountRatio"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
+        .call();
+  }
+
 }

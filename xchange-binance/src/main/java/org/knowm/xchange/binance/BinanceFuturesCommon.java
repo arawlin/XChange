@@ -55,4 +55,15 @@ public interface BinanceFuturesCommon {
       @QueryParam("endTime") long endTime
   ) throws IOException, BinanceException;
 
+
+  @GET
+  @Path("futures/data/takerlongshortRatio")
+  List<BinanceTakerLongShortRatio> takerlongshortRatio(
+      @QueryParam("symbol") String symbol,
+      @QueryParam("period") String period,
+      @QueryParam("limit") int limit,
+      @QueryParam("startTime") long startTime,
+      @QueryParam("endTime") long endTime
+  ) throws IOException, BinanceException;
+
 }

@@ -92,4 +92,10 @@ public class BinanceFuturesMarketDataServiceRawTest {
     Assert.notNull(ls, "");
   }
 
+  @Test
+  public void takerlongshortRatio() throws IOException {
+    List<BinanceTakerLongShortRatio> ls = service.takerlongshortRatio("XMRUSDT", KlineInterval.m15, 30, startTime, endTime);
+    Assert.notNull(ls, "");
+  }
+
 }

@@ -44,7 +44,7 @@ public class GateioFuturesMarketDataServiceRaw extends GateioBaseService<GateioF
         .call();
   }
 
-  List<GateioFundingRate> getContractFundingRate(
+  public List<GateioFundingRate> getContractFundingRate(
       FuturesSettleType settle, CurrencyPair pair, Integer limit) throws IOException {
     return decorateApiCall(
             () ->

@@ -1,12 +1,9 @@
 package org.knowm.xchange.binance.dto.marketdata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.math.BigDecimal;
 
-/**
- * Created by lin on 2020-10-22.
- */
+/** Created by lin on 2020-10-22. */
 public class BinanceTakerLongShortRatio {
 
   private final BigDecimal buySellRatio;

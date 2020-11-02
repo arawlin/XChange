@@ -1,5 +1,10 @@
 package org.knowm.xchange.binance.service.marketdata;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.knowm.xchange.ExchangeFactory;
@@ -10,12 +15,6 @@ import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataServiceRaw;
 import org.knowm.xchange.utils.Assert;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /** Created by lin on 2020-10-20. */
 public class BinanceFuturesMarketDataServiceRawTest {
@@ -53,7 +52,6 @@ public class BinanceFuturesMarketDataServiceRawTest {
 
     c.add(Calendar.DATE, -10);
     startTime = c.getTimeInMillis();
-
   }
 
   @Test
@@ -70,32 +68,36 @@ public class BinanceFuturesMarketDataServiceRawTest {
 
   @Test
   public void openInterestHist() throws IOException {
-    List<BinanceFuturesOpenInterest> ls = service.openInterestHist("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
+    List<BinanceFuturesOpenInterest> ls =
+        service.openInterestHist("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
     Assert.notNull(ls, "");
   }
 
   @Test
   public void topLongShortAccountRatio() throws IOException {
-    List<BinanceTopLongShortAccountRatio> ls = service.topLongShortAccountRatio("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
+    List<BinanceTopLongShortAccountRatio> ls =
+        service.topLongShortAccountRatio("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
     Assert.notNull(ls, "");
   }
 
   @Test
   public void topLongShortPositionRatio() throws IOException {
-    List<BinanceTopLongShortPositionRatio> ls = service.topLongShortPositionRatio("ZECUSDT", KlineInterval.d1, 30, startTime, endTime);
+    List<BinanceTopLongShortPositionRatio> ls =
+        service.topLongShortPositionRatio("ZECUSDT", KlineInterval.d1, 30, startTime, endTime);
     Assert.notNull(ls, "");
   }
 
   @Test
   public void globalLongShortAccountRatio() throws IOException {
-    List<BinanceGlobalLongShortAccountRatio> ls = service.globalLongShortAccountRatio("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
+    List<BinanceGlobalLongShortAccountRatio> ls =
+        service.globalLongShortAccountRatio("ZECUSDT", KlineInterval.m15, 30, startTime, endTime);
     Assert.notNull(ls, "");
   }
 
   @Test
   public void takerlongshortRatio() throws IOException {
-    List<BinanceTakerLongShortRatio> ls = service.takerlongshortRatio("XMRUSDT", KlineInterval.m15, 30, startTime, endTime);
+    List<BinanceTakerLongShortRatio> ls =
+        service.takerlongshortRatio("XMRUSDT", KlineInterval.m15, 30, startTime, endTime);
     Assert.notNull(ls, "");
   }
-
 }

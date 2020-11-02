@@ -1,15 +1,14 @@
 package org.knowm.xchange.binance;
 
-import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
-
+import java.io.IOException;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.List;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)

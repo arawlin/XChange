@@ -1,15 +1,14 @@
 package org.knowm.xchange.binance;
 
-import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.marketdata.*;
-
+import java.io.IOException;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.List;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.marketdata.*;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,8 +21,8 @@ public interface BinanceFuturesCommon {
       @QueryParam("period") String period,
       @QueryParam("limit") int limit,
       @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime
-  ) throws IOException, BinanceException;
+      @QueryParam("endTime") long endTime)
+      throws IOException, BinanceException;
 
   @GET
   @Path("futures/data/topLongShortAccountRatio")
@@ -32,8 +31,8 @@ public interface BinanceFuturesCommon {
       @QueryParam("period") String period,
       @QueryParam("limit") int limit,
       @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime
-  ) throws IOException, BinanceException;
+      @QueryParam("endTime") long endTime)
+      throws IOException, BinanceException;
 
   @GET
   @Path("futures/data/topLongShortPositionRatio")
@@ -42,8 +41,8 @@ public interface BinanceFuturesCommon {
       @QueryParam("period") String period,
       @QueryParam("limit") int limit,
       @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime
-  ) throws IOException, BinanceException;
+      @QueryParam("endTime") long endTime)
+      throws IOException, BinanceException;
 
   @GET
   @Path("futures/data/globalLongShortAccountRatio")
@@ -52,9 +51,8 @@ public interface BinanceFuturesCommon {
       @QueryParam("period") String period,
       @QueryParam("limit") int limit,
       @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime
-  ) throws IOException, BinanceException;
-
+      @QueryParam("endTime") long endTime)
+      throws IOException, BinanceException;
 
   @GET
   @Path("futures/data/takerlongshortRatio")
@@ -63,7 +61,6 @@ public interface BinanceFuturesCommon {
       @QueryParam("period") String period,
       @QueryParam("limit") int limit,
       @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime
-  ) throws IOException, BinanceException;
-
+      @QueryParam("endTime") long endTime)
+      throws IOException, BinanceException;
 }

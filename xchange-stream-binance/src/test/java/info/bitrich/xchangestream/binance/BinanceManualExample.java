@@ -18,12 +18,24 @@ public class BinanceManualExample {
     String apiKey = System.getProperty("binance-api-key");
     String apiSecret = System.getProperty("binance-api-secret");
 
-    ExchangeSpecification spec =
-        StreamingExchangeFactory.INSTANCE
-            .createExchange(BinanceStreamingExchange.class)
-            .getDefaultExchangeSpecification();
+    ExchangeSpecification spec = new ExchangeSpecification(BinanceStreamingExchange.class);
+    spec.setSslUri("https://api.binance.com");
+    spec.setHost("www.binance.com");
+    spec.setPort(80);
+    spec.setExchangeName("Binance");
+    spec.setExchangeDescription("Binance Exchange.");
+
     spec.setApiKey(apiKey);
     spec.setSecretKey(apiSecret);
+
+    spec.setProxyHost("192.168.1.100");
+    spec.setProxyPort(1081);
+
+    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_HOST, "192.168.1.100");
+    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_PORT, 1080);
+
+//    spec.setShouldLoadRemoteMetaData(false);
+
     BinanceStreamingExchange exchange =
         (BinanceStreamingExchange) StreamingExchangeFactory.INSTANCE.createExchange(spec);
 

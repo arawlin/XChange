@@ -6,9 +6,9 @@ import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 
 public class DepthBinanceWebSocketTransaction extends ProductBinanceWebSocketTransaction {
 
-  private final BinanceOrderbook orderBook;
-  private final long lastUpdateId;
-  private final long firstUpdateId;
+  protected final BinanceOrderbook orderBook;
+  protected final long lastUpdateId;
+  protected final long firstUpdateId;
 
   public DepthBinanceWebSocketTransaction(
       @JsonProperty("e") String eventType,

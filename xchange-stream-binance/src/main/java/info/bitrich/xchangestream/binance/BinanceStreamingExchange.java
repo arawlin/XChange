@@ -27,7 +27,7 @@ public class BinanceStreamingExchange extends BinanceExchange implements Streami
   protected static final String USE_HIGHER_UPDATE_FREQUENCY =
       "Binance_Orderbook_Use_Higher_Frequency";
 
-  private BinanceStreamingService streamingService;
+  protected BinanceStreamingService streamingService;
   private BinanceUserDataStreamingService userDataStreamingService;
 
   private BinanceStreamingMarketDataService streamingMarketDataService;
@@ -195,36 +195,9 @@ public class BinanceStreamingExchange extends BinanceExchange implements Streami
     return streamingTradeService;
   }
 
-  private BinanceStreamingService createStreamingService(ProductSubscription subscription) {
-    String path = API_BASE_URI + "stream?streams=" + buildSubscriptionStreams(subscription);
+  protected BinanceStreamingService createStreamingService(ProductSubscription subscription) {
+    String path = API_BASE_URI + "stream?streams=" + BinanceStreamingUtil.buildSubscriptionStreams(subscription, "", orderBookUpdateFrequencyParameter, "");
     return new BinanceStreamingService(path, subscription);
-  }
-
-  public String buildSubscriptionStreams(ProductSubscription subscription) {
-    return Stream.of(
-            buildSubscriptionStrings(subscription.getTicker(), "ticker"),
-            buildSubscriptionStrings(subscription.getOrderBook(), "depth"),
-            buildSubscriptionStrings(subscription.getTrades(), "trade"))
-        .filter(s -> !s.isEmpty())
-        .collect(Collectors.joining("/"));
-  }
-
-  private String buildSubscriptionStrings(
-      List<CurrencyPair> currencyPairs, String subscriptionType) {
-    if ("depth".equals(subscriptionType)) {
-      return subscriptionStrings(currencyPairs)
-          .map(s -> s + "@" + subscriptionType + orderBookUpdateFrequencyParameter)
-          .collect(Collectors.joining("/"));
-    } else {
-      return subscriptionStrings(currencyPairs)
-          .map(s -> s + "@" + subscriptionType)
-          .collect(Collectors.joining("/"));
-    }
-  }
-
-  private static Stream<String> subscriptionStrings(List<CurrencyPair> currencyPairs) {
-    return currencyPairs.stream()
-        .map(pair -> String.join("", pair.toString().split("/")).toLowerCase());
   }
 
   @Override

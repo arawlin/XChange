@@ -5,6 +5,7 @@ import java.math.MathContext;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.knowm.xchange.binance.dto.account.AssetDetail;
+import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
 import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.dto.trade.OrderSide;
@@ -14,6 +15,7 @@ import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.OrderType;
+import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.CurrencyMetaData;
 import org.knowm.xchange.dto.meta.WalletHealth;
@@ -224,4 +226,18 @@ public class BinanceAdapters {
         throw new IllegalStateException("Unexpected value: " + order.getIntention());
     }
   }
+
+  public static OrderBook convertOrderBook(BinanceOrderbook ob, CurrencyPair pair) {
+    List<LimitOrder> bids =
+        ob.bids.entrySet().stream()
+            .map(e -> new LimitOrder(OrderType.BID, e.getValue(), pair, null, null, e.getKey()))
+            .collect(Collectors.toList());
+    List<LimitOrder> asks =
+        ob.asks.entrySet().stream()
+            .map(e -> new LimitOrder(OrderType.ASK, e.getValue(), pair, null, null, e.getKey()))
+            .collect(Collectors.toList());
+    return new OrderBook(null, asks, bids);
+  }
+
+
 }

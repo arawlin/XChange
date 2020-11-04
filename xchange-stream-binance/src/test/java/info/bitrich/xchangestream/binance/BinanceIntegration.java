@@ -18,7 +18,7 @@ public class BinanceIntegration {
             StreamingExchangeFactory.INSTANCE.createExchange(BinanceStreamingExchange.class);
     ProductSubscription.ProductSubscriptionBuilder builder = ProductSubscription.create();
     builder.addTicker(CurrencyPair.BTC_USD).addTicker(CurrencyPair.DASH_BTC);
-    String buildSubscriptionStreams = exchange.buildSubscriptionStreams(builder.build());
+    String buildSubscriptionStreams = BinanceStreamingUtil.buildSubscriptionStreams(builder.build());
     Assert.assertEquals("btcusd@ticker/dashbtc@ticker", buildSubscriptionStreams);
 
     ProductSubscription.ProductSubscriptionBuilder builder2 = ProductSubscription.create();
@@ -26,7 +26,7 @@ public class BinanceIntegration {
         .addTicker(CurrencyPair.BTC_USD)
         .addTicker(CurrencyPair.DASH_BTC)
         .addOrderbook(CurrencyPair.ETH_BTC);
-    String buildSubscriptionStreams2 = exchange.buildSubscriptionStreams(builder2.build());
+    String buildSubscriptionStreams2 = BinanceStreamingUtil.buildSubscriptionStreams(builder2.build());
     Assert.assertEquals("btcusd@ticker/dashbtc@ticker/ethbtc@depth", buildSubscriptionStreams2);
   }
 
@@ -44,7 +44,7 @@ public class BinanceIntegration {
     spec.setExchangeSpecificParametersItem(USE_HIGHER_UPDATE_FREQUENCY, true);
     BinanceStreamingExchange exchange =
         (BinanceStreamingExchange) StreamingExchangeFactory.INSTANCE.createExchange(spec);
-    String buildSubscriptionStreams = exchange.buildSubscriptionStreams(builder.build());
+    String buildSubscriptionStreams = BinanceStreamingUtil.buildSubscriptionStreams(builder.build());
     Assert.assertEquals(
         "btcusd@ticker/dashbtc@ticker/ethbtc@depth@100ms", buildSubscriptionStreams);
   }

@@ -10,13 +10,10 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.knowm.xchange.binance.BinanceAuthenticated;
 import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.binance.service.BinanceMarketDataService;
 import org.knowm.xchange.client.ExchangeRestProxyBuilder;
-import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,7 +193,11 @@ public class BinanceStreamingExchange extends BinanceExchange implements Streami
   }
 
   protected BinanceStreamingService createStreamingService(ProductSubscription subscription) {
-    String path = API_BASE_URI + "stream?streams=" + BinanceStreamingUtil.buildSubscriptionStreams(subscription, "", orderBookUpdateFrequencyParameter, "");
+    String path =
+        API_BASE_URI
+            + "stream?streams="
+            + BinanceStreamingUtil.buildSubscriptionStreams(
+                subscription, "", orderBookUpdateFrequencyParameter, "");
     return new BinanceStreamingService(path, subscription);
   }
 

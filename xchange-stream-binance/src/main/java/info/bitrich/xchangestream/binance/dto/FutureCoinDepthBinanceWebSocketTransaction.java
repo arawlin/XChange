@@ -1,10 +1,10 @@
 package info.bitrich.xchangestream.binance.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
-public class FutureCoinDepthBinanceWebSocketTransaction extends FutureUSDTDepthBinanceWebSocketTransaction {
+public class FutureCoinDepthBinanceWebSocketTransaction
+    extends FutureUSDTDepthBinanceWebSocketTransaction {
 
   protected final String pair;
 
@@ -19,7 +19,16 @@ public class FutureCoinDepthBinanceWebSocketTransaction extends FutureUSDTDepthB
       @JsonProperty("pu") long lastLastUpdateId,
       @JsonProperty("b") List<Object[]> _bids,
       @JsonProperty("a") List<Object[]> _asks) {
-    super(eventType, eventTime, transactionTime, symbol, firstUpdateId, lastUpdateId, lastLastUpdateId, _bids, _asks);
+    super(
+        eventType,
+        eventTime,
+        transactionTime,
+        symbol,
+        firstUpdateId,
+        lastUpdateId,
+        lastLastUpdateId,
+        _bids,
+        _asks);
 
     this.pair = pair;
   }

@@ -8,6 +8,8 @@ import info.bitrich.xchangestream.service.netty.ConnectionStateModel;
 import info.bitrich.xchangestream.util.Events;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import java.util.ArrayList;
+import java.util.List;
 import org.knowm.xchange.binance.BinanceExchangeSpecification;
 import org.knowm.xchange.binance.BinanceFuturesExchange;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
@@ -15,13 +17,9 @@ import org.knowm.xchange.binance.service.BinanceFuturesMarketDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by lin on 2020-11-03.
- */
-public class BinanceFutureStreamingExchange extends BinanceFuturesExchange implements StreamingExchange {
+/** Created by lin on 2020-11-03. */
+public class BinanceFutureStreamingExchange extends BinanceFuturesExchange
+    implements StreamingExchange {
 
   private static final Logger LOG = LoggerFactory.getLogger(BinanceFutureStreamingExchange.class);
   private static String API_BASE_URI;
@@ -130,8 +128,11 @@ public class BinanceFutureStreamingExchange extends BinanceFuturesExchange imple
   }
 
   protected BinanceStreamingService createStreamingService(ProductSubscription subscription) {
-    String path = API_BASE_URI + "stream?streams=" + BinanceStreamingUtil.buildSubscriptionStreams(subscription, "", orderBookUpdateFrequencyParameter, "");
+    String path =
+        API_BASE_URI
+            + "stream?streams="
+            + BinanceStreamingUtil.buildSubscriptionStreams(
+                subscription, "", orderBookUpdateFrequencyParameter, "");
     return new BinanceStreamingService(path, subscription);
   }
-
 }

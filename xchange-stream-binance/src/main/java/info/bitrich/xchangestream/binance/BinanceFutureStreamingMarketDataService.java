@@ -1,5 +1,7 @@
 package info.bitrich.xchangestream.binance;
 
+import static info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper.getObjectMapper;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,6 +10,10 @@ import info.bitrich.xchangestream.binance.dto.BinanceWebsocketTransaction;
 import info.bitrich.xchangestream.binance.dto.FutureCoinDepthBinanceWebSocketTransaction;
 import info.bitrich.xchangestream.binance.dto.FutureUSDTDepthBinanceWebSocketTransaction;
 import io.reactivex.Observable;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.BinanceExchangeSpecification;
@@ -23,13 +29,6 @@ import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exceptions.RateLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
-import static info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper.getObjectMapper;
 
 public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMarketDataService {
   private static final Logger LOG =
@@ -60,16 +59,16 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
               .getTypeFactory()
               .constructType(
                   new TypeReference<
-                      BinanceWebsocketTransaction<FutureUSDTDepthBinanceWebSocketTransaction>>() {
-                  });
+                      BinanceWebsocketTransaction<
+                          FutureUSDTDepthBinanceWebSocketTransaction>>() {});
     } else if (specification.getFuturesSettleType() == FuturesSettleType.COIN) {
       DEPTH_TYPE =
           getObjectMapper()
               .getTypeFactory()
               .constructType(
                   new TypeReference<
-                      BinanceWebsocketTransaction<FutureCoinDepthBinanceWebSocketTransaction>>() {
-                  });
+                      BinanceWebsocketTransaction<
+                          FutureCoinDepthBinanceWebSocketTransaction>>() {});
     }
   }
 
@@ -91,7 +90,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
         fallbackOnApiCall.get().run();
         BinanceOrderbook book = fetchBinanceOrderBook(currencyPair);
         snapshotlastUpdateId = book.lastUpdateId;
-//        lastUpdateId.set(book.lastUpdateId);  // #see subscription.stream dealing
+        //        lastUpdateId.set(book.lastUpdateId);  // #see subscription.stream dealing
         lastUpdateId.set(0L);
         orderBook = BinanceAdapters.convertOrderBook(book, currencyPair);
       } catch (Exception e) {
@@ -146,7 +145,8 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
 
   @Override
   protected Observable<OrderBook> orderBookStream(CurrencyPair currencyPair) {
-    OrderbookSubscription subscription = orderbooks.computeIfAbsent(currencyPair, this::connectOrderBook);
+    OrderbookSubscription subscription =
+        orderbooks.computeIfAbsent(currencyPair, this::connectOrderBook);
 
     return subscription
         .stream
@@ -164,7 +164,8 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
         .filter(depth -> depth.getLastUpdateId() >= subscription.snapshotlastUpdateId)
 
         // 5. The first processed event should have U <= lastUpdateId AND u >= lastUpdateId
-        // 6. While listening to the stream, each new event's pu should be equal to the previous event's u, otherwise initialize the process from step 3.
+        // 6. While listening to the stream, each new event's pu should be equal to the previous
+        // event's u, otherwise initialize the process from step 3.
         .filter(
             depth -> {
               long lastUpdateId = subscription.lastUpdateId.get();
@@ -235,5 +236,4 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
       throw new ExchangeException("Unable to parse order book transaction", e);
     }
   }
-
 }

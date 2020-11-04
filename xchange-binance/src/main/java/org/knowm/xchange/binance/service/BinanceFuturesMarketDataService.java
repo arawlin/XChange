@@ -1,5 +1,6 @@
 package org.knowm.xchange.binance.service;
 
+import java.io.IOException;
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
@@ -8,10 +9,6 @@ import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.service.marketdata.MarketDataService;
-
-import java.io.IOException;
-
-import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LIMITER;
 
 public class BinanceFuturesMarketDataService extends BinanceFuturesMarketDataServiceRaw
     implements MarketDataService {
@@ -43,5 +40,4 @@ public class BinanceFuturesMarketDataService extends BinanceFuturesMarketDataSer
       throw BinanceErrorAdapter.adapt(e);
     }
   }
-
 }

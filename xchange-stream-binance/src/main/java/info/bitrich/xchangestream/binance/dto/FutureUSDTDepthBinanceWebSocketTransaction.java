@@ -1,7 +1,6 @@
 package info.bitrich.xchangestream.binance.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class FutureUSDTDepthBinanceWebSocketTransaction extends DepthBinanceWebSocketTransaction {

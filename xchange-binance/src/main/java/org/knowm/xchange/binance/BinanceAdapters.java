@@ -238,6 +238,4 @@ public class BinanceAdapters {
             .collect(Collectors.toList());
     return new OrderBook(null, asks, bids);
   }
-
-
 }

@@ -128,5 +128,4 @@ public class BinanceFuturesMarketDataServiceRaw
     }
     return 50;
   }
-
 }

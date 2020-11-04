@@ -34,7 +34,7 @@ public class BinanceManualExample {
     spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_HOST, "192.168.1.100");
     spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_PORT, 1080);
 
-//    spec.setShouldLoadRemoteMetaData(false);
+    //    spec.setShouldLoadRemoteMetaData(false);
 
     BinanceStreamingExchange exchange =
         (BinanceStreamingExchange) StreamingExchangeFactory.INSTANCE.createExchange(spec);

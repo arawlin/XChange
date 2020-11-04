@@ -1,5 +1,7 @@
 package info.bitrich.xchangestream.binance;
 
+import static info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper.getObjectMapper;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,6 +13,13 @@ import info.bitrich.xchangestream.core.StreamingMarketDataService;
 import info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.dto.BinanceException;
@@ -28,16 +37,6 @@ import org.knowm.xchange.exceptions.RateLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper.getObjectMapper;
-
 public class BinanceStreamingMarketDataService implements StreamingMarketDataService {
   private static final Logger LOG =
       LoggerFactory.getLogger(BinanceStreamingMarketDataService.class);
@@ -47,38 +46,36 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
           .getTypeFactory()
           .constructType(
               new TypeReference<
-                  BinanceWebsocketTransaction<TickerBinanceWebsocketTransaction>>() {
-              });
+                  BinanceWebsocketTransaction<TickerBinanceWebsocketTransaction>>() {});
   private static final JavaType TRADE_TYPE =
       getObjectMapper()
           .getTypeFactory()
           .constructType(
               new TypeReference<
-                  BinanceWebsocketTransaction<TradeBinanceWebsocketTransaction>>() {
-              });
+                  BinanceWebsocketTransaction<TradeBinanceWebsocketTransaction>>() {});
   private static final JavaType DEPTH_TYPE =
       getObjectMapper()
           .getTypeFactory()
           .constructType(
               new TypeReference<
-                  BinanceWebsocketTransaction<DepthBinanceWebSocketTransaction>>() {
-              });
+                  BinanceWebsocketTransaction<DepthBinanceWebSocketTransaction>>() {});
 
   protected final BinanceStreamingService service;
   protected final String orderBookUpdateFrequencyParameter;
 
   private final Map<CurrencyPair, OrderbookSubscription> orderbooks = new HashMap<>();
-  protected final Map<CurrencyPair, Observable<BinanceTicker24h>> tickerSubscriptions = new HashMap<>();
+  protected final Map<CurrencyPair, Observable<BinanceTicker24h>> tickerSubscriptions =
+      new HashMap<>();
   protected final Map<CurrencyPair, Observable<OrderBook>> orderbookSubscriptions = new HashMap<>();
-  protected final Map<CurrencyPair, Observable<BinanceRawTrade>> tradeSubscriptions = new HashMap<>();
+  protected final Map<CurrencyPair, Observable<BinanceRawTrade>> tradeSubscriptions =
+      new HashMap<>();
 
   protected final ObjectMapper mapper = StreamingObjectMapperHelper.getObjectMapper();
   protected final BinanceMarketDataService marketDataService;
   protected final Runnable onApiCall;
 
   protected final AtomicBoolean fallenBack = new AtomicBoolean();
-  protected final AtomicReference<Runnable> fallbackOnApiCall = new AtomicReference<>(() -> {
-  });
+  protected final AtomicReference<Runnable> fallbackOnApiCall = new AtomicReference<>(() -> {});
 
   public BinanceStreamingMarketDataService(
       BinanceStreamingService service,
@@ -200,7 +197,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
         fallbackOnApiCall.get().run();
         BinanceOrderbook book = fetchBinanceOrderBook(currencyPair);
         snapshotlastUpdateId = book.lastUpdateId;
-//        lastUpdateId.set(book.lastUpdateId);  // #see subscription.stream dealing
+        //        lastUpdateId.set(book.lastUpdateId);  // #see subscription.stream dealing
         lastUpdateId.set(0L);
         orderBook = BinanceAdapters.convertOrderBook(book, currencyPair);
       } catch (Exception e) {
@@ -355,8 +352,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
    * observables emitter ready for our message arrivals.
    */
   protected <T> Observable<T> triggerObservableBody(Observable<T> observable) {
-    Consumer<T> NOOP = whatever -> {
-    };
+    Consumer<T> NOOP = whatever -> {};
     observable.subscribe(NOOP);
     return observable;
   }

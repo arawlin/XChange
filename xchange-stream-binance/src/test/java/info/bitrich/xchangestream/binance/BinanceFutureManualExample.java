@@ -19,7 +19,8 @@ public class BinanceFutureManualExample {
     String apiKey = System.getProperty("binance-api-key");
     String apiSecret = System.getProperty("binance-api-secret");
 
-    BinanceExchangeSpecification spec = new BinanceExchangeSpecification(BinanceFutureStreamingExchange.class);
+    BinanceExchangeSpecification spec =
+        new BinanceExchangeSpecification(BinanceFutureStreamingExchange.class);
     spec.setSslUri(BinanceFuturesUSDT.URL);
     spec.setHost(BinanceFuturesUSDT.HOST);
     spec.setPort(80);
@@ -43,9 +44,7 @@ public class BinanceFutureManualExample {
         (BinanceFutureStreamingExchange) StreamingExchangeFactory.INSTANCE.createExchange(spec);
 
     ProductSubscription subscription =
-        ProductSubscription.create()
-            .addOrderbook(CurrencyPair.OMG_USDT)
-            .build();
+        ProductSubscription.create().addOrderbook(CurrencyPair.OMG_USDT).build();
 
     exchange.connect(subscription).blockingAwait();
 

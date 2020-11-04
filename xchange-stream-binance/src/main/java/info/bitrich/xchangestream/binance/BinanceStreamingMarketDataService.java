@@ -253,7 +253,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     return subscription;
   }
 
-  private Observable<OrderBook> orderBookStream(CurrencyPair currencyPair) {
+  protected Observable<OrderBook> orderBookStream(CurrencyPair currencyPair) {
     OrderbookSubscription subscription =
         orderbooks.computeIfAbsent(currencyPair, this::connectOrderBook);
 

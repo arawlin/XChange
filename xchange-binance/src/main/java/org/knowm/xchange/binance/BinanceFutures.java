@@ -1,14 +1,16 @@
 package org.knowm.xchange.binance;
 
-import java.io.IOException;
-import java.util.List;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
+import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
+import java.io.IOException;
+import java.util.List;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,4 +24,10 @@ public interface BinanceFutures {
       @QueryParam("endTime") long endTime,
       @QueryParam("limit") int limit)
       throws IOException, BinanceException;
+
+  @GET
+  @Path("v1/depth")
+  BinanceOrderbook depth(@QueryParam("symbol") String symbol, @QueryParam("limit") Integer limit)
+      throws IOException, BinanceException;
+
 }

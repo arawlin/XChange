@@ -28,10 +28,7 @@ import org.knowm.xchange.binance.dto.marketdata.BinanceTicker24h;
 import org.knowm.xchange.binance.service.BinanceMarketDataService;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order.OrderType;
-import org.knowm.xchange.dto.marketdata.OrderBook;
-import org.knowm.xchange.dto.marketdata.OrderBookUpdate;
-import org.knowm.xchange.dto.marketdata.Ticker;
-import org.knowm.xchange.dto.marketdata.Trade;
+import org.knowm.xchange.dto.marketdata.*;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exceptions.RateLimitExceededException;
 import org.slf4j.Logger;
@@ -182,7 +179,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
   private final class OrderbookSubscription {
     long snapshotlastUpdateId;
     AtomicLong lastUpdateId = new AtomicLong(0L);
-    OrderBook orderBook;
+    DiffOrderBook orderBook;
     Observable<BinanceWebsocketTransaction<DepthBinanceWebSocketTransaction>> stream;
 
     void invalidateSnapshot() {
@@ -199,7 +196,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
         snapshotlastUpdateId = book.lastUpdateId;
         //        lastUpdateId.set(book.lastUpdateId);  // #see subscription.stream dealing
         lastUpdateId.set(0L);
-        orderBook = BinanceAdapters.convertOrderBook(book, currencyPair);
+        orderBook = BinanceAdapters.convertDiffOrderBook(book, currencyPair);
       } catch (Exception e) {
         LOG.error("Failed to fetch initial order book for " + currencyPair, e);
         snapshotlastUpdateId = 0L;
@@ -314,6 +311,9 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
         // happen and is normal.
         .map(
             depth -> {
+              // clean last update
+              subscription.orderBook.preupdate();
+
               BinanceOrderbook ob = depth.getOrderBook();
               ob.bids.forEach(
                   (key, value) ->
@@ -335,8 +335,14 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
                               key,
                               depth.getEventTime(),
                               value)));
-              return subscription.orderBook;
-            });
+              return (OrderBook) subscription.orderBook;
+            })
+        .doAfterNext(
+            book -> {
+              DiffOrderBook diffOrderBook = (DiffOrderBook) book;
+              diffOrderBook.setFullUpdate(false);
+            }
+         );
   }
 
   protected Observable<BinanceRawTrade> rawTradeStream(CurrencyPair currencyPair) {

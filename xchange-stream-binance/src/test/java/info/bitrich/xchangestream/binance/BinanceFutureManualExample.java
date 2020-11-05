@@ -8,6 +8,7 @@ import org.knowm.xchange.binance.BinanceExchangeSpecification;
 import org.knowm.xchange.binance.BinanceFuturesUSDT;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.marketdata.DiffOrderBook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +66,7 @@ public class BinanceFutureManualExample {
         .getOrderBook(CurrencyPair.OMG_USDT)
         .subscribe(
             orderBook -> {
+              DiffOrderBook diffOrderBook = (DiffOrderBook) orderBook;
               LOG.info(
                   "Order Book ({}): askDepth={} ask={} askSize={} bidDepth={}. bid={}, bidSize={}",
                   identifier,
@@ -73,7 +75,15 @@ public class BinanceFutureManualExample {
                   orderBook.getAsks().get(0).getRemainingAmount(),
                   orderBook.getBids().size(),
                   orderBook.getBids().get(0).getLimitPrice(),
-                  orderBook.getBids().get(0).getRemainingAmount());
+                  orderBook.getBids().get(0).getRemainingAmount()
+              );
+              LOG.info(
+                  "Order Book ({}): isFullUpdate: {}, updateAskDepth={}, updateBidDepth={}",
+                  identifier,
+                  diffOrderBook.isFullUpdate(),
+                  diffOrderBook.getAsksUpdate().size(),
+                  diffOrderBook.getBidsUpdate().size()
+              );
             },
             throwable -> LOG.error("ERROR in getting order book: ", throwable));
   }

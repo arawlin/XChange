@@ -15,6 +15,7 @@ import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.Order.OrderType;
+import org.knowm.xchange.dto.marketdata.DiffOrderBook;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.meta.CurrencyMetaData;
@@ -237,5 +238,17 @@ public class BinanceAdapters {
             .map(e -> new LimitOrder(OrderType.ASK, e.getValue(), pair, null, null, e.getKey()))
             .collect(Collectors.toList());
     return new OrderBook(null, asks, bids);
+  }
+
+  public static DiffOrderBook convertDiffOrderBook(BinanceOrderbook ob, CurrencyPair pair) {
+    List<LimitOrder> bids =
+        ob.bids.entrySet().stream()
+            .map(e -> new LimitOrder(OrderType.BID, e.getValue(), pair, null, null, e.getKey()))
+            .collect(Collectors.toList());
+    List<LimitOrder> asks =
+        ob.asks.entrySet().stream()
+            .map(e -> new LimitOrder(OrderType.ASK, e.getValue(), pair, null, null, e.getKey()))
+            .collect(Collectors.toList());
+    return new DiffOrderBook(null, asks, bids);
   }
 }

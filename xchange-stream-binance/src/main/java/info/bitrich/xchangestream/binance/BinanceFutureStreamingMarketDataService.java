@@ -1,7 +1,5 @@
 package info.bitrich.xchangestream.binance;
 
-import static info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper.getObjectMapper;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,10 +8,6 @@ import info.bitrich.xchangestream.binance.dto.BinanceWebsocketTransaction;
 import info.bitrich.xchangestream.binance.dto.FutureCoinDepthBinanceWebSocketTransaction;
 import info.bitrich.xchangestream.binance.dto.FutureUSDTDepthBinanceWebSocketTransaction;
 import io.reactivex.Observable;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.BinanceExchangeSpecification;
@@ -23,12 +17,20 @@ import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataService;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
+import org.knowm.xchange.dto.marketdata.DiffOrderBook;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.OrderBookUpdate;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exceptions.RateLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper.getObjectMapper;
 
 public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMarketDataService {
   private static final Logger LOG =
@@ -60,7 +62,8 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
               .constructType(
                   new TypeReference<
                       BinanceWebsocketTransaction<
-                          FutureUSDTDepthBinanceWebSocketTransaction>>() {});
+                          FutureUSDTDepthBinanceWebSocketTransaction>>() {
+                  });
     } else if (specification.getFuturesSettleType() == FuturesSettleType.COIN) {
       DEPTH_TYPE =
           getObjectMapper()
@@ -68,14 +71,15 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
               .constructType(
                   new TypeReference<
                       BinanceWebsocketTransaction<
-                          FutureCoinDepthBinanceWebSocketTransaction>>() {});
+                          FutureCoinDepthBinanceWebSocketTransaction>>() {
+                  });
     }
   }
 
   private final class OrderbookSubscription {
     long snapshotlastUpdateId;
     AtomicLong lastUpdateId = new AtomicLong(0L);
-    OrderBook orderBook;
+    DiffOrderBook orderBook;
     Observable<BinanceWebsocketTransaction<FutureUSDTDepthBinanceWebSocketTransaction>> stream;
 
     void invalidateSnapshot() {
@@ -92,7 +96,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
         snapshotlastUpdateId = book.lastUpdateId;
         //        lastUpdateId.set(book.lastUpdateId);  // #see subscription.stream dealing
         lastUpdateId.set(0L);
-        orderBook = BinanceAdapters.convertOrderBook(book, currencyPair);
+        orderBook = BinanceAdapters.convertDiffOrderBook(book, currencyPair);
       } catch (Exception e) {
         LOG.error("Failed to fetch initial order book for " + currencyPair, e);
         snapshotlastUpdateId = 0L;
@@ -203,6 +207,9 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
         // happen and is normal.
         .map(
             depth -> {
+              // clean last update
+              subscription.orderBook.preupdate();
+
               BinanceOrderbook ob = depth.getOrderBook();
               ob.bids.forEach(
                   (key, value) ->
@@ -224,8 +231,14 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
                               key,
                               depth.getEventTime(),
                               value)));
-              return subscription.orderBook;
-            });
+              return (OrderBook) subscription.orderBook;
+            })
+        .doAfterNext(
+            book -> {
+              DiffOrderBook diffOrderBook = (DiffOrderBook) book;
+              diffOrderBook.setFullUpdate(false);
+            }
+        );
   }
 
   private BinanceWebsocketTransaction<FutureUSDTDepthBinanceWebSocketTransaction> depthTransaction(

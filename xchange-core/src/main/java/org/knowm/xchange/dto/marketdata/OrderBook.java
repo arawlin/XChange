@@ -15,16 +15,16 @@ import org.knowm.xchange.dto.Order.OrderType;
 import org.knowm.xchange.dto.trade.LimitOrder;
 
 /** DTO representing the exchange order book */
-public final class OrderBook implements Serializable {
+public class OrderBook implements Serializable {
 
   private static final long serialVersionUID = -7788306758114464314L;
 
   /** the asks */
-  private final List<LimitOrder> asks;
+  protected final List<LimitOrder> asks;
   /** the bids */
-  private final List<LimitOrder> bids;
+  protected final List<LimitOrder> bids;
   /** the timestamp of the orderbook according to the exchange's server, null if not provided */
-  private Date timeStamp;
+  protected Date timeStamp;
 
   /**
    * Constructor

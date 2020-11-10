@@ -9,7 +9,7 @@
 
   <groupId>org.knowm.xchange</groupId>
   <artifactId>xchange-parent</artifactId>
-  <version>5.0.4-SNAPSHOT</version>
+  <version>100.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>XChange</name>
@@ -513,19 +513,19 @@
 <!--        </configuration>-->
 <!--      </plugin>-->
 
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-source-plugin</artifactId>-->
-<!--        <version>3.2.1</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>attach-sources</id>-->
-<!--            <goals>-->
-<!--              <goal>jar</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 <!--      <plugin>-->
 <!--        <groupId>org.apache.maven.plugins</groupId>-->
 <!--        <artifactId>maven-javadoc-plugin</artifactId>-->

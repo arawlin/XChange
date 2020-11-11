@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
+import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.binance.dto.trade.TimeInForce;
 import org.knowm.xchange.binance.service.BinanceTradeService;
@@ -28,9 +29,28 @@ public class TradeServiceIntegration {
   static Exchange exchange;
   static BinanceTradeService tradeService;
 
+  static String apiKey;
+  static String secretKey;
+
   @BeforeClass
   public static void beforeClass() {
-    exchange = ExchangeFactory.INSTANCE.createExchange(BinanceExchange.class);
+    apiKey = System.getProperty("apiKey");
+    secretKey = System.getProperty("secretKey");
+
+    ExchangeSpecification spec = new ExchangeSpecification(BinanceExchange.class);
+    spec.setSslUri("https://api.binance.com");
+    spec.setHost("www.binance.com");
+    spec.setPort(80);
+    spec.setExchangeName("Binance");
+    spec.setExchangeDescription("Binance Exchange.");
+
+    spec.setApiKey(apiKey);
+    spec.setSecretKey(secretKey);
+
+    spec.setProxyHost("192.168.1.100");
+    spec.setProxyPort(1081);
+
+    exchange = ExchangeFactory.INSTANCE.createExchange(spec);
     tradeService = (BinanceTradeService) exchange.getTradeService();
   }
 
@@ -43,7 +63,8 @@ public class TradeServiceIntegration {
   public void testPlaceTestOrderLimitOrderShouldNotThrowAnyException() throws IOException {
     final LimitOrder limitOrder = sampleLimitOrder();
 
-    tradeService.placeTestOrder(LIMIT, limitOrder, limitOrder.getLimitPrice(), null);
+//    tradeService.placeTestOrder(LIMIT, limitOrder, limitOrder.getLimitPrice(), null);
+    tradeService.placeTestOrder(LIMIT, limitOrder, limitOrder.getLimitPrice(), null, apiKey, secretKey);
   }
 
   private LimitOrder sampleLimitOrder() throws IOException {
@@ -70,7 +91,7 @@ public class TradeServiceIntegration {
   public void testPlaceTestOrderMarketOrderShouldNotThrowAnyException() throws IOException {
     final MarketOrder marketOrder = sampleMarketOrder();
 
-    tradeService.placeTestOrder(MARKET, marketOrder, null, null);
+    tradeService.placeTestOrder(MARKET, marketOrder, null, null, null, null);
   }
 
   private MarketOrder sampleMarketOrder() {
@@ -87,7 +108,7 @@ public class TradeServiceIntegration {
         STOP_LOSS_LIMIT,
         stopLimitOrder,
         stopLimitOrder.getLimitPrice(),
-        stopLimitOrder.getStopPrice());
+        stopLimitOrder.getStopPrice(), null, null);
   }
 
   private StopOrder sampleStopLimitOrder() throws IOException {
@@ -114,7 +135,9 @@ public class TradeServiceIntegration {
         TAKE_PROFIT_LIMIT,
         takeProfitLimitOrder,
         takeProfitLimitOrder.getLimitPrice(),
-        takeProfitLimitOrder.getStopPrice());
+        takeProfitLimitOrder.getStopPrice(),
+        null,
+        null);
   }
 
   private StopOrder sampleTakeProfitLimitOrder() throws IOException {

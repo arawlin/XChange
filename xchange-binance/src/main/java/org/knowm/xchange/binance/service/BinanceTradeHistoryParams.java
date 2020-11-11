@@ -2,16 +2,14 @@ package org.knowm.xchange.binance.service;
 
 import java.util.Date;
 import org.knowm.xchange.currency.CurrencyPair;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamLimit;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsIdSpan;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsTimeSpan;
+import org.knowm.xchange.service.trade.params.*;
 
 public class BinanceTradeHistoryParams
     implements TradeHistoryParamCurrencyPair,
         TradeHistoryParamLimit,
         TradeHistoryParamsIdSpan,
-        TradeHistoryParamsTimeSpan {
+        TradeHistoryParamsTimeSpan,
+        TradeHistoryParamAuthenticity {
 
   /** mandatory */
   private CurrencyPair currencyPair;
@@ -25,6 +23,9 @@ public class BinanceTradeHistoryParams
   private Date startTime;
   /** optional */
   private Date endTime;
+
+  private String apiKey;
+  private String secretKey;
 
   public BinanceTradeHistoryParams(CurrencyPair currencyPair) {
     this.currencyPair = currencyPair;
@@ -78,5 +79,25 @@ public class BinanceTradeHistoryParams
 
   public void setEndTime(Date endTime) {
     this.endTime = endTime;
+  }
+
+  @Override
+  public String getApiKey() {
+    return apiKey;
+  }
+
+  @Override
+  public void setApiKey(String apiKey) {
+    this.apiKey = apiKey;
+  }
+
+  @Override
+  public String getSecretKey() {
+    return secretKey;
+  }
+
+  @Override
+  public void setSecretKey(String secretKey) {
+    this.secretKey = secretKey;
   }
 }

@@ -1,5 +1,27 @@
 package org.knowm.xchange.binance.service;
 
+import lombok.Value;
+import org.apache.commons.lang3.StringUtils;
+import org.knowm.xchange.binance.BinanceAdapters;
+import org.knowm.xchange.binance.BinanceAuthenticated;
+import org.knowm.xchange.binance.BinanceErrorAdapter;
+import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.trade.*;
+import org.knowm.xchange.client.ResilienceRegistries;
+import org.knowm.xchange.currency.Currency;
+import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.Order;
+import org.knowm.xchange.dto.Order.IOrderFlags;
+import org.knowm.xchange.dto.marketdata.Trades;
+import org.knowm.xchange.dto.trade.*;
+import org.knowm.xchange.exceptions.ExchangeException;
+import org.knowm.xchange.exceptions.NotAvailableFromExchangeException;
+import org.knowm.xchange.service.trade.TradeService;
+import org.knowm.xchange.service.trade.params.*;
+import org.knowm.xchange.service.trade.params.orders.*;
+import org.knowm.xchange.utils.Assert;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -7,47 +29,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.Value;
-import org.knowm.xchange.binance.BinanceAdapters;
-import org.knowm.xchange.binance.BinanceAuthenticated;
-import org.knowm.xchange.binance.BinanceErrorAdapter;
-import org.knowm.xchange.binance.BinanceExchange;
-import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceTrade;
-import org.knowm.xchange.binance.dto.trade.OrderType;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
-import org.knowm.xchange.client.ResilienceRegistries;
-import org.knowm.xchange.currency.Currency;
-import org.knowm.xchange.currency.CurrencyPair;
-import org.knowm.xchange.dto.Order;
-import org.knowm.xchange.dto.Order.IOrderFlags;
-import org.knowm.xchange.dto.marketdata.Trades;
-import org.knowm.xchange.dto.trade.LimitOrder;
-import org.knowm.xchange.dto.trade.MarketOrder;
-import org.knowm.xchange.dto.trade.OpenOrders;
-import org.knowm.xchange.dto.trade.StopOrder;
-import org.knowm.xchange.dto.trade.UserTrade;
-import org.knowm.xchange.dto.trade.UserTrades;
-import org.knowm.xchange.exceptions.ExchangeException;
-import org.knowm.xchange.exceptions.NotAvailableFromExchangeException;
-import org.knowm.xchange.service.trade.TradeService;
-import org.knowm.xchange.service.trade.params.CancelOrderByCurrencyPair;
-import org.knowm.xchange.service.trade.params.CancelOrderByIdParams;
-import org.knowm.xchange.service.trade.params.CancelOrderParams;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamLimit;
-import org.knowm.xchange.service.trade.params.TradeHistoryParams;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsIdSpan;
-import org.knowm.xchange.service.trade.params.TradeHistoryParamsTimeSpan;
-import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParam;
-import org.knowm.xchange.service.trade.params.orders.DefaultOpenOrdersParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.orders.OpenOrdersParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.orders.OpenOrdersParams;
-import org.knowm.xchange.service.trade.params.orders.OrderQueryParamCurrencyPair;
-import org.knowm.xchange.service.trade.params.orders.OrderQueryParams;
-import org.knowm.xchange.utils.Assert;
 
 public class BinanceTradeService extends BinanceTradeServiceRaw implements TradeService {
 
@@ -96,9 +77,30 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
     }
   }
 
+  public OpenOrders getOpenOrders(CurrencyPair pair, String apiKey, String secretKey) throws IOException {
+    try {
+      List<BinanceOrder> binanceOpenOrders = super.openOrders(pair, apiKey, BinanceHmacDigest.createInstance(secretKey));
+
+      List<LimitOrder> limitOrders = new ArrayList<>();
+      List<Order> otherOrders = new ArrayList<>();
+      binanceOpenOrders.forEach(
+          binanceOrder -> {
+            Order order = BinanceAdapters.adaptOrder(binanceOrder);
+            if (order instanceof LimitOrder) {
+              limitOrders.add((LimitOrder) order);
+            } else {
+              otherOrders.add(order);
+            }
+          });
+      return new OpenOrders(limitOrders, otherOrders);
+    } catch (BinanceException e) {
+      throw BinanceErrorAdapter.adapt(e);
+    }
+  }
+
   @Override
   public String placeMarketOrder(MarketOrder mo) throws IOException {
-    return placeOrder(OrderType.MARKET, mo, null, null, null);
+    return placeOrder(OrderType.MARKET, mo, null, null, null, null, null);
   }
 
   @Override
@@ -111,7 +113,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
     } else {
       type = OrderType.LIMIT;
     }
-    return placeOrder(type, limitOrder, limitOrder.getLimitPrice(), null, tif);
+    return placeOrder(type, limitOrder, limitOrder.getLimitPrice(), null, tif, null, null);
   }
 
   @Override
@@ -125,7 +127,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
 
     OrderType orderType = BinanceAdapters.adaptOrderType(order);
 
-    return placeOrder(orderType, order, order.getLimitPrice(), order.getStopPrice(), tif);
+    return placeOrder(orderType, order, order.getLimitPrice(), order.getStopPrice(), tif, null, null);
   }
 
   private Optional<TimeInForce> timeInForceFromOrder(Order order) {
@@ -135,24 +137,42 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
         .findFirst();
   }
 
-  private String placeOrder(
-      OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, TimeInForce tif)
+  public String placeOrder(
+      OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, TimeInForce tif, String apiKey, String secretKey)
       throws IOException {
     try {
       Long recvWindow =
           (Long)
               exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
-      BinanceNewOrder newOrder =
-          newOrder(
-              order.getCurrencyPair(),
-              BinanceAdapters.convert(order.getType()),
-              type,
-              tif,
-              order.getOriginalAmount(),
-              limitPrice,
-              getClientOrderId(order),
-              stopPrice,
-              null);
+
+      BinanceNewOrder newOrder = null;
+      if (StringUtils.isNotEmpty(apiKey) && StringUtils.isNotEmpty(secretKey)) {
+        newOrder =
+            newOrder(
+                order.getCurrencyPair(),
+                BinanceAdapters.convert(order.getType()),
+                type,
+                tif,
+                order.getOriginalAmount(),
+                limitPrice,
+                getClientOrderId(order),
+                stopPrice,
+                null,
+                apiKey,
+                BinanceHmacDigest.createInstance(secretKey));
+      } else {
+        newOrder =
+            newOrder(
+                order.getCurrencyPair(),
+                BinanceAdapters.convert(order.getType()),
+                type,
+                tif,
+                order.getOriginalAmount(),
+                limitPrice,
+                getClientOrderId(order),
+                stopPrice,
+                null);
+      }
       return Long.toString(newOrder.orderId);
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);
@@ -160,22 +180,38 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
   }
 
   public void placeTestOrder(
-      OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice) throws IOException {
+      OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
     try {
       TimeInForce tif = timeInForceFromOrder(order).orElse(null);
       Long recvWindow =
           (Long)
               exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
-      testNewOrder(
-          order.getCurrencyPair(),
-          BinanceAdapters.convert(order.getType()),
-          type,
-          tif,
-          order.getOriginalAmount(),
-          limitPrice,
-          getClientOrderId(order),
-          stopPrice,
-          null);
+
+      if (StringUtils.isNotEmpty(apiKey) && StringUtils.isNotEmpty(secretKey)) {
+        testNewOrder(
+            order.getCurrencyPair(),
+            BinanceAdapters.convert(order.getType()),
+            type,
+            tif,
+            order.getOriginalAmount(),
+            limitPrice,
+            getClientOrderId(order),
+            stopPrice,
+            null,
+            apiKey,
+            BinanceHmacDigest.createInstance(secretKey));
+      } else {
+        testNewOrder(
+            order.getCurrencyPair(),
+            BinanceAdapters.convert(order.getType()),
+            type,
+            tif,
+            order.getOriginalAmount(),
+            limitPrice,
+            getClientOrderId(order),
+            stopPrice,
+            null);
+      }
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);
     }
@@ -262,7 +298,21 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
       if ((fromId != null) && (startTime != null || endTime != null))
         throw new ExchangeException(
             "You should either specify the id from which you get the user trades from or start and end times. If you specify both, Binance will only honour the fromId parameter.");
-      List<BinanceTrade> binanceTrades = super.myTrades(pair, limit, startTime, endTime, fromId);
+
+      List<BinanceTrade> binanceTrades = null;
+
+      String apiKey = null;
+      String secretKey = null;
+      if (params instanceof TradeHistoryParamAuthenticity) {
+        apiKey = ((TradeHistoryParamAuthenticity) params).getApiKey();
+        secretKey = ((TradeHistoryParamAuthenticity) params).getSecretKey();
+      }
+      if (StringUtils.isNotEmpty(apiKey) && StringUtils.isNotEmpty(secretKey)) {
+        binanceTrades = super.myTrades(pair, limit, startTime, endTime, fromId, apiKey, BinanceHmacDigest.createInstance(secretKey));
+      } else {
+        binanceTrades = super.myTrades(pair, limit, startTime, endTime, fromId);
+      }
+
       List<UserTrade> trades =
           binanceTrades.stream()
               .map(

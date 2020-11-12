@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.util.concurrent.RateLimiter;
-import info.bitrich.xchangestream.binance.dto.BinanceWebsocketTransaction;
-import info.bitrich.xchangestream.binance.dto.FutureCoinDepthBinanceWebSocketTransaction;
-import info.bitrich.xchangestream.binance.dto.FutureUSDTDepthBinanceWebSocketTransaction;
+import info.bitrich.xchangestream.binance.dto.*;
+import info.bitrich.xchangestream.core.ProductSubscription;
+import info.bitrich.xchangestream.core.StreamingMarketDataExtensionService;
 import io.reactivex.Observable;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
@@ -14,6 +14,8 @@ import org.knowm.xchange.binance.BinanceExchangeSpecification;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
+import org.knowm.xchange.binance.dto.marketdata.BinanceTicker24h;
+import org.knowm.xchange.binance.dto.trade.BinanceForceOrder;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataService;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -32,9 +34,17 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static info.bitrich.xchangestream.service.netty.StreamingObjectMapperHelper.getObjectMapper;
 
-public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMarketDataService {
+public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMarketDataService implements StreamingMarketDataExtensionService {
   private static final Logger LOG =
       LoggerFactory.getLogger(BinanceFutureStreamingMarketDataService.class);
+
+  private static final JavaType FORCE_ORDER_TYPE =
+      getObjectMapper()
+          .getTypeFactory()
+          .constructType(
+              new TypeReference<
+                  BinanceWebsocketTransaction<FutureForceOrderBinanceWebsocketTransaction>>() {
+              });
 
   private static JavaType DEPTH_TYPE;
 
@@ -42,6 +52,8 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
   protected final BinanceExchangeSpecification specification;
 
   private final Map<CurrencyPair, OrderbookSubscription> orderbooks = new HashMap<>();
+
+  protected final Map<CurrencyPair, Observable<BinanceForceOrder>> forceOrderSubscriptions = new HashMap<>();
 
   public BinanceFutureStreamingMarketDataService(
       BinanceStreamingService service,
@@ -74,6 +86,26 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
                           FutureCoinDepthBinanceWebSocketTransaction>>() {
                   });
     }
+  }
+
+  @Override
+  public void openSubscriptions(ProductSubscription productSubscription) {
+    super.openSubscriptions(productSubscription);
+
+    productSubscription
+        .getForceOrders()
+        .forEach(
+            currencyPair ->
+                forceOrderSubscriptions.put(
+                    currencyPair, triggerObservableBody(forceOrderStream(currencyPair).share())));
+  }
+
+  private Observable<BinanceForceOrder> forceOrderStream(CurrencyPair currencyPair) {
+    return service
+        .subscribeChannel(channelFromCurrency(currencyPair, "forceOrder"))
+        .map(this::forceOrderTransaction)
+        .filter(transaction -> transaction.getData().getForceOrder().symbol.equals(BinanceAdapters.toSymbol(currencyPair)))
+        .map(transaction -> transaction.getData().getForceOrder());
   }
 
   private final class OrderbookSubscription {
@@ -249,4 +281,23 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
       throw new ExchangeException("Unable to parse order book transaction", e);
     }
   }
+
+  private BinanceWebsocketTransaction<FutureForceOrderBinanceWebsocketTransaction> forceOrderTransaction(
+      JsonNode node) {
+    try {
+      return mapper.readValue(mapper.treeAsTokens(node), FORCE_ORDER_TYPE);
+    } catch (IOException e) {
+      throw new ExchangeException("Unable to parse ticker transaction", e);
+    }
+  }
+
+  public Observable<BinanceForceOrder> getForceOrder(CurrencyPair currencyPair, Object... args) {
+    if (!service.getProductSubscription().getForceOrders().contains(currencyPair)) {
+      throw new UnsupportedOperationException(
+          "Binance exchange only supports up front subscriptions - subscribe at connect time");
+    }
+
+    return forceOrderSubscriptions.get(currencyPair);
+  }
+
 }

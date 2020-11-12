@@ -132,7 +132,7 @@ public class BinanceFutureStreamingExchange extends BinanceFuturesExchange
         API_BASE_URI
             + "stream?streams="
             + BinanceStreamingUtil.buildSubscriptionStreams(
-                subscription, "", orderBookUpdateFrequencyParameter, "");
+                subscription, "", orderBookUpdateFrequencyParameter, "", "");
     return new BinanceStreamingService(path, subscription);
   }
 }

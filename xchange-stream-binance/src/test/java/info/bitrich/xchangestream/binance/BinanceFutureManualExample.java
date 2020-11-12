@@ -45,17 +45,26 @@ public class BinanceFutureManualExample {
         (BinanceFutureStreamingExchange) StreamingExchangeFactory.INSTANCE.createExchange(spec);
 
     ProductSubscription subscription =
-        ProductSubscription.create().addOrderbook(CurrencyPair.OMG_USDT).build();
+        ProductSubscription.create()
+//            .addOrderbook(CurrencyPair.OMG_USDT)
+            .addForceOrders(CurrencyPair.DASH_USDT)
+            .addForceOrders(CurrencyPair.ZEC_USDT)
+            .build();
 
     exchange.connect(subscription).blockingAwait();
 
     LOG.info("Subscribing public channels");
 
-    Disposable orderbooks2 = orderbooks(exchange, "two");
+//    Disposable orderbooks2 = orderbooks(exchange, "two");
+
+    Disposable forceOrder1 = forceOrders(exchange, CurrencyPair.DASH_USDT);
+    Disposable forceOrder2 = forceOrders(exchange, CurrencyPair.ZEC_USDT);
 
     Thread.sleep(1000000);
 
-    orderbooks2.dispose();
+//    orderbooks2.dispose();
+    forceOrder1.dispose();
+    forceOrder2.dispose();
 
     exchange.disconnect().blockingAwait();
   }
@@ -86,5 +95,15 @@ public class BinanceFutureManualExample {
               );
             },
             throwable -> LOG.error("ERROR in getting order book: ", throwable));
+  }
+
+  private static Disposable forceOrders(StreamingExchange exchange, CurrencyPair pair) {
+    return  ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
+        .getForceOrder(pair)
+        .subscribe(
+            o -> {
+              LOG.info("{} - {}", pair, o);
+            }
+        );
   }
 }

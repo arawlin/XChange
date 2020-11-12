@@ -19,6 +19,7 @@ public class ProductSubscription {
   private final List<CurrencyPair> userTrades;
   private final List<CurrencyPair> orders;
   private final List<Currency> balances;
+  private final List<CurrencyPair> forceOrders;
 
   private ProductSubscription(ProductSubscriptionBuilder builder) {
     this.orderBook = asList(builder.orderBook);
@@ -27,6 +28,7 @@ public class ProductSubscription {
     this.orders = asList(builder.orders);
     this.userTrades = asList(builder.userTrades);
     this.balances = asList(builder.balances);
+    this.forceOrders = asList(builder.forceOrders);
   }
 
   private <T> List<T> asList(Iterable<T> collection) {
@@ -59,6 +61,10 @@ public class ProductSubscription {
     return balances;
   }
 
+  public List<CurrencyPair> getForceOrders() {
+    return forceOrders;
+  }
+
   public boolean isEmpty() {
     return !hasAuthenticated() && !hasUnauthenticated();
   }
@@ -68,7 +74,7 @@ public class ProductSubscription {
   }
 
   public boolean hasUnauthenticated() {
-    return !ticker.isEmpty() || !trades.isEmpty() || !orderBook.isEmpty();
+    return !ticker.isEmpty() || !trades.isEmpty() || !orderBook.isEmpty() || !forceOrders.isEmpty();
   }
 
   public static ProductSubscriptionBuilder create() {
@@ -82,6 +88,7 @@ public class ProductSubscription {
     private final Set<CurrencyPair> userTrades;
     private final Set<CurrencyPair> orders;
     private final Set<Currency> balances;
+    private final Set<CurrencyPair> forceOrders;
 
     private ProductSubscriptionBuilder() {
       orderBook = new HashSet<>();
@@ -90,6 +97,7 @@ public class ProductSubscription {
       orders = new HashSet<>();
       userTrades = new HashSet<>();
       balances = new HashSet<>();
+      forceOrders = new HashSet<>();
     }
 
     public ProductSubscriptionBuilder addOrderbook(CurrencyPair pair) {
@@ -122,6 +130,11 @@ public class ProductSubscription {
       return this;
     }
 
+    public ProductSubscriptionBuilder addForceOrders(CurrencyPair pair) {
+      forceOrders.add(pair);
+      return this;
+    }
+
     public ProductSubscriptionBuilder addAll(CurrencyPair pair) {
       orderBook.add(pair);
       trades.add(pair);
@@ -130,6 +143,7 @@ public class ProductSubscription {
       userTrades.add(pair);
       balances.add(pair.base);
       balances.add(pair.counter);
+      forceOrders.add(pair);
       return this;
     }
 

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.marketdata.*;
+import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 
@@ -49,6 +50,14 @@ public class BinanceFuturesMarketDataServiceRaw
     return decorateApiCall(() -> binance.fundingRate(symbol, startTime, endTime, limit))
         .withRetry(retry("fundingRate"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
+        .call();
+  }
+
+  public List<BinanceOrder> allForceOrders(
+      String symbol, Long startTime, Long endTime, Integer limit) throws IOException {
+    return decorateApiCall(() -> binance.allForceOrders(symbol, startTime, endTime, limit))
+        .withRetry(retry("allForceOrders"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 5)
         .call();
   }
 

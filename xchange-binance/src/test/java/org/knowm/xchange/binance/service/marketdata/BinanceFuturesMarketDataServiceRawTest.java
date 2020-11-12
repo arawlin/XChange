@@ -13,6 +13,7 @@ import org.knowm.xchange.binance.BinanceFuturesExchange;
 import org.knowm.xchange.binance.BinanceFuturesUSDT;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.marketdata.*;
+import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataServiceRaw;
 import org.knowm.xchange.utils.Assert;
 
@@ -57,6 +58,12 @@ public class BinanceFuturesMarketDataServiceRawTest {
   @Test
   public void premiumIndex() throws IOException {
     List<BinanceFuturesPremiumIndex> ls = service.premiumIndexCoin("BTCUSD_PERP", "");
+    Assert.notNull(ls, "");
+  }
+
+  @Test
+  public void allForceOrders() throws IOException {
+    List<BinanceOrder> ls = service.allForceOrders("COMPUSDT", startTime, endTime, 10);
     Assert.notNull(ls, "");
   }
 

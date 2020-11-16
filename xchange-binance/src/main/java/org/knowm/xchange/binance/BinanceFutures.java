@@ -22,9 +22,9 @@ public interface BinanceFutures {
   @Path("v1/fundingRate")
   List<BinanceFuturesFundingRate> fundingRate(
       @QueryParam("symbol") String symbol,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime,
-      @QueryParam("limit") int limit)
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit)
       throws IOException, BinanceException;
 
   @GET
@@ -36,18 +36,19 @@ public interface BinanceFutures {
   @Path("v1/allForceOrders")
   List<BinanceOrder> allForceOrders(
       @QueryParam("symbol") String symbol,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime,
-      @QueryParam("limit") int limit)
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit)
       throws IOException, BinanceException;
 
   @GET
   @Path("v1/aggTrades")
   List<BinanceAggTrades> aggTrades(
       @QueryParam("symbol") String symbol,
-      @QueryParam("fromId") long fromId,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime,
-      @QueryParam("limit") int limit)
+      @QueryParam("fromId") Long fromId,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit)
       throws IOException, BinanceException;
+
 }

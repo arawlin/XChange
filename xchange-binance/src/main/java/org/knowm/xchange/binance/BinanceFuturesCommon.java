@@ -19,9 +19,9 @@ public interface BinanceFuturesCommon {
   List<BinanceFuturesOpenInterest> openInterestHist(
       @QueryParam("symbol") String symbol,
       @QueryParam("period") String period,
-      @QueryParam("limit") int limit,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime)
+      @QueryParam("limit") Integer limit,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime)
       throws IOException, BinanceException;
 
   @GET
@@ -29,9 +29,9 @@ public interface BinanceFuturesCommon {
   List<BinanceTopLongShortAccountRatio> topLongShortAccountRatio(
       @QueryParam("symbol") String symbol,
       @QueryParam("period") String period,
-      @QueryParam("limit") int limit,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime)
+      @QueryParam("limit") Integer limit,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime)
       throws IOException, BinanceException;
 
   @GET
@@ -39,9 +39,9 @@ public interface BinanceFuturesCommon {
   List<BinanceTopLongShortPositionRatio> topLongShortPositionRatio(
       @QueryParam("symbol") String symbol,
       @QueryParam("period") String period,
-      @QueryParam("limit") int limit,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime)
+      @QueryParam("limit") Integer limit,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime)
       throws IOException, BinanceException;
 
   @GET
@@ -49,9 +49,9 @@ public interface BinanceFuturesCommon {
   List<BinanceGlobalLongShortAccountRatio> globalLongShortAccountRatio(
       @QueryParam("symbol") String symbol,
       @QueryParam("period") String period,
-      @QueryParam("limit") int limit,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime)
+      @QueryParam("limit") Integer limit,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime)
       throws IOException, BinanceException;
 
   @GET
@@ -59,8 +59,8 @@ public interface BinanceFuturesCommon {
   List<BinanceTakerLongShortRatio> takerlongshortRatio(
       @QueryParam("symbol") String symbol,
       @QueryParam("period") String period,
-      @QueryParam("limit") int limit,
-      @QueryParam("startTime") long startTime,
-      @QueryParam("endTime") long endTime)
+      @QueryParam("limit") Integer limit,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime)
       throws IOException, BinanceException;
 }

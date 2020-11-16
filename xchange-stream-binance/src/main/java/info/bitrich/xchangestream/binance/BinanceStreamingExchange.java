@@ -8,14 +8,15 @@ import info.bitrich.xchangestream.service.netty.ConnectionStateModel.State;
 import info.bitrich.xchangestream.util.Events;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import java.util.ArrayList;
-import java.util.List;
 import org.knowm.xchange.binance.BinanceAuthenticated;
 import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.binance.service.BinanceMarketDataService;
 import org.knowm.xchange.client.ExchangeRestProxyBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BinanceStreamingExchange extends BinanceExchange implements StreamingExchange {
 
@@ -57,7 +58,7 @@ public class BinanceStreamingExchange extends BinanceExchange implements Streami
    * time.
    *
    * @param args A single `ProductSubscription` to define the subscriptions required to be available
-   *     during this connection.
+   *             during this connection.
    * @return A completable which fulfils once connection is complete.
    */
   @Override
@@ -88,7 +89,7 @@ public class BinanceStreamingExchange extends BinanceExchange implements Streami
       LOG.info("Connecting to authenticated web socket");
       BinanceAuthenticated binance =
           ExchangeRestProxyBuilder.forInterface(
-                  BinanceAuthenticated.class, getExchangeSpecification())
+              BinanceAuthenticated.class, getExchangeSpecification())
               .build();
       userDataChannel =
           new BinanceUserDataChannel(binance, exchangeSpecification.getApiKey(), onApiCall);
@@ -196,8 +197,7 @@ public class BinanceStreamingExchange extends BinanceExchange implements Streami
     String path =
         API_BASE_URI
             + "stream?streams="
-            + BinanceStreamingUtil.buildSubscriptionStreams(
-                subscription, "", orderBookUpdateFrequencyParameter, "");
+            + BinanceStreamingUtil.buildSubscriptionStreams(subscription, "", orderBookUpdateFrequencyParameter, "", "", "");
     return new BinanceStreamingService(path, subscription);
   }
 

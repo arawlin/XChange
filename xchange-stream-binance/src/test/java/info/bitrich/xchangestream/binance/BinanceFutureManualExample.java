@@ -47,8 +47,10 @@ public class BinanceFutureManualExample {
     ProductSubscription subscription =
         ProductSubscription.create()
 //            .addOrderbook(CurrencyPair.OMG_USDT)
-            .addForceOrders(CurrencyPair.DASH_USDT)
-            .addForceOrders(CurrencyPair.ZEC_USDT)
+//            .addForceOrders(CurrencyPair.DASH_USDT)
+//            .addForceOrders(CurrencyPair.ZEC_USDT)
+//            .addTrades(CurrencyPair.ZEC_USDT)
+            .addAggTrades(CurrencyPair.BTC_USDT)
             .build();
 
     exchange.connect(subscription).blockingAwait();
@@ -57,14 +59,34 @@ public class BinanceFutureManualExample {
 
 //    Disposable orderbooks2 = orderbooks(exchange, "two");
 
-    Disposable forceOrder1 = forceOrders(exchange, CurrencyPair.DASH_USDT);
-    Disposable forceOrder2 = forceOrders(exchange, CurrencyPair.ZEC_USDT);
+//    Disposable forceOrder1 = forceOrders(exchange, CurrencyPair.DASH_USDT);
+//    Disposable forceOrder2 = forceOrders(exchange, CurrencyPair.ZEC_USDT);
+
+//    Disposable trades =
+//        exchange
+//            .getStreamingMarketDataService()
+//            .getTrades(CurrencyPair.ZEC_USDT)
+//            .subscribe(
+//                trade -> {
+//                  LOG.info("Trade: {}", trade);
+//                });
+
+    Disposable aggTrades = ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
+        .getAggTrade(CurrencyPair.BTC_USDT)
+        .subscribe(
+            t -> {
+              LOG.info("{}", t);
+            }
+        );
+
+
 
     Thread.sleep(1000000);
 
 //    orderbooks2.dispose();
-    forceOrder1.dispose();
-    forceOrder2.dispose();
+//    forceOrder1.dispose();
+//    forceOrder2.dispose();
+//    trades.dispose();
 
     exchange.disconnect().blockingAwait();
   }
@@ -98,7 +120,7 @@ public class BinanceFutureManualExample {
   }
 
   private static Disposable forceOrders(StreamingExchange exchange, CurrencyPair pair) {
-    return  ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
+    return ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
         .getForceOrder(pair)
         .subscribe(
             o -> {

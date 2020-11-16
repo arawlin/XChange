@@ -13,6 +13,7 @@ import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.BinanceExchangeSpecification;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
+import org.knowm.xchange.binance.dto.marketdata.BinanceAggTrades;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 import org.knowm.xchange.binance.dto.marketdata.BinanceTicker24h;
 import org.knowm.xchange.binance.dto.trade.BinanceForceOrder;
@@ -46,6 +47,14 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
                   BinanceWebsocketTransaction<FutureForceOrderBinanceWebsocketTransaction>>() {
               });
 
+  private static final JavaType AGG_TRADE_TYPE =
+      getObjectMapper()
+          .getTypeFactory()
+          .constructType(
+              new TypeReference<
+                  BinanceWebsocketTransaction<AggTradeBinanceWebSocketTransaction>>() {
+              });
+
   private static JavaType DEPTH_TYPE;
 
   protected final BinanceFuturesMarketDataService marketDataService;
@@ -54,6 +63,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
   private final Map<CurrencyPair, OrderbookSubscription> orderbooks = new HashMap<>();
 
   protected final Map<CurrencyPair, Observable<BinanceForceOrder>> forceOrderSubscriptions = new HashMap<>();
+  protected final Map<CurrencyPair, Observable<BinanceAggTrades>> aggTradeSubscriptions = new HashMap<>();
 
   public BinanceFutureStreamingMarketDataService(
       BinanceStreamingService service,
@@ -98,6 +108,12 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
             currencyPair ->
                 forceOrderSubscriptions.put(
                     currencyPair, triggerObservableBody(forceOrderStream(currencyPair).share())));
+    productSubscription
+        .getAggTrades()
+        .forEach(
+            currencyPair ->
+                aggTradeSubscriptions.put(
+                    currencyPair, triggerObservableBody(aggTradeStream(currencyPair).share())));
   }
 
   private Observable<BinanceForceOrder> forceOrderStream(CurrencyPair currencyPair) {
@@ -106,6 +122,14 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
         .map(this::forceOrderTransaction)
         .filter(transaction -> transaction.getData().getForceOrder().symbol.equals(BinanceAdapters.toSymbol(currencyPair)))
         .map(transaction -> transaction.getData().getForceOrder());
+  }
+
+  private Observable<BinanceAggTrades> aggTradeStream(CurrencyPair currencyPair) {
+    return service
+        .subscribeChannel(channelFromCurrency(currencyPair, "aggTrade"))
+        .map(this::aggTradeTransaction)
+        .filter(transaction -> transaction.getData().getCurrencyPair().equals(currencyPair))
+        .map(transaction -> transaction.getData().getAggTrades());
   }
 
   private final class OrderbookSubscription {
@@ -291,6 +315,15 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
     }
   }
 
+  private BinanceWebsocketTransaction<AggTradeBinanceWebSocketTransaction> aggTradeTransaction(
+      JsonNode node) {
+    try {
+      return mapper.readValue(mapper.treeAsTokens(node), AGG_TRADE_TYPE);
+    } catch (IOException e) {
+      throw new ExchangeException("Unable to parse ticker transaction", e);
+    }
+  }
+
   public Observable<BinanceForceOrder> getForceOrder(CurrencyPair currencyPair, Object... args) {
     if (!service.getProductSubscription().getForceOrders().contains(currencyPair)) {
       throw new UnsupportedOperationException(
@@ -298,6 +331,15 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
     }
 
     return forceOrderSubscriptions.get(currencyPair);
+  }
+
+  public Observable<BinanceAggTrades> getAggTrade(CurrencyPair currencyPair, Object... args) {
+    if (!service.getProductSubscription().getAggTrades().contains(currencyPair)) {
+      throw new UnsupportedOperationException(
+          "Binance exchange only supports up front subscriptions - subscribe at connect time");
+    }
+
+    return aggTradeSubscriptions.get(currencyPair);
   }
 
 }

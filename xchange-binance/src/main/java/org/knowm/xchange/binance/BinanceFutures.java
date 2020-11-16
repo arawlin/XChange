@@ -1,6 +1,7 @@
 package org.knowm.xchange.binance;
 
 import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.marketdata.BinanceAggTrades;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 import org.knowm.xchange.binance.dto.trade.BinanceOrder;
@@ -35,6 +36,16 @@ public interface BinanceFutures {
   @Path("v1/allForceOrders")
   List<BinanceOrder> allForceOrders(
       @QueryParam("symbol") String symbol,
+      @QueryParam("startTime") long startTime,
+      @QueryParam("endTime") long endTime,
+      @QueryParam("limit") int limit)
+      throws IOException, BinanceException;
+
+  @GET
+  @Path("v1/aggTrades")
+  List<BinanceAggTrades> aggTrades(
+      @QueryParam("symbol") String symbol,
+      @QueryParam("fromId") long fromId,
       @QueryParam("startTime") long startTime,
       @QueryParam("endTime") long endTime,
       @QueryParam("limit") int limit)

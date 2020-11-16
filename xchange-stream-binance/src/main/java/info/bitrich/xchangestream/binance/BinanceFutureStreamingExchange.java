@@ -8,8 +8,6 @@ import info.bitrich.xchangestream.service.netty.ConnectionStateModel;
 import info.bitrich.xchangestream.util.Events;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import java.util.ArrayList;
-import java.util.List;
 import org.knowm.xchange.binance.BinanceExchangeSpecification;
 import org.knowm.xchange.binance.BinanceFuturesExchange;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
@@ -17,7 +15,12 @@ import org.knowm.xchange.binance.service.BinanceFuturesMarketDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Created by lin on 2020-11-03. */
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by lin on 2020-11-03.
+ */
 public class BinanceFutureStreamingExchange extends BinanceFuturesExchange
     implements StreamingExchange {
 
@@ -131,8 +134,7 @@ public class BinanceFutureStreamingExchange extends BinanceFuturesExchange
     String path =
         API_BASE_URI
             + "stream?streams="
-            + BinanceStreamingUtil.buildSubscriptionStreams(
-                subscription, "", orderBookUpdateFrequencyParameter, "", "");
+            + BinanceStreamingUtil.buildSubscriptionStreams(subscription, "", orderBookUpdateFrequencyParameter, "", "", "");
     return new BinanceStreamingService(path, subscription);
   }
 }

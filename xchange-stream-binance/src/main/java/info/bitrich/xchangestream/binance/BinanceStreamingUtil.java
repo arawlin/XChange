@@ -14,7 +14,9 @@ public class BinanceStreamingUtil {
             buildSubscriptionStrings(subscription.getTicker(), "ticker", args[0]),
             buildSubscriptionStrings(subscription.getOrderBook(), "depth", args[1]),
             buildSubscriptionStrings(subscription.getTrades(), "trade", args[2]),
-            buildSubscriptionStrings(subscription.getForceOrders(), "forceOrder", args[3]))
+            buildSubscriptionStrings(subscription.getForceOrders(), "forceOrder", args[3]),
+            buildSubscriptionStrings(subscription.getAggTrades(), "aggTrade", args[4])
+        )
         .filter(s -> !s.isEmpty())
         .collect(Collectors.joining("/"));
   }

@@ -125,6 +125,18 @@ public class BinanceFuturesMarketDataServiceRaw
         .call();
   }
 
+  public List<BinanceAggTrades> aggTrades(
+      CurrencyPair pair, Long fromId, Long startTime, Long endTime, Integer limit)
+      throws IOException {
+    return decorateApiCall(
+        () ->
+            binance.aggTrades(
+                BinanceAdapters.toSymbol(pair), fromId, startTime, endTime, limit))
+        .withRetry(retry("aggTrades"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), aggTradesPermits(limit))
+        .call();
+  }
+
   protected int depthPermits(Integer limit) {
     if (limit == null || limit <= 50) {
       return 2;
@@ -137,4 +149,12 @@ public class BinanceFuturesMarketDataServiceRaw
     }
     return 50;
   }
+
+  protected int aggTradesPermits(Integer limit) {
+    if (limit != null && limit > 500) {
+      return 2;
+    }
+    return 1;
+  }
+
 }

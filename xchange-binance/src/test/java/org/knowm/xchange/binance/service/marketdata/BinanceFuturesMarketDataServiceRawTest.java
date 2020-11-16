@@ -15,6 +15,7 @@ import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataServiceRaw;
+import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.utils.Assert;
 
 /** Created by lin on 2020-10-20. */
@@ -105,6 +106,13 @@ public class BinanceFuturesMarketDataServiceRawTest {
   public void takerlongshortRatio() throws IOException {
     List<BinanceTakerLongShortRatio> ls =
         service.takerlongshortRatio("XMRUSDT", KlineInterval.m15, 30, startTime, endTime);
+    Assert.notNull(ls, "");
+  }
+
+  @Test
+  public void aggTrades() throws IOException {
+    List<BinanceAggTrades> ls =
+        service.aggTrades(CurrencyPair.BTC_USDT, 167744990L, startTime, endTime, 30);
     Assert.notNull(ls, "");
   }
 }

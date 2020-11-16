@@ -50,7 +50,8 @@ public class BinanceFutureManualExample {
 //            .addForceOrders(CurrencyPair.DASH_USDT)
 //            .addForceOrders(CurrencyPair.ZEC_USDT)
 //            .addTrades(CurrencyPair.ZEC_USDT)
-            .addAggTrades(CurrencyPair.BTC_USDT)
+//            .addAggTrades(CurrencyPair.BTC_USDT)
+            .addTicker(CurrencyPair.BTC_USDT)
             .build();
 
     exchange.connect(subscription).blockingAwait();
@@ -71,14 +72,19 @@ public class BinanceFutureManualExample {
 //                  LOG.info("Trade: {}", trade);
 //                });
 
-    Disposable aggTrades = ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
-        .getAggTrade(CurrencyPair.BTC_USDT)
-        .subscribe(
-            t -> {
-              LOG.info("{}", t);
-            }
-        );
+//    Disposable aggTrades = ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
+//        .getAggTrade(CurrencyPair.BTC_USDT)
+//        .subscribe(
+//            t -> {
+//              LOG.info("{}", t);
+//            }
+//        );
 
+    Disposable ticker = exchange.getStreamingMarketDataService().getTicker(CurrencyPair.BTC_USDT).subscribe(
+        t -> {
+          LOG.info("{}", t);
+        }
+    );
 
 
     Thread.sleep(1000000);
@@ -87,6 +93,8 @@ public class BinanceFutureManualExample {
 //    forceOrder1.dispose();
 //    forceOrder2.dispose();
 //    trades.dispose();
+//    aggTrades.dispose();
+    ticker.dispose();
 
     exchange.disconnect().blockingAwait();
   }

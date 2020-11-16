@@ -4,11 +4,14 @@ import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LI
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.utils.StreamUtils;
 
 public class BinanceFuturesMarketDataServiceRaw
     extends BinanceFuturesBaseService<BinanceFuturesExchange> {
@@ -135,6 +138,30 @@ public class BinanceFuturesMarketDataServiceRaw
         .withRetry(retry("aggTrades"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), aggTradesPermits(limit))
         .call();
+  }
+
+  public BinanceKline lastKline(CurrencyPair pair, KlineInterval interval) throws IOException {
+    return klines(pair, interval, 1, null, null).stream().collect(StreamUtils.singletonCollector());
+  }
+
+  public List<BinanceKline> klines(CurrencyPair pair, KlineInterval interval) throws IOException {
+    return klines(pair, interval, null, null, null);
+  }
+
+  public List<BinanceKline> klines(
+      CurrencyPair pair, KlineInterval interval, Integer limit, Long startTime, Long endTime)
+      throws IOException {
+    List<Object[]> raw =
+        decorateApiCall(
+            () ->
+                binance.klines(
+                    BinanceAdapters.toSymbol(pair), interval.code(), limit, startTime, endTime))
+            .withRetry(retry("klines"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+    return raw.stream()
+        .map(obj -> new BinanceKline(pair, interval, obj))
+        .collect(Collectors.toList());
   }
 
   protected int depthPermits(Integer limit) {

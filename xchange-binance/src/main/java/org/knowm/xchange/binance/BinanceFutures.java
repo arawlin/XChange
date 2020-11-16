@@ -51,4 +51,14 @@ public interface BinanceFutures {
       @QueryParam("limit") Integer limit)
       throws IOException, BinanceException;
 
+  @GET
+  @Path("v1/klines")
+  List<Object[]> klines(
+      @QueryParam("symbol") String symbol,
+      @QueryParam("interval") String interval,
+      @QueryParam("limit") Integer limit,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime)
+      throws IOException, BinanceException;
+
 }

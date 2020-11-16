@@ -115,4 +115,10 @@ public class BinanceFuturesMarketDataServiceRawTest {
         service.aggTrades(CurrencyPair.BTC_USDT, 167744990L, startTime, endTime, 30);
     Assert.notNull(ls, "");
   }
+
+  @Test
+  public void kline() throws IOException {
+    List<BinanceKline> ls = service.klines(CurrencyPair.BTC_USDT, KlineInterval.h1);
+    Assert.notNull(ls, "");
+  }
 }

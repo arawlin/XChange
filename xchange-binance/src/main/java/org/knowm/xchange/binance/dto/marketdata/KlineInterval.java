@@ -1,8 +1,8 @@
 package org.knowm.xchange.binance.dto.marketdata;
 
-import static java.util.concurrent.TimeUnit.DAYS;
-import static java.util.concurrent.TimeUnit.HOURS;
-import static java.util.concurrent.TimeUnit.MINUTES;
+import java.util.Arrays;
+
+import static java.util.concurrent.TimeUnit.*;
 
 public enum KlineInterval {
   m1("1m", MINUTES.toMillis(1)),
@@ -40,4 +40,9 @@ public enum KlineInterval {
   public String code() {
     return code;
   }
+
+  public static KlineInterval getEnum(String c) {
+    return Arrays.stream(KlineInterval.values()).filter(i -> i.code.equals(c)).findFirst().orElse(null);
+  }
+
 }

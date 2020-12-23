@@ -105,7 +105,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
 
   @Override
   public String placeLimitOrder(LimitOrder limitOrder) throws IOException {
-    TimeInForce tif = timeInForceFromOrder(limitOrder).orElse(TimeInForce.GTC);
+    TimeInForce tif = BinanceAdapters.timeInForceFromOrder(limitOrder).orElse(TimeInForce.GTC);
     OrderType type;
     if (limitOrder.hasFlag(org.knowm.xchange.binance.dto.trade.BinanceOrderFlags.LIMIT_MAKER)) {
       type = OrderType.LIMIT_MAKER;
@@ -123,18 +123,11 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
     // specifies one for a market order, we don't remove it, since Binance might allow
     // it at some point.
     TimeInForce tif =
-        timeInForceFromOrder(order).orElse(order.getLimitPrice() != null ? TimeInForce.GTC : null);
+        BinanceAdapters.timeInForceFromOrder(order).orElse(order.getLimitPrice() != null ? TimeInForce.GTC : null);
 
     OrderType orderType = BinanceAdapters.adaptOrderType(order);
 
     return placeOrder(orderType, order, order.getLimitPrice(), order.getStopPrice(), tif, null, null);
-  }
-
-  private Optional<TimeInForce> timeInForceFromOrder(Order order) {
-    return order.getOrderFlags().stream()
-        .filter(flag -> flag instanceof TimeInForce)
-        .map(flag -> (TimeInForce) flag)
-        .findFirst();
   }
 
   public String placeOrder(
@@ -182,7 +175,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
   public void placeTestOrder(
       OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
     try {
-      TimeInForce tif = timeInForceFromOrder(order).orElse(null);
+      TimeInForce tif = BinanceAdapters.timeInForceFromOrder(order).orElse(null);
       Long recvWindow =
           (Long)
               exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");

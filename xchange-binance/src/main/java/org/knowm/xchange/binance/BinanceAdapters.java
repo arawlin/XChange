@@ -10,6 +10,7 @@ import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
 import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.dto.trade.OrderSide;
 import org.knowm.xchange.binance.dto.trade.OrderStatus;
+import org.knowm.xchange.binance.dto.trade.TimeInForce;
 import org.knowm.xchange.binance.service.BinanceTradeService.BinanceOrderFlags;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -251,4 +252,12 @@ public class BinanceAdapters {
             .collect(Collectors.toList());
     return new DiffOrderBook(null, asks, bids);
   }
+
+  public static Optional<TimeInForce> timeInForceFromOrder(Order order) {
+    return order.getOrderFlags().stream()
+        .filter(flag -> flag instanceof TimeInForce)
+        .map(flag -> (TimeInForce) flag)
+        .findFirst();
+  }
+
 }

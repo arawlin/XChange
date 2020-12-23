@@ -4,6 +4,7 @@ import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataService;
+import org.knowm.xchange.binance.service.BinanceFuturesTradeService;
 import org.knowm.xchange.client.ExchangeRestProxyBuilder;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.exceptions.ExchangeException;
@@ -19,30 +20,21 @@ public class BinanceFuturesExchange extends BaseExchange {
   @Override
   protected void initServices() {
     BinanceFutures binance;
-
     BinanceExchangeSpecification spec = (BinanceExchangeSpecification) getExchangeSpecification();
     if (spec.getFuturesSettleType() == FuturesSettleType.USDT) {
-      binance =
-          ExchangeRestProxyBuilder.forInterface(
-                  BinanceFuturesUSDT.class, getExchangeSpecification())
-              .build();
+      binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesUSDT.class, getExchangeSpecification()).build();
     } else if (spec.getFuturesSettleType() == FuturesSettleType.COIN) {
-      binance =
-          ExchangeRestProxyBuilder.forInterface(
-                  BinanceFuturesCoin.class, getExchangeSpecification())
-              .build();
+      binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCoin.class, getExchangeSpecification()).build();
     } else {
       throw new ExchangeException("Must setFuturesSettleType in BinanceExchangeSpecification.");
     }
 
-    BinanceFuturesCommon binanceCommon =
-        ExchangeRestProxyBuilder.forInterface(
-                BinanceFuturesCommon.class, getExchangeSpecification())
-            .build();
+    BinanceFuturesCommon binanceCommon = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCommon.class, getExchangeSpecification()).build();
 
-    this.marketDataService =
-        new BinanceFuturesMarketDataService(
-            this, binance, binanceCommon, getResilienceRegistries());
+    this.marketDataService = new BinanceFuturesMarketDataService(this, binance, binanceCommon, getResilienceRegistries());
+    this.tradeService = new BinanceFuturesTradeService(this, binance, binanceCommon, getResilienceRegistries());
+    this.timestampFactory = new BinanceFuturesTimestampFactory(binance, getExchangeSpecification().getResilience(), getResilienceRegistries());
+
   }
 
   public SynchronizedValueFactory<Long> getTimestampFactory() {

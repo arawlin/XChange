@@ -1,11 +1,5 @@
 package org.knowm.xchange.binance.service;
 
-import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LIMITER;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.dto.trade.BinanceOrder;
@@ -13,8 +7,13 @@ import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.utils.StreamUtils;
 
-public class BinanceFuturesMarketDataServiceRaw
-    extends BinanceFuturesBaseService<BinanceFuturesExchange> {
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LIMITER;
+
+public class BinanceFuturesMarketDataServiceRaw extends BinanceFuturesBaseService {
 
   protected final BinanceFutures binance;
   protected final BinanceFuturesCommon binanceCommon;
@@ -34,7 +33,7 @@ public class BinanceFuturesMarketDataServiceRaw
 
   public BinanceFuturesPremiumIndex premiumIndexUSDT(CurrencyPair pair) throws IOException {
     return decorateApiCall(
-            () -> ((BinanceFuturesUSDT) binance).premiumIndex(BinanceAdapters.toSymbol(pair)))
+        () -> ((BinanceFuturesUSDT) binance).premiumIndex(BinanceAdapters.toSymbol(pair)))
         .withRetry(retry("premiumIndex"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
@@ -68,7 +67,7 @@ public class BinanceFuturesMarketDataServiceRaw
       String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime)
       throws IOException {
     return decorateApiCall(
-            () -> binanceCommon.openInterestHist(symbol, period.code(), limit, startTime, endTime))
+        () -> binanceCommon.openInterestHist(symbol, period.code(), limit, startTime, endTime))
         .withRetry(retry("openInterestHist"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
@@ -78,9 +77,9 @@ public class BinanceFuturesMarketDataServiceRaw
       String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime)
       throws IOException {
     return decorateApiCall(
-            () ->
-                binanceCommon.topLongShortAccountRatio(
-                    symbol, period.code(), limit, startTime, endTime))
+        () ->
+            binanceCommon.topLongShortAccountRatio(
+                symbol, period.code(), limit, startTime, endTime))
         .withRetry(retry("topLongShortAccountRatio"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
@@ -90,9 +89,9 @@ public class BinanceFuturesMarketDataServiceRaw
       String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime)
       throws IOException {
     return decorateApiCall(
-            () ->
-                binanceCommon.topLongShortPositionRatio(
-                    symbol, period.code(), limit, startTime, endTime))
+        () ->
+            binanceCommon.topLongShortPositionRatio(
+                symbol, period.code(), limit, startTime, endTime))
         .withRetry(retry("topLongShortAccountRatio"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
@@ -102,9 +101,9 @@ public class BinanceFuturesMarketDataServiceRaw
       String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime)
       throws IOException {
     return decorateApiCall(
-            () ->
-                binanceCommon.globalLongShortAccountRatio(
-                    symbol, period.code(), limit, startTime, endTime))
+        () ->
+            binanceCommon.globalLongShortAccountRatio(
+                symbol, period.code(), limit, startTime, endTime))
         .withRetry(retry("topLongShortAccountRatio"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();
@@ -114,8 +113,8 @@ public class BinanceFuturesMarketDataServiceRaw
       String symbol, KlineInterval period, Integer limit, Long startTime, Long endTime)
       throws IOException {
     return decorateApiCall(
-            () ->
-                binanceCommon.takerlongshortRatio(symbol, period.code(), limit, startTime, endTime))
+        () ->
+            binanceCommon.takerlongshortRatio(symbol, period.code(), limit, startTime, endTime))
         .withRetry(retry("topLongShortAccountRatio"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();

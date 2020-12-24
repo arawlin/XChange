@@ -74,6 +74,13 @@ public interface BinanceFutures {
       throws IOException, BinanceException;
 
 
+  @GET
+  @Path("v1/positionSide/dual")
+  BinancePositionSide getPositionSide(
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp)
+      throws IOException, BinanceException;
+
   @POST
   @Path("v1/order")
   BinanceFutureNewOrder newOrder(

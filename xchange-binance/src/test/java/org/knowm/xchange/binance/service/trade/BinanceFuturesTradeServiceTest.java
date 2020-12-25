@@ -119,7 +119,7 @@ public class BinanceFuturesTradeServiceTest {
 
   @Test
   public void getPositionSide() throws IOException {
-    BinancePositionSide p = service.getPositionSide();
+    BinancePositionSide p = service.getPositionSide(null, null);
     Assume.assumeNotNull(p);
   }
 }

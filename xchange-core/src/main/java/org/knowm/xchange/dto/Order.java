@@ -6,10 +6,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
@@ -51,6 +49,8 @@ public abstract class Order implements Serializable {
   private BigDecimal fee;
   /** The leverage to use for margin related to this order */
   private String leverage = null;
+
+  private final Map<IOrderFlags, Object> orderFlagMap = new HashMap<>();
 
   /**
    * @param type Either BID (buying) or ASK (selling)
@@ -296,6 +296,18 @@ public abstract class Order implements Serializable {
 
   public void setLeverage(String leverage) {
     this.leverage = leverage;
+  }
+
+  public void addOrderFlagMap(IOrderFlags flags, Object value) {
+    orderFlagMap.put(flags, value);
+  }
+
+  public Object getOrderFlagMap(IOrderFlags flags) {
+    return orderFlagMap.get(flags);
+  }
+
+  public boolean hasOrderFlagMap(IOrderFlags flags) {
+    return orderFlagMap.containsKey(flags);
   }
 
   @Override

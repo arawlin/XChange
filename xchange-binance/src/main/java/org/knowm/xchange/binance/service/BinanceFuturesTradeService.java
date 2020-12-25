@@ -1,9 +1,8 @@
 package org.knowm.xchange.binance.service;
 
-import org.knowm.xchange.binance.BinanceFutures;
-import org.knowm.xchange.binance.BinanceFuturesCommon;
-import org.knowm.xchange.binance.BinanceFuturesExchange;
-import org.knowm.xchange.binance.dto.trade.OrderType;
+import org.knowm.xchange.binance.*;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.trade.*;
@@ -95,21 +94,57 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
     return null;
   }
 
-  public void placeTestOrder(OrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
-//    try {
-//      TimeInForce tif = BinanceAdapters.timeInForceFromOrder(order).orElse(null);
-//      Long recvWindow =
-//          (Long)
-//              exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
-//
-//      testNewOrder(
-//          order.getCurrencyPair(),
-//          BinanceAdapters.convert(order.getType()),
-//
-//          );
-//    } catch (BinanceException e) {
-//      throw BinanceErrorAdapter.adapt(e);
-//    }
+  public void placeTestOrder(FutureOrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
+    try {
+      BinancePositionSide binancePositionSide = getPositionSide(apiKey, BinanceHmacDigest.createInstance(secretKey));
+      OrderSide orderSide;
+      PositionSide positionSide;
+      Boolean reduceOnly = null;
+      switch (order.getType()) {
+        case ASK:
+          orderSide = OrderSide.SELL;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.SHORT : PositionSide.BOTH;
+          break;
+        case EXIT_ASK:
+          orderSide = OrderSide.BUY;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.SHORT : PositionSide.BOTH;
+          reduceOnly = binancePositionSide.getDualSidePosition() ? null : true;
+          break;
+
+        case BID:
+          orderSide = OrderSide.BUY;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.LONG : PositionSide.BOTH;
+          break;
+        case EXIT_BID:
+          orderSide = OrderSide.SELL;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.LONG : PositionSide.BOTH;
+          reduceOnly = binancePositionSide.getDualSidePosition() ? null : true;
+          break;
+        default:
+          throw new IllegalStateException("Unexpected value: " + order.getType());
+      }
+
+      testNewOrder(
+          order.getCurrencyPair(),
+          orderSide,
+          positionSide,
+          type,
+          reduceOnly,
+          order.getOriginalAmount(),
+          limitPrice,
+          order.getUserReference(),
+          stopPrice,
+          order.hasFlag(BinanceOrderFlags.CLOSE_POSITION),
+          null,
+          null,
+          BinanceAdapters.timeInForceFromOrder(order).orElse(null),
+          (WorkingType) order.getOrderFlagMap(BinanceOrderFlags.WORKING_TYPE),
+          order.hasFlag(BinanceOrderFlags.PRICE_PROTECT),
+          null
+          );
+    } catch (BinanceException e) {
+      throw BinanceErrorAdapter.adapt(e);
+    }
   }
 
 }

@@ -10,6 +10,7 @@ import si.mazi.rescu.SynchronizedValueFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.knowm.xchange.binance.BinanceResilience.*;
 import static org.knowm.xchange.client.ResilienceRegistries.NON_IDEMPOTENTE_CALLS_RETRY_CONFIG_NAME;
@@ -35,13 +36,13 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
     this.specification = (BinanceExchangeSpecification) exchange.getExchangeSpecification();
   }
 
-  public BinancePositionSide getPositionSide() throws IOException, BinanceException {
-    return getPositionSide(this.apiKey, this.signatureCreator);
-  }
-
   public BinancePositionSide getPositionSide(String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
     return decorateApiCall(
-        () -> binance.getPositionSide(getRecvWindow(), getTimestampFactory(), apiKeyAnother, signatureAnother))
+        () -> binance.getPositionSide(
+            getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
         .withRetry(retry("testNewOrder"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();

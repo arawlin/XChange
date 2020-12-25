@@ -1,9 +1,5 @@
 package org.knowm.xchange.binance;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.knowm.xchange.binance.dto.account.AssetDetail;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
@@ -11,7 +7,6 @@ import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.dto.trade.OrderSide;
 import org.knowm.xchange.binance.dto.trade.OrderStatus;
 import org.knowm.xchange.binance.dto.trade.TimeInForce;
-import org.knowm.xchange.binance.service.BinanceTradeService.BinanceOrderFlags;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -25,9 +20,15 @@ import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.StopOrder;
 
-public class BinanceAdapters {
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-  private BinanceAdapters() {}
+public class BinanceAdapters {
 
   public static String toSymbol(CurrencyPair pair) {
     if (pair.equals(CurrencyPair.IOTA_BTC)) {
@@ -57,8 +58,10 @@ public class BinanceAdapters {
   public static OrderSide convert(OrderType type) {
     switch (type) {
       case ASK:
+      case EXIT_BID:
         return OrderSide.SELL;
       case BID:
+      case EXIT_ASK:
         return OrderSide.BUY;
       default:
         throw new RuntimeException("Not supported order type: " + type);
@@ -148,7 +151,7 @@ public class BinanceAdapters {
           order.cummulativeQuoteQty.divide(order.executedQty, MathContext.DECIMAL32));
     }
     if (order.clientOrderId != null) {
-      builder.flag(BinanceOrderFlags.withClientId(order.clientOrderId));
+      builder.userReference(order.clientOrderId);
     }
     return builder.build();
   }

@@ -1,6 +1,5 @@
 package org.knowm.xchange.binance.service;
 
-import lombok.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceAuthenticated;
@@ -12,7 +11,6 @@ import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
-import org.knowm.xchange.dto.Order.IOrderFlags;
 import org.knowm.xchange.dto.marketdata.Trades;
 import org.knowm.xchange.dto.trade.*;
 import org.knowm.xchange.exceptions.ExchangeException;
@@ -27,7 +25,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BinanceTradeService extends BinanceTradeServiceRaw implements TradeService {
@@ -107,7 +104,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
   public String placeLimitOrder(LimitOrder limitOrder) throws IOException {
     TimeInForce tif = BinanceAdapters.timeInForceFromOrder(limitOrder).orElse(TimeInForce.GTC);
     OrderType type;
-    if (limitOrder.hasFlag(org.knowm.xchange.binance.dto.trade.BinanceOrderFlags.LIMIT_MAKER)) {
+    if (limitOrder.hasFlag(BinanceOrderFlags.LIMIT_MAKER)) {
       type = OrderType.LIMIT_MAKER;
       tif = null;
     } else {
@@ -148,7 +145,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
                 tif,
                 order.getOriginalAmount(),
                 limitPrice,
-                getClientOrderId(order),
+                order.getUserReference(),
                 stopPrice,
                 null,
                 apiKey,
@@ -162,7 +159,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
                 tif,
                 order.getOriginalAmount(),
                 limitPrice,
-                getClientOrderId(order),
+                order.getUserReference(),
                 stopPrice,
                 null);
       }
@@ -188,7 +185,7 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
             tif,
             order.getOriginalAmount(),
             limitPrice,
-            getClientOrderId(order),
+            order.getUserReference(),
             stopPrice,
             null,
             apiKey,
@@ -201,27 +198,13 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
             tif,
             order.getOriginalAmount(),
             limitPrice,
-            getClientOrderId(order),
+            order.getUserReference(),
             stopPrice,
             null);
       }
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);
     }
-  }
-
-  private String getClientOrderId(Order order) {
-
-    String clientOrderId = null;
-    for (IOrderFlags flags : order.getOrderFlags()) {
-      if (flags instanceof BinanceOrderFlags) {
-        BinanceOrderFlags bof = (BinanceOrderFlags) flags;
-        if (clientOrderId == null) {
-          clientOrderId = bof.getClientId();
-        }
-      }
-    }
-    return clientOrderId;
   }
 
   @Override
@@ -377,18 +360,4 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
     }
   }
 
-  public interface BinanceOrderFlags extends IOrderFlags {
-
-    static BinanceOrderFlags withClientId(String clientId) {
-      return new ClientIdFlag(clientId);
-    }
-
-    /** Used in fields 'newClientOrderId' */
-    String getClientId();
-  }
-
-  @Value
-  static final class ClientIdFlag implements BinanceOrderFlags {
-    private final String clientId;
-  }
 }

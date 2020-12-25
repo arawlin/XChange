@@ -78,7 +78,9 @@ public interface BinanceFutures {
   @Path("v1/positionSide/dual")
   BinancePositionSide getPositionSide(
       @QueryParam("recvWindow") Long recvWindow,
-      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp)
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
       throws IOException, BinanceException;
 
   @POST

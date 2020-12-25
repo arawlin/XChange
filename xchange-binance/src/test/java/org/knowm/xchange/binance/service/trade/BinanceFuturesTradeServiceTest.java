@@ -97,13 +97,13 @@ public class BinanceFuturesTradeServiceTest {
   public void newOrder() throws IOException {
     BinanceFutureNewOrder o = service.newOrder(
         CurrencyPair.BTC_USDT,
-        OrderSide.BUY,
+        OrderSide.SELL,
         PositionSide.LONG,
         FutureOrderType.LIMIT,
         null,
-        new BigDecimal("0.01"),
+        new BigDecimal("0.005"),
         new BigDecimal("23024.76"),
-        "10000",
+        System.currentTimeMillis() + "",
         null,
         null,
         null,
@@ -117,4 +117,9 @@ public class BinanceFuturesTradeServiceTest {
     Assume.assumeNotNull(o);
   }
 
+  @Test
+  public void getPositionSide() throws IOException {
+    BinancePositionSide p = service.getPositionSide();
+    Assume.assumeNotNull(p);
+  }
 }

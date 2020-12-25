@@ -41,12 +41,11 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
 
   public BinancePositionSide getPositionSide(String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
     return decorateApiCall(
-        () -> binance.getPositionSide(getRecvWindow(), getTimestampFactory(), apiKey, signatureAnother))
+        () -> binance.getPositionSide(getRecvWindow(), getTimestampFactory(), apiKeyAnother, signatureAnother))
         .withRetry(retry("testNewOrder"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
   }
-
 
   public BinanceFutureNewOrder newOrder(
       CurrencyPair pair,

@@ -64,46 +64,6 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
       TimeInForce timeInForce,
       WorkingType workingType,
       Boolean priceProtect,
-      NewOrderRespType newOrderRespType)
-      throws IOException, BinanceException {
-    return newOrder(pair,
-        side,
-        positionSide,
-        type,
-        reduceOnly,
-        quantity,
-        price,
-        newClientOrderId,
-        stopPrice,
-        closePosition,
-        activationPrice,
-        callbackRate,
-        timeInForce,
-        workingType,
-        priceProtect,
-        newOrderRespType,
-        getRecvWindow(),
-        getTimestampFactory(),
-        this.apiKey,
-        this.signatureCreator);
-  }
-
-  public BinanceFutureNewOrder newOrder(
-      CurrencyPair pair,
-      OrderSide side,
-      PositionSide positionSide,
-      FutureOrderType type,
-      Boolean reduceOnly,
-      BigDecimal quantity,
-      BigDecimal price,
-      String newClientOrderId,
-      BigDecimal stopPrice,
-      Boolean closePosition,
-      Boolean activationPrice,
-      Boolean callbackRate,
-      TimeInForce timeInForce,
-      WorkingType workingType,
-      Boolean priceProtect,
       NewOrderRespType newOrderRespType,
       Long recvWindow,
       SynchronizedValueFactory<Long> timestamp,
@@ -129,55 +89,15 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
                 workingType,
                 priceProtect,
                 newOrderRespType,
-                recvWindow,
-                timestamp,
-                apiKeyAnother,
-                signatureAnother))
+                Optional.ofNullable(recvWindow).orElse(getRecvWindow()),
+                Optional.ofNullable(timestamp).orElse(getTimestampFactory()),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
         .withRetry(retry("newOrder", NON_IDEMPOTENTE_CALLS_RETRY_CONFIG_NAME))
         .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
         .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
-  }
-
-  public Object testNewOrder(
-      CurrencyPair pair,
-      OrderSide side,
-      PositionSide positionSide,
-      FutureOrderType type,
-      Boolean reduceOnly,
-      BigDecimal quantity,
-      BigDecimal price,
-      String newClientOrderId,
-      BigDecimal stopPrice,
-      Boolean closePosition,
-      Boolean activationPrice,
-      Boolean callbackRate,
-      TimeInForce timeInForce,
-      WorkingType workingType,
-      Boolean priceProtect,
-      NewOrderRespType newOrderRespType)
-      throws IOException, BinanceException {
-    return testNewOrder(pair,
-        side,
-        positionSide,
-        type,
-        reduceOnly,
-        quantity,
-        price,
-        newClientOrderId,
-        stopPrice,
-        closePosition,
-        activationPrice,
-        callbackRate,
-        timeInForce,
-        workingType,
-        priceProtect,
-        newOrderRespType,
-        getRecvWindow(),
-        getTimestampFactory(),
-        this.apiKey,
-        this.signatureCreator);
   }
 
   public Object testNewOrder(
@@ -221,10 +141,10 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
                 workingType,
                 priceProtect,
                 newOrderRespType,
-                recvWindow,
-                timestamp,
-                apiKeyAnother,
-                signatureAnother))
+                Optional.ofNullable(recvWindow).orElse(getRecvWindow()),
+                Optional.ofNullable(timestamp).orElse(getTimestampFactory()),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
         .withRetry(retry("testNewOrder"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();

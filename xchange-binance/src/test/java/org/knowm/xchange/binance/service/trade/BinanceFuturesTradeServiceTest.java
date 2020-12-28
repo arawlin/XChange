@@ -11,13 +11,16 @@ import org.knowm.xchange.binance.BinanceFuturesUSDT;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.binance.service.BinanceFuturesTradeService;
-import org.knowm.xchange.binance.service.BinanceFuturesTradeServiceRaw;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.Order;
+import org.knowm.xchange.dto.trade.LimitOrder;
+import org.knowm.xchange.dto.trade.StopOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by lin on 2020-10-20.
@@ -87,6 +90,10 @@ public class BinanceFuturesTradeServiceTest {
         TimeInForce.GTC,
         null,
         null,
+        null,
+        null,
+        null,
+        null,
         null
     );
 
@@ -111,6 +118,10 @@ public class BinanceFuturesTradeServiceTest {
         TimeInForce.GTC,
         null,
         null,
+        null,
+        null,
+        null,
+        null,
         null
     );
 
@@ -122,4 +133,34 @@ public class BinanceFuturesTradeServiceTest {
     BinancePositionSide p = service.getPositionSide(null, null);
     Assume.assumeNotNull(p);
   }
+
+  @Test
+  public void placeTestOrderLimit() throws IOException {
+    LimitOrder o = sampleLimitOrder();
+
+    Object obj = service.placeTestOrder(
+        FutureOrderType.LIMIT,
+        o,
+        o.getLimitPrice(),
+        null,
+        null,
+        null
+    );
+    Assume.assumeNotNull(obj);
+  }
+
+  private LimitOrder sampleLimitOrder() throws IOException {
+    LimitOrder o = new LimitOrder(
+        Order.OrderType.BID,
+        new BigDecimal("0.001"),
+        CurrencyPair.BTC_USDT,
+        "",
+        new Date(),
+        new BigDecimal("20000")
+    );
+    o.setUserReference("1234" + System.currentTimeMillis());
+    o.addOrderFlag(TimeInForce.GTC);
+    return o;
+  }
+
 }

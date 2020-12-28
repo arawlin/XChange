@@ -94,7 +94,7 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
     return null;
   }
 
-  public void placeTestOrder(FutureOrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
+  public Object placeTestOrder(FutureOrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
     try {
       BinancePositionSide binancePositionSide = getPositionSide(apiKey, BinanceHmacDigest.createInstance(secretKey));
       OrderSide orderSide;
@@ -124,7 +124,7 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
           throw new IllegalStateException("Unexpected value: " + order.getType());
       }
 
-      testNewOrder(
+      return testNewOrder(
           order.getCurrencyPair(),
           orderSide,
           positionSide,
@@ -140,7 +140,11 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
           BinanceAdapters.timeInForceFromOrder(order).orElse(null),
           (WorkingType) order.getOrderFlagMap(BinanceOrderFlags.WORKING_TYPE),
           order.hasFlag(BinanceOrderFlags.PRICE_PROTECT),
-          null
+          null,
+          null,
+          null,
+          apiKey,
+          BinanceHmacDigest.createInstance(secretKey)
           );
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);

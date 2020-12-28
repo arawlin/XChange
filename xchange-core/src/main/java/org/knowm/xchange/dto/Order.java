@@ -34,7 +34,7 @@ public abstract class Order implements Serializable {
   /** An identifier set by the exchange that uniquely identifies the order */
   private final String id;
   /** An identifier provided by the user on placement that uniquely identifies the order */
-  private final String userReference;
+  private String userReference;
   /** The timestamp on the order according to the exchange's server, null if not provided */
   private final Date timestamp;
   /** Any applicable order flags */
@@ -255,6 +255,10 @@ public abstract class Order implements Serializable {
   public String getUserReference() {
 
     return userReference;
+  }
+
+  public void setUserReference(String userReference) {
+    this.userReference = userReference;
   }
 
   public Date getTimestamp() {

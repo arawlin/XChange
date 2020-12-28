@@ -1,6 +1,5 @@
 package org.knowm.xchange.binance.service;
 
-import org.knowm.xchange.Exchange;
 import org.knowm.xchange.binance.BinanceFuturesExchange;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.service.BaseResilientExchangeService;

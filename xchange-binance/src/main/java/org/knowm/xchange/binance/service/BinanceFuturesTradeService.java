@@ -41,17 +41,17 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
 
   @Override
   public String placeMarketOrder(MarketOrder marketOrder) throws IOException {
-    return null;
+    return placeOrder(FutureOrderType.MARKET, marketOrder, null, null, null, null);
   }
 
   @Override
   public String placeLimitOrder(LimitOrder limitOrder) throws IOException {
-    return null;
+    return placeOrder(FutureOrderType.LIMIT, limitOrder, limitOrder.getLimitPrice(), null, null, null);
   }
 
   @Override
   public String placeStopOrder(StopOrder stopOrder) throws IOException {
-    return null;
+    return placeOrder(BinanceAdapters.adaptFutureOrderType(stopOrder), stopOrder, stopOrder.getLimitPrice(), stopOrder.getStopPrice(), null, null);
   }
 
   @Override
@@ -92,6 +92,64 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
   @Override
   public Collection<Order> getOrder(OrderQueryParams... orderQueryParams) throws IOException {
     return null;
+  }
+
+  public String placeOrder(FutureOrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
+    try {
+      BinancePositionSide binancePositionSide = getPositionSide(apiKey, BinanceHmacDigest.createInstance(secretKey));
+      OrderSide orderSide;
+      PositionSide positionSide;
+      Boolean reduceOnly = null;
+      switch (order.getType()) {
+        case ASK:
+          orderSide = OrderSide.SELL;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.SHORT : PositionSide.BOTH;
+          break;
+        case EXIT_ASK:
+          orderSide = OrderSide.BUY;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.SHORT : PositionSide.BOTH;
+          reduceOnly = binancePositionSide.getDualSidePosition() ? null : true;
+          break;
+
+        case BID:
+          orderSide = OrderSide.BUY;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.LONG : PositionSide.BOTH;
+          break;
+        case EXIT_BID:
+          orderSide = OrderSide.SELL;
+          positionSide = binancePositionSide.getDualSidePosition() ? PositionSide.LONG : PositionSide.BOTH;
+          reduceOnly = binancePositionSide.getDualSidePosition() ? null : true;
+          break;
+        default:
+          throw new IllegalStateException("Unexpected value: " + order.getType());
+      }
+
+      BinanceFutureNewOrder o = newOrder(
+          order.getCurrencyPair(),
+          orderSide,
+          positionSide,
+          type,
+          reduceOnly,
+          order.getOriginalAmount(),
+          limitPrice,
+          order.getUserReference(),
+          stopPrice,
+          order.hasFlag(BinanceOrderFlags.CLOSE_POSITION),
+          null,
+          null,
+          BinanceAdapters.timeInForceFromOrder(order).orElse(null),
+          (WorkingType) order.getOrderFlagMap(BinanceOrderFlags.WORKING_TYPE),
+          order.hasFlag(BinanceOrderFlags.PRICE_PROTECT),
+          null,
+          null,
+          null,
+          apiKey,
+          BinanceHmacDigest.createInstance(secretKey)
+      );
+      return o.orderId + "";
+    } catch (BinanceException e) {
+      throw BinanceErrorAdapter.adapt(e);
+    }
   }
 
   public Object placeTestOrder(FutureOrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
@@ -145,7 +203,7 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
           null,
           apiKey,
           BinanceHmacDigest.createInstance(secretKey)
-          );
+      );
     } catch (BinanceException e) {
       throw BinanceErrorAdapter.adapt(e);
     }

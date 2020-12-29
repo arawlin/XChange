@@ -14,6 +14,7 @@ import org.knowm.xchange.binance.service.BinanceFuturesTradeService;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.trade.LimitOrder;
+import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.StopOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class BinanceFuturesTradeServiceTest {
   static String secretKey;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     apiKey = System.getProperty("apiKey");
     secretKey = System.getProperty("secretKey");
 
@@ -149,17 +150,73 @@ public class BinanceFuturesTradeServiceTest {
     Assume.assumeNotNull(obj);
   }
 
-  private LimitOrder sampleLimitOrder() throws IOException {
+  @Test
+  public void placeOrderLimit() throws IOException {
+    LimitOrder o = sampleLimitOrder();
+
+    String i = service.placeLimitOrder(o);
+    Assume.assumeNotNull(i);
+  }
+
+  @Test
+  public void placeOrderMarket() throws IOException {
+    MarketOrder o = sampleMarketOrder();
+
+    String i = service.placeMarketOrder(o);
+    Assume.assumeNotNull(i);
+  }
+
+  @Test
+  public void placeOrderStop() throws IOException {
+    StopOrder o = sampleStopOrder();
+
+    String i = service.placeStopOrder(o);
+    Assume.assumeNotNull(i);
+  }
+
+  private LimitOrder sampleLimitOrder() {
     LimitOrder o = new LimitOrder(
         Order.OrderType.BID,
-        new BigDecimal("0.001"),
+//        Order.OrderType.EXIT_BID,
+//        Order.OrderType.ASK,
+//        Order.OrderType.EXIT_ASK,
+        new BigDecimal("0.01"),
+        CurrencyPair.BTC_USDT,
+        "",
+        new Date(),
+        new BigDecimal("30000")
+    );
+    o.setUserReference("1234" + System.currentTimeMillis());
+    o.addOrderFlag(TimeInForce.GTC);
+    return o;
+  }
+
+  private MarketOrder sampleMarketOrder() {
+    MarketOrder o = new MarketOrder(
+        Order.OrderType.EXIT_BID,
+        new BigDecimal("0.002"),
+        CurrencyPair.BTC_USDT
+    );
+    o.setUserReference("1234" + System.currentTimeMillis());
+    return o;
+  }
+
+  private StopOrder sampleStopOrder() {
+    StopOrder o = new StopOrder(
+        Order.OrderType.EXIT_ASK,
+        new BigDecimal("0.002"),
         CurrencyPair.BTC_USDT,
         "",
         new Date(),
         new BigDecimal("20000")
     );
+//    o.setLimitPrice(new BigDecimal("20001"));
+    o.setIntention(StopOrder.Intention.TAKE_PROFIT);
     o.setUserReference("1234" + System.currentTimeMillis());
-    o.addOrderFlag(TimeInForce.GTC);
+
+    o.addOrderFlagMap(BinanceOrderFlags.WORKING_TYPE, WorkingType.MARK_PRICE);
+    o.addOrderFlag(BinanceOrderFlags.PRICE_PROTECT);
+
     return o;
   }
 

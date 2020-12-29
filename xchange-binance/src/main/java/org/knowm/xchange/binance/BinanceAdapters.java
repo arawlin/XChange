@@ -3,10 +3,7 @@ package org.knowm.xchange.binance;
 import org.knowm.xchange.binance.dto.account.AssetDetail;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.OrderSide;
-import org.knowm.xchange.binance.dto.trade.OrderStatus;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
+import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
@@ -227,6 +224,26 @@ public class BinanceAdapters {
         return order.getLimitPrice() == null
             ? org.knowm.xchange.binance.dto.trade.OrderType.TAKE_PROFIT
             : org.knowm.xchange.binance.dto.trade.OrderType.TAKE_PROFIT_LIMIT;
+      default:
+        throw new IllegalStateException("Unexpected value: " + order.getIntention());
+    }
+  }
+
+  public static FutureOrderType adaptFutureOrderType(StopOrder order) {
+
+    if (order.getIntention() == null) {
+      throw new IllegalArgumentException("Missing intention");
+    }
+
+    switch (order.getIntention()) {
+      case STOP_LOSS:
+        return order.getLimitPrice() == null
+            ? FutureOrderType.STOP_MARKET
+            : FutureOrderType.STOP;
+      case TAKE_PROFIT:
+        return order.getLimitPrice() == null
+            ? FutureOrderType.TAKE_PROFIT_MARKET
+            : FutureOrderType.TAKE_PROFIT;
       default:
         throw new IllegalStateException("Unexpected value: " + order.getIntention());
     }

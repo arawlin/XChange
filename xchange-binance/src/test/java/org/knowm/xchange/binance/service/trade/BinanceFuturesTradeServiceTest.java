@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by lin on 2020-10-20.
@@ -67,6 +68,12 @@ public class BinanceFuturesTradeServiceTest {
     service = (BinanceFuturesTradeService) exchange.getTradeService();
 
     timestampFactory = (BinanceFuturesTimestampFactory) exchange.getTimestampFactory();
+  }
+
+  @Test
+  public void testOpenOrders() throws IOException {
+    List<BinanceFutureOrder> ls = service.openOrders("BTCUSDT", "", null, null, null, null);
+    Assume.assumeNotNull(ls);
   }
 
   @Test

@@ -10,6 +10,7 @@ import si.mazi.rescu.SynchronizedValueFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.knowm.xchange.binance.BinanceResilience.*;
@@ -148,6 +149,32 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
         .withRetry(retry("testNewOrder"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
+  }
+
+  public List<BinanceFutureOrder> openOrders(
+      String symbol,
+      String pair,
+      Long recvWindow,
+      SynchronizedValueFactory<Long> timestamp,
+      String apiKeyAnother,
+      ParamsDigest signatureAnother
+  ) throws BinanceException, IOException {
+    return decorateApiCall(
+        () ->
+            binance.openOrders(
+                symbol,
+                pair,
+                Optional.ofNullable(recvWindow).orElse(getRecvWindow()),
+                Optional.ofNullable(timestamp).orElse(getTimestampFactory()),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("openOrders"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), openOrdersPermits(symbol))
+        .call();
+  }
+
+  protected int openOrdersPermits(String symbol) {
+    return symbol != null ? 1 : 5;
   }
 
 }

@@ -6,6 +6,7 @@ import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.trade.*;
+import org.knowm.xchange.exceptions.NotYetImplementedForExchangeException;
 import org.knowm.xchange.service.trade.TradeService;
 import org.knowm.xchange.service.trade.params.CancelOrderParams;
 import org.knowm.xchange.service.trade.params.TradeHistoryParams;
@@ -31,12 +32,12 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
 
   @Override
   public OpenOrders getOpenOrders() throws IOException {
-    return null;
+    throw new NotYetImplementedForExchangeException("Use raw service!");
   }
 
   @Override
   public OpenOrders getOpenOrders(OpenOrdersParams params) throws IOException {
-    return null;
+    throw new NotYetImplementedForExchangeException("Use raw service!");
   }
 
   @Override

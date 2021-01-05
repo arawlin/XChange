@@ -57,42 +57,42 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
 
   @Override
   public String changeOrder(LimitOrder limitOrder) throws IOException {
-    return null;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   @Override
   public boolean cancelOrder(String orderId) throws IOException {
-    return false;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   @Override
   public boolean cancelOrder(CancelOrderParams orderParams) throws IOException {
-    return false;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   @Override
   public UserTrades getTradeHistory(TradeHistoryParams params) throws IOException {
-    return null;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   @Override
   public TradeHistoryParams createTradeHistoryParams() {
-    return null;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   @Override
   public OpenOrdersParams createOpenOrdersParams() {
-    return null;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   @Override
   public Collection<Order> getOrder(String... orderIds) throws IOException {
-    return null;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   @Override
   public Collection<Order> getOrder(OrderQueryParams... orderQueryParams) throws IOException {
-    return null;
+    throw new NotYetImplementedForExchangeException("use raw");
   }
 
   public String placeOrder(FutureOrderType type, Order order, BigDecimal limitPrice, BigDecimal stopPrice, String apiKey, String secretKey) throws IOException {
@@ -141,8 +141,6 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
           BinanceAdapters.timeInForceFromOrder(order).orElse(null),
           (WorkingType) order.getOrderFlagMap(BinanceOrderFlags.WORKING_TYPE),
           order.hasFlag(BinanceOrderFlags.PRICE_PROTECT),
-          null,
-          null,
           null,
           apiKey,
           BinanceHmacDigest.createInstance(secretKey)
@@ -199,8 +197,6 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
           BinanceAdapters.timeInForceFromOrder(order).orElse(null),
           (WorkingType) order.getOrderFlagMap(BinanceOrderFlags.WORKING_TYPE),
           order.hasFlag(BinanceOrderFlags.PRICE_PROTECT),
-          null,
-          null,
           null,
           apiKey,
           BinanceHmacDigest.createInstance(secretKey)

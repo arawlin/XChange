@@ -2,6 +2,7 @@ package org.knowm.xchange.binance.service;
 
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -206,8 +207,44 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
     return (Integer) res.get("code") == 200;
   }
 
+  public List<BinanceFutureOrder> allOrders(
+      String symbol,
+      String pair,
+      Long orderId,
+      Long startTime,
+      Long endTime,
+      Integer limit,
+      String apiKeyAnother,
+      ParamsDigest signatureAnother)
+      throws IOException, BinanceException {
+    return decorateApiCall(
+        () ->
+            binance.allOrders(
+                symbol,
+                pair,
+                orderId,
+                startTime,
+                endTime,
+                limit,
+                getRecvWindow(),
+                getTimestampFactory(),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("allOrders"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), allOrdersPermits(pair))
+        .call();
+  }
+
   protected int openOrdersPermits(String symbol) {
     return symbol != null ? 1 : 5;
   }
 
+  protected int allOrdersPermits(String pair) {
+    if (specification.getFuturesSettleType() == FuturesSettleType.USDT) {
+      return 5;
+    } else if (specification.getFuturesSettleType() == FuturesSettleType.COIN) {
+      return pair == null ? 20 : 40;
+    }
+    return 5;
+  }
 }

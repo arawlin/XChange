@@ -167,4 +167,19 @@ public interface BinanceFutures {
       @QueryParam(SIGNATURE) ParamsDigest signature)
       throws IOException, BinanceException;
 
+  @GET
+  @Path("v1/allOrders")
+  List<BinanceFutureOrder> allOrders(
+      @QueryParam("symbol") String symbol,
+      @QueryParam("pair") String pair,
+      @QueryParam("orderId") Long orderId,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit,
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
 }

@@ -28,6 +28,7 @@ public final class BinanceFutureOrder {
   public final PositionSide positionSide;
   public final TimeInForce timeInForce;
   public final FutureOrderType type;
+  public final FutureOrderType origType;
   public final OrderSide side;
   public final BigDecimal icebergQty;
   public final long time;
@@ -55,6 +56,7 @@ public final class BinanceFutureOrder {
       @JsonProperty("positionSide") PositionSide positionSide,
       @JsonProperty("timeInForce") TimeInForce timeInForce,
       @JsonProperty("type") FutureOrderType type,
+      @JsonProperty("origType") FutureOrderType origType,
       @JsonProperty("side") OrderSide side,
       @JsonProperty("icebergQty") BigDecimal icebergQty,
       @JsonProperty("time") long time,
@@ -81,6 +83,7 @@ public final class BinanceFutureOrder {
     this.positionSide = positionSide;
     this.timeInForce = timeInForce;
     this.type = type;
+    this.origType = origType;
     this.side = side;
     this.icebergQty = icebergQty;
     this.time = time;

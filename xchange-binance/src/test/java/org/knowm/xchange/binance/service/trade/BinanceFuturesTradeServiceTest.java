@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -235,5 +236,18 @@ public class BinanceFuturesTradeServiceTest {
   public void cancelAllOpenOrders() throws IOException {
     boolean isSuccess = service.cancelAllOpenOrders("BTCUSDT", null, null);
     Assume.assumeTrue(isSuccess);
+  }
+
+  @Test
+  public void allOrders() throws IOException {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    Long endTime = c.getTimeInMillis();
+
+    c.add(Calendar.DATE, -1);
+    Long startTime = c.getTimeInMillis();
+
+    List<BinanceFutureOrder> ls = service.allOrders("BTCUSDT", null, null, startTime, endTime, null, null, null);
+    Assume.assumeNotNull(ls);
   }
 }

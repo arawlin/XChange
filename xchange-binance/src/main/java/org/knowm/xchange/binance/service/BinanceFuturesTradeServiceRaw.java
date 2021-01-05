@@ -10,6 +10,7 @@ import si.mazi.rescu.ParamsDigest;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.knowm.xchange.binance.BinanceResilience.*;
@@ -164,6 +165,45 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
         .withRetry(retry("openOrders"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), openOrdersPermits(symbol))
         .call();
+  }
+
+  public BinanceFutureOrder cancelOrder(
+      String symbol,
+      Long orderId,
+      String origClientOrderId,
+      String apiKeyAnother,
+      ParamsDigest signatureAnother
+  ) throws IOException, BinanceException {
+    return decorateApiCall(
+        () ->
+            binance.cancelOrder(
+                symbol,
+                orderId,
+                origClientOrderId,
+                getRecvWindow(),
+                getTimestampFactory(),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("cancelOrder"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+  }
+
+  public boolean cancelAllOpenOrders(String symbol, String apiKeyAnother, ParamsDigest signatureAnother)
+      throws IOException, BinanceException {
+    Map<String, Object> res = decorateApiCall(
+        () ->
+            binance.cancelAllOpenOrders(
+                symbol,
+                getRecvWindow(),
+                getTimestampFactory(),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("cancelAllOpenOrders"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+
+    return (Integer) res.get("code") == 200;
   }
 
   protected int openOrdersPermits(String symbol) {

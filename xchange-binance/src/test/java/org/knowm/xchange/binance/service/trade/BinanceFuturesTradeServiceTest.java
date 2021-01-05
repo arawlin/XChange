@@ -206,7 +206,8 @@ public class BinanceFuturesTradeServiceTest {
 
   private StopOrder sampleStopOrder() {
     StopOrder o = new StopOrder(
-        Order.OrderType.EXIT_ASK,
+        Order.OrderType.EXIT_BID,
+//        Order.OrderType.EXIT_ASK,
         new BigDecimal("0.002"),
         CurrencyPair.BTC_USDT,
         "",
@@ -214,7 +215,8 @@ public class BinanceFuturesTradeServiceTest {
         new BigDecimal("20000")
     );
 //    o.setLimitPrice(new BigDecimal("20001"));
-    o.setIntention(StopOrder.Intention.TAKE_PROFIT);
+    o.setIntention(StopOrder.Intention.STOP_LOSS);
+//    o.setIntention(StopOrder.Intention.TAKE_PROFIT);
     o.setUserReference("1234" + System.currentTimeMillis());
 
     o.addOrderFlagMap(BinanceOrderFlags.WORKING_TYPE, WorkingType.MARK_PRICE);
@@ -223,4 +225,15 @@ public class BinanceFuturesTradeServiceTest {
     return o;
   }
 
+  @Test
+  public void cancelOrder() throws IOException {
+    BinanceFutureOrder o = service.cancelOrder("BTCUSDT", 2601551060L, null, null, null);
+    Assume.assumeNotNull(o);
+  }
+
+  @Test
+  public void cancelAllOpenOrders() throws IOException {
+    boolean isSuccess = service.cancelAllOpenOrders("BTCUSDT", null, null);
+    Assume.assumeTrue(isSuccess);
+  }
 }

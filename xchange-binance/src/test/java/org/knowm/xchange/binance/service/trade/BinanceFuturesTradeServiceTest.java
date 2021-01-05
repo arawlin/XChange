@@ -72,7 +72,7 @@ public class BinanceFuturesTradeServiceTest {
 
   @Test
   public void testOpenOrders() throws IOException {
-    List<BinanceFutureOrder> ls = service.openOrders("BTCUSDT", "", null, null, null, null);
+    List<BinanceFutureOrder> ls = service.openOrders("BTCUSDT", "", null, null);
     Assume.assumeNotNull(ls);
   }
 
@@ -100,8 +100,6 @@ public class BinanceFuturesTradeServiceTest {
         null,
         null,
         null,
-        null,
-        null,
         null
     );
 
@@ -124,8 +122,6 @@ public class BinanceFuturesTradeServiceTest {
         null,
         null,
         TimeInForce.GTC,
-        null,
-        null,
         null,
         null,
         null,

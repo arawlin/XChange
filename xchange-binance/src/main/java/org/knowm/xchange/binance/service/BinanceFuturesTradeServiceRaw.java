@@ -6,7 +6,6 @@ import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 import si.mazi.rescu.ParamsDigest;
-import si.mazi.rescu.SynchronizedValueFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -66,8 +65,6 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
       WorkingType workingType,
       Boolean priceProtect,
       NewOrderRespType newOrderRespType,
-      Long recvWindow,
-      SynchronizedValueFactory<Long> timestamp,
       String apiKeyAnother,
       ParamsDigest signatureAnother)
       throws IOException, BinanceException {
@@ -90,8 +87,8 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
                 workingType,
                 priceProtect,
                 newOrderRespType,
-                Optional.ofNullable(recvWindow).orElse(getRecvWindow()),
-                Optional.ofNullable(timestamp).orElse(getTimestampFactory()),
+                getRecvWindow(),
+                getTimestampFactory(),
                 Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
                 Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
         .withRetry(retry("newOrder", NON_IDEMPOTENTE_CALLS_RETRY_CONFIG_NAME))
@@ -118,8 +115,6 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
       WorkingType workingType,
       Boolean priceProtect,
       NewOrderRespType newOrderRespType,
-      Long recvWindow,
-      SynchronizedValueFactory<Long> timestamp,
       String apiKeyAnother,
       ParamsDigest signatureAnother)
       throws IOException, BinanceException {
@@ -142,8 +137,8 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
                 workingType,
                 priceProtect,
                 newOrderRespType,
-                Optional.ofNullable(recvWindow).orElse(getRecvWindow()),
-                Optional.ofNullable(timestamp).orElse(getTimestampFactory()),
+                getRecvWindow(),
+                getTimestampFactory(),
                 Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
                 Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
         .withRetry(retry("testNewOrder"))
@@ -154,8 +149,6 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
   public List<BinanceFutureOrder> openOrders(
       String symbol,
       String pair,
-      Long recvWindow,
-      SynchronizedValueFactory<Long> timestamp,
       String apiKeyAnother,
       ParamsDigest signatureAnother
   ) throws BinanceException, IOException {
@@ -164,8 +157,8 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
             binance.openOrders(
                 symbol,
                 pair,
-                Optional.ofNullable(recvWindow).orElse(getRecvWindow()),
-                Optional.ofNullable(timestamp).orElse(getTimestampFactory()),
+                getRecvWindow(),
+                getTimestampFactory(),
                 Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
                 Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
         .withRetry(retry("openOrders"))

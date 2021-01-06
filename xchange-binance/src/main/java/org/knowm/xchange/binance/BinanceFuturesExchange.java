@@ -3,6 +3,7 @@ package org.knowm.xchange.binance;
 import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
+import org.knowm.xchange.binance.service.BinanceFuturesAccountService;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataService;
 import org.knowm.xchange.binance.service.BinanceFuturesTradeService;
 import org.knowm.xchange.client.ExchangeRestProxyBuilder;
@@ -33,6 +34,7 @@ public class BinanceFuturesExchange extends BaseExchange {
 
     this.marketDataService = new BinanceFuturesMarketDataService(this, binance, binanceCommon, getResilienceRegistries());
     this.tradeService = new BinanceFuturesTradeService(this, binance, binanceCommon, getResilienceRegistries());
+    this.accountService = new BinanceFuturesAccountService(this, binance, binanceCommon, getResilienceRegistries());
     this.timestampFactory = new BinanceFuturesTimestampFactory(binance, getExchangeSpecification().getResilience(), getResilienceRegistries());
 
   }

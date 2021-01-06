@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.account.BinanceFutureAccount;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesPremiumIndex;
 import org.knowm.xchange.binance.dto.trade.BinanceFuturePositionRisk;
 import si.mazi.rescu.ParamsDigest;
@@ -33,5 +34,15 @@ public interface BinanceFuturesCoin extends BinanceFutures {
       @HeaderParam(X_MBX_APIKEY) String apiKey,
       @QueryParam(SIGNATURE) ParamsDigest signature)
       throws IOException, BinanceException;
+
+  @GET
+  @Path("v1/account")
+  BinanceFutureAccount accountInfo(
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
 
 }

@@ -15,20 +15,12 @@ import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LI
 
 public class BinanceFuturesMarketDataServiceRaw extends BinanceFuturesBaseService {
 
-  protected final BinanceFutures binance;
-  protected final BinanceFuturesCommon binanceCommon;
-  protected final BinanceExchangeSpecification specification;
-
   protected BinanceFuturesMarketDataServiceRaw(
       BinanceFuturesExchange exchange,
       BinanceFutures binance,
       BinanceFuturesCommon binanceCommon,
       ResilienceRegistries resilienceRegistries) {
-    super(exchange, resilienceRegistries);
-
-    this.binance = binance;
-    this.binanceCommon = binanceCommon;
-    this.specification = (BinanceExchangeSpecification) exchange.getExchangeSpecification();
+    super(exchange, binance, binanceCommon, resilienceRegistries);
   }
 
   public BinanceFuturesPremiumIndex premiumIndexUSDT(CurrencyPair pair) throws IOException {

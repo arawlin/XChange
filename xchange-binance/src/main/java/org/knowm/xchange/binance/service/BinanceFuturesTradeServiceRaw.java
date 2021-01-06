@@ -22,20 +22,12 @@ import static org.knowm.xchange.client.ResilienceRegistries.NON_IDEMPOTENTE_CALL
  */
 public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
 
-  protected final BinanceFutures binance;
-  protected final BinanceFuturesCommon binanceCommon;
-  protected final BinanceExchangeSpecification specification;
-
   protected BinanceFuturesTradeServiceRaw(
       BinanceFuturesExchange exchange,
       BinanceFutures binance,
       BinanceFuturesCommon binanceCommon,
       ResilienceRegistries resilienceRegistries) {
-    super(exchange, resilienceRegistries);
-
-    this.binance = binance;
-    this.binanceCommon = binanceCommon;
-    this.specification = (BinanceExchangeSpecification) exchange.getExchangeSpecification();
+    super(exchange, binance, binanceCommon, resilienceRegistries);
   }
 
   public BinancePositionSide getPositionSide(String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {

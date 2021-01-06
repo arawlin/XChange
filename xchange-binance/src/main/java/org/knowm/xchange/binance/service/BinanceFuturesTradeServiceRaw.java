@@ -227,6 +227,41 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
         .call();
   }
 
+  public List<BinanceFuturePositionRisk> positionRisk(
+      String symbol,
+      String pair,
+      String apiKeyAnother,
+      ParamsDigest signatureAnother)
+      throws IOException, BinanceException {
+    if (futuresSettleType == FuturesSettleType.USDT) {
+      return decorateApiCall(
+          () ->
+              ((BinanceFuturesUSDT) binance).positionRisk(
+                  symbol,
+                  getRecvWindow(),
+                  getTimestampFactory(),
+                  Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                  Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+          .withRetry(retry("positionRisk"))
+          .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+          .call();
+    } else if (futuresSettleType == FuturesSettleType.USDT) {
+      return decorateApiCall(
+          () ->
+              ((BinanceFuturesCoin) binance).positionRisk(
+                  symbol,
+                  pair,
+                  getRecvWindow(),
+                  getTimestampFactory(),
+                  Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                  Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+          .withRetry(retry("positionRisk"))
+          .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+          .call();
+    }
+    return null;
+  }
+
   protected int openOrdersPermits(String symbol) {
     return symbol != null ? 1 : 5;
   }

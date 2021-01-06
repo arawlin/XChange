@@ -250,4 +250,10 @@ public class BinanceFuturesTradeServiceTest {
     List<BinanceFutureOrder> ls = service.allOrders("BTCUSDT", null, null, startTime, endTime, null, null, null);
     Assume.assumeNotNull(ls);
   }
+
+  @Test
+  public void positionRisk() throws IOException {
+    List<BinanceFuturePositionRisk> ls = service.positionRisk("BTCUSDT", null, null, null);
+    Assume.assumeNotNull(ls);
+  }
 }

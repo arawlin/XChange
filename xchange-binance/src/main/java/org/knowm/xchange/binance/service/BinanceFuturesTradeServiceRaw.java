@@ -245,7 +245,7 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
           .withRetry(retry("positionRisk"))
           .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
           .call();
-    } else if (futuresSettleType == FuturesSettleType.USDT) {
+    } else if (futuresSettleType == FuturesSettleType.COIN) {
       return decorateApiCall(
           () ->
               ((BinanceFuturesCoin) binance).positionRisk(

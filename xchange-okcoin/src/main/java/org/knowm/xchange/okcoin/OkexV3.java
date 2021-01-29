@@ -405,6 +405,14 @@ public interface OkexV3 {
       @QueryParam("limit") Integer limit)
       throws IOException, OkexException;
 
+  @GET
+  @Path("/futures/v3/instruments/{instrument_id}/book")
+  OkexFutureOrderBook getFuturesOrderBook(
+      @PathParam("instrument_id") String instrumentId,
+      @QueryParam("size") Integer size,
+      @QueryParam("depth") String depth
+  ) throws IOException, OkexException;
+
   /**
    * ******************************** Perpetual SWAP Trading API *********************************
    */
@@ -519,6 +527,14 @@ public interface OkexV3 {
       @QueryParam("to") String to,
       @QueryParam("limit") Integer limit)
       throws IOException, OkexException;
+
+  @GET
+  @Path("/swap/v3/instruments/{instrument_id}/depth")
+  OkexFutureOrderBook getSwapOrderBook(
+      @PathParam("instrument_id") String instrumentId,
+      @QueryParam("size") Integer size,
+      @QueryParam("depth") String depth
+  ) throws IOException, OkexException;
 
   /**
    * ******************************* Margin Trading API *********************************

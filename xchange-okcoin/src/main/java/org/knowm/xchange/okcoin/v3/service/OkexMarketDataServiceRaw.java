@@ -3,6 +3,8 @@ package org.knowm.xchange.okcoin.v3.service;
 import org.knowm.xchange.okcoin.OkexExchangeV3;
 import org.knowm.xchange.okcoin.v3.dto.marketdata.*;
 
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,6 +35,10 @@ public class OkexMarketDataServiceRaw extends OkexBaseService {
     return okex.getAllFutureTickers();
   }
 
+  public OkexFutureOrderBook getFuturesOrderBook(String instrumentId, Integer size, String depth) throws IOException {
+    return okex.getFuturesOrderBook(instrumentId, size, depth);
+  }
+
   public List<OkexSwapInstrument> getAllSwapInstruments() throws IOException {
     return okex.getAllSwapInstruments();
   }
@@ -40,4 +46,9 @@ public class OkexMarketDataServiceRaw extends OkexBaseService {
   public List<OkexSwapTicker> getAllSwapTickers() throws IOException {
     return okex.getAllSwapTickers();
   }
+
+  public OkexFutureOrderBook getSwapOrderBook(String instrumentId, Integer size, String depth) throws IOException {
+    return okex.getSwapOrderBook(instrumentId, size, depth);
+  }
+
 }

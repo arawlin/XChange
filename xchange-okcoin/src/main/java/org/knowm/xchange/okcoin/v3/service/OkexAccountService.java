@@ -1,13 +1,5 @@
 package org.knowm.xchange.okcoin.v3.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.dto.account.Balance;
@@ -26,6 +18,15 @@ import org.knowm.xchange.service.trade.params.DefaultWithdrawFundsParams;
 import org.knowm.xchange.service.trade.params.HistoryParamsFundingType;
 import org.knowm.xchange.service.trade.params.TradeHistoryParams;
 import org.knowm.xchange.service.trade.params.WithdrawFundsParams;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OkexAccountService extends OkexAccountServiceRaw implements AccountService {
 

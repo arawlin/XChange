@@ -1,70 +1,16 @@
 package org.knowm.xchange.okcoin;
 
+import org.knowm.xchange.okcoin.v3.dto.account.*;
+import org.knowm.xchange.okcoin.v3.dto.marketdata.*;
+import org.knowm.xchange.okcoin.v3.dto.trade.*;
+import org.knowm.xchange.okcoin.v3.service.OkexException;
+import si.mazi.rescu.ParamsDigest;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import org.knowm.xchange.okcoin.v3.dto.account.BillType;
-import org.knowm.xchange.okcoin.v3.dto.account.FuturesBillsResponse;
-import org.knowm.xchange.okcoin.v3.dto.account.FuturesLeverageResponse;
-import org.knowm.xchange.okcoin.v3.dto.account.MarginAccountResponse;
-import org.knowm.xchange.okcoin.v3.dto.account.MarginAccountSettingsRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexCurrencyInformation;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexDepositRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexFundingAccountRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexSpotAccountRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexWithdrawalRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexWithdrawalRequest;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexWithdrawalResponse;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexFutureInstrument;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexFutureTicker;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexOrderBook;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSpotInstrument;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSpotTicker;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSwapInstrument;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSwapTicker;
-import org.knowm.xchange.okcoin.v3.dto.trade.FundsTransferRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.FundsTransferResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesAccountsByCurrencyResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesAccountsResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesMultipleOrderCancellationResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesMultipleOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesOpenOrdersResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesPositionsResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginBorrowRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginBorrowResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginRepaymentRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginRepaymentResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginSetLeverageRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexFuturesTransaction;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexOpenOrder;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexSwapTransaction;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexTransaction;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderBatchCancellationRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderCancellationRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderCancellationResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderPlacementResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SpotOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapAccountsResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapFuturesMultipleOrderPlacementResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapMultipleOrderCancellationResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapMultipleOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapOpenOrdersResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapOrderBatchCancellationRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapPositionsEntry;
-import org.knowm.xchange.okcoin.v3.service.OkexException;
-import si.mazi.rescu.ParamsDigest;
 
 @Path("/api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -75,7 +21,9 @@ public interface OkexV3 {
   public static final String OK_ACCESS_SIGN = "OK-ACCESS-SIGN";
   public static final String OK_ACCESS_TIMESTAMP = "OK-ACCESS-TIMESTAMP";
 
-  /** ******************************* Funding Account API ********************************* */
+  /**
+   * ****************************** Funding Account API *********************************
+   */
   @GET
   @Path("/account/v3/wallet")
   List<OkexFundingAccountRecord> fundingAccountInformation(
@@ -95,13 +43,13 @@ public interface OkexV3 {
       throws IOException, OkexException;
 
   /**
-   * @param currency required, Token
-   * @param amount required, Transfer amount
-   * @param from required, the remitting account (0: sub account 1: spot 3: futures 4:C2C 5: margin
-   *     6: Funding Account 8:PiggyBank 9：swap)
-   * @param to required, the beneficiary account(0: sub account 1:spot 3: futures 4:C2C 5: margin 6:
-   *     Funding Account 8:PiggyBank 9 :swap)
-   * @param subAccount optional, sub account name
+   * @param currency     required, Token
+   * @param amount       required, Transfer amount
+   * @param from         required, the remitting account (0: sub account 1: spot 3: futures 4:C2C 5: margin
+   *                     6: Funding Account 8:PiggyBank 9：swap)
+   * @param to           required, the beneficiary account(0: sub account 1:spot 3: futures 4:C2C 5: margin 6:
+   *                     Funding Account 8:PiggyBank 9 :swap)
+   * @param subAccount   optional, sub account name
    * @param instrumentid optional, margin token pair ID, for supported pairs only
    * @return
    * @throws IOException
@@ -147,7 +95,9 @@ public interface OkexV3 {
       @HeaderParam(OK_ACCESS_PASSPHRASE) String passphrase)
       throws IOException, OkexException;
 
-  /** ******************************* Spot Token Trading API ********************************* */
+  /**
+   * ****************************** Spot Token Trading API *********************************
+   */
   @GET
   @Path("/spot/v3/accounts")
   List<OkexSpotAccountRecord> spotTradingAccount(
@@ -210,13 +160,13 @@ public interface OkexV3 {
 
   /**
    * @param instrumentId [required] list the orders of specific trading pairs
-   * @param from [optional] request page after this id (latest information) (eg. 1, 2, 3, 4, 5.
-   *     There is only a 5 "from 4", while there are 1, 2, 3 "to 4")
-   * @param to [optional] request page after (newer) this id.
-   * @param limit [optional] number of results per request. Maximum 100. (default 100)
-   * @param state [required ] Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially
-   *     Filled, "2":Fully Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
-   *     filled），"7":Complete（cancelled+fully filled））
+   * @param from         [optional] request page after this id (latest information) (eg. 1, 2, 3, 4, 5.
+   *                     There is only a 5 "from 4", while there are 1, 2, 3 "to 4")
+   * @param to           [optional] request page after (newer) this id.
+   * @param limit        [optional] number of results per request. Maximum 100. (default 100)
+   * @param state        [required ] Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially
+   *                     Filled, "2":Fully Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
+   *                     filled），"7":Complete（cancelled+fully filled））
    * @return
    * @throws IOException
    * @throws OkexException
@@ -247,13 +197,13 @@ public interface OkexV3 {
       throws IOException, OkexException;
 
   /**
-   * @param orderId required, order ID
+   * @param orderId      required, order ID
    * @param instrumentId required, trading pair
-   * @param from optional, Request page before (older) this pagination id,the parameter are
-   *     order_id, ledger_id or trade_id of the endpoint, etc.
-   * @param to optional, Request page after (newer) this pagination id,the parameter are order_id,
-   *     ledger_id or trade_id of the endpoint, etc.
-   * @param limit optional, Number of results per request. Maximum 100. (default 100)
+   * @param from         optional, Request page before (older) this pagination id,the parameter are
+   *                     order_id, ledger_id or trade_id of the endpoint, etc.
+   * @param to           optional, Request page after (newer) this pagination id,the parameter are order_id,
+   *                     ledger_id or trade_id of the endpoint, etc.
+   * @param limit        optional, Number of results per request. Maximum 100. (default 100)
    * @return
    * @throws IOException
    * @throws OkexException
@@ -291,7 +241,9 @@ public interface OkexV3 {
       @PathParam("instrument_id") String instrumentId, @QueryParam("size") int size)
       throws IOException, OkexException;
 
-  /** ******************************* Futures Trading API ********************************* */
+  /**
+   * ****************************** Futures Trading API *********************************
+   */
   @GET
   @Path("/futures/v3/instruments")
   List<OkexFutureInstrument> getAllFutureInstruments() throws IOException, OkexException;
@@ -343,15 +295,15 @@ public interface OkexV3 {
    * changing the balance of an account. This API can retrieve data in the last 2 days.
    *
    * @param underlying - requierd，eg：BTC-USD BTC-USDT
-   * @param after - optional, Pagination of data to return records earlier than the requested
-   *     ledger_id
-   * @param before - optional, Pagination of data to return records newer than the requested
-   *     ledger_id
-   * @param limit - optional, Number of results per request. The maximum is 100; the default is 100
-   * @param type - optional, 1:Open Long 2:Open Short 3:Close Long 4:Close Short 5:Transaction Fee
-   *     6:Transfer In， 7:Transfer Out 8:Settled RPL 13: Full Liquidation of Long 14: Full
-   *     Liquidation of Short 15: Delivery Long 16: Delivery Short 17:Settled UPL Long 18:Settled
-   *     UPL Short 20:Partial Liquidation of Short 21:Partial Liquidation of Long
+   * @param after      - optional, Pagination of data to return records earlier than the requested
+   *                   ledger_id
+   * @param before     - optional, Pagination of data to return records newer than the requested
+   *                   ledger_id
+   * @param limit      - optional, Number of results per request. The maximum is 100; the default is 100
+   * @param type       - optional, 1:Open Long 2:Open Short 3:Close Long 4:Close Short 5:Transaction Fee
+   *                   6:Transfer In， 7:Transfer Out 8:Settled RPL 13: Full Liquidation of Long 14: Full
+   *                   Liquidation of Short 15: Delivery Long 16: Delivery Short 17:Settled UPL Long 18:Settled
+   *                   UPL Short 20:Partial Liquidation of Short 21:Partial Liquidation of Long
    */
   @GET
   @Path("/futures/v3/accounts/{underlying}/ledger")
@@ -372,9 +324,9 @@ public interface OkexV3 {
    * @param from
    * @param to
    * @param limit
-   * @param state Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially Filled, "2":Fully
-   *     Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
-   *     filled），"7":Complete（cancelled+fully filled））
+   * @param state        Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially Filled, "2":Fully
+   *                     Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
+   *                     filled），"7":Complete（cancelled+fully filled））
    * @return
    * @throws IOException
    * @throws OkexException
@@ -469,9 +421,9 @@ public interface OkexV3 {
    * @param from
    * @param to
    * @param limit
-   * @param state Yes Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially Filled,
-   *     "2":Fully Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
-   *     filled），"7":Complete（cancelled+fully filled））
+   * @param state        Yes Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially Filled,
+   *                     "2":Fully Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
+   *                     filled），"7":Complete（cancelled+fully filled））
    * @return
    * @throws IOException
    * @throws OkexException
@@ -567,7 +519,10 @@ public interface OkexV3 {
       @QueryParam("to") String to,
       @QueryParam("limit") Integer limit)
       throws IOException, OkexException;
-  /** ******************************** Margin Trading API ********************************* */
+
+  /**
+   * ******************************* Margin Trading API *********************************
+   */
   @GET
   @Path("/margin/v3/accounts")
   MarginAccountResponse[] marginAccounts(
@@ -645,13 +600,13 @@ public interface OkexV3 {
 
   /**
    * @param instrumentId [required] list the orders of specific trading pairs
-   * @param from [optional] request page after this id (latest information) (eg. 1, 2, 3, 4, 5.
-   *     There is only a 5 "from 4", while there are 1, 2, 3 "to 4")
-   * @param to [optional] request page after (newer) this id.
-   * @param limit [optional] number of results per request. Maximum 100. (default 100)
-   * @param state [required ] Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially
-   *     Filled, "2":Fully Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
-   *     filled），"7":Complete（cancelled+fully filled））
+   * @param from         [optional] request page after this id (latest information) (eg. 1, 2, 3, 4, 5.
+   *                     There is only a 5 "from 4", while there are 1, 2, 3 "to 4")
+   * @param to           [optional] request page after (newer) this id.
+   * @param limit        [optional] number of results per request. Maximum 100. (default 100)
+   * @param state        [required ] Order Status("-2":Failed,"-1":Cancelled,"0":Open ,"1":Partially
+   *                     Filled, "2":Fully Filled,"3":Submitting,"4":Cancelling,"6": Incomplete（open+partially
+   *                     filled），"7":Complete（cancelled+fully filled））
    * @return
    * @throws IOException
    * @throws OkexException
@@ -671,13 +626,13 @@ public interface OkexV3 {
       throws IOException, OkexException;
 
   /**
-   * @param orderId required, order ID
+   * @param orderId      required, order ID
    * @param instrumentId required, trading pair
-   * @param from optional, Request page before (older) this pagination id,the parameter are
-   *     order_id, ledger_id or trade_id of the endpoint, etc.
-   * @param to optional, Request page after (newer) this pagination id,the parameter are order_id,
-   *     ledger_id or trade_id of the endpoint, etc.
-   * @param limit optional, Number of results per request. Maximum 100. (default 100)
+   * @param from         optional, Request page before (older) this pagination id,the parameter are
+   *                     order_id, ledger_id or trade_id of the endpoint, etc.
+   * @param to           optional, Request page after (newer) this pagination id,the parameter are order_id,
+   *                     ledger_id or trade_id of the endpoint, etc.
+   * @param limit        optional, Number of results per request. Maximum 100. (default 100)
    * @return
    * @throws IOException
    * @throws OkexException

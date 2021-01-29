@@ -1,14 +1,10 @@
 package org.knowm.xchange.okcoin.v3.service;
 
+import org.knowm.xchange.okcoin.OkexExchangeV3;
+import org.knowm.xchange.okcoin.v3.dto.marketdata.*;
+
 import java.io.IOException;
 import java.util.List;
-import org.knowm.xchange.okcoin.OkexExchangeV3;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexFutureInstrument;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexFutureTicker;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSpotInstrument;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSpotTicker;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSwapInstrument;
-import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSwapTicker;
 
 public class OkexMarketDataServiceRaw extends OkexBaseService {
 

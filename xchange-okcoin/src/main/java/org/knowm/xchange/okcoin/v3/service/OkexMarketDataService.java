@@ -1,8 +1,5 @@
 package org.knowm.xchange.okcoin.v3.service;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.Ticker;
@@ -12,6 +9,10 @@ import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexOrderBook;
 import org.knowm.xchange.okcoin.v3.dto.marketdata.OkexSpotTicker;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.knowm.xchange.service.marketdata.params.Params;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class OkexMarketDataService extends OkexMarketDataServiceRaw implements MarketDataService {
 

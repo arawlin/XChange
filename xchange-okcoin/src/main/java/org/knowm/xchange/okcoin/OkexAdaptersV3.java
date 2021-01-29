@@ -1,7 +1,5 @@
 package org.knowm.xchange.okcoin;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order.OrderType;
@@ -24,6 +22,9 @@ import org.knowm.xchange.okcoin.v3.dto.trade.FuturesAccountsResponse.FuturesAcco
 import org.knowm.xchange.okcoin.v3.dto.trade.OkexOpenOrder;
 import org.knowm.xchange.okcoin.v3.dto.trade.Side;
 import org.knowm.xchange.okcoin.v3.dto.trade.SwapAccountsResponse.SwapAccountInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OkexAdaptersV3 {
 
@@ -92,7 +93,7 @@ public class OkexAdaptersV3 {
 
   public static LimitOrder convert(OkexOpenOrder o) {
     return new LimitOrder.Builder(
-            o.getSide() == Side.sell ? OrderType.ASK : OrderType.BID, toPair(o.getInstrumentId()))
+        o.getSide() == Side.sell ? OrderType.ASK : OrderType.BID, toPair(o.getInstrumentId()))
         .id(o.getOrderId())
         .limitPrice(o.getPrice())
         .originalAmount(o.getSize())
@@ -148,6 +149,7 @@ public class OkexAdaptersV3 {
         .setType(Type.DEPOSIT)
         .build();
   }
+
   /**
    * The status of deposits (0: waiting for confirmation; 1: confirmation account; 2: recharge
    * success);

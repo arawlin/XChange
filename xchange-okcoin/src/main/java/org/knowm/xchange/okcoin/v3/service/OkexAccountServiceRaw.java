@@ -1,34 +1,14 @@
 package org.knowm.xchange.okcoin.v3.service;
 
+import org.knowm.xchange.okcoin.OkexExchangeV3;
+import org.knowm.xchange.okcoin.v3.dto.account.*;
+import org.knowm.xchange.okcoin.v3.dto.trade.*;
+import org.knowm.xchange.okcoin.v3.dto.trade.SwapAccountsResponse.SwapAccountInfo;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import org.knowm.xchange.okcoin.OkexExchangeV3;
-import org.knowm.xchange.okcoin.v3.dto.account.BillType;
-import org.knowm.xchange.okcoin.v3.dto.account.FuturesBillsResponse;
-import org.knowm.xchange.okcoin.v3.dto.account.FuturesPosition;
-import org.knowm.xchange.okcoin.v3.dto.account.MarginAccountResponse;
-import org.knowm.xchange.okcoin.v3.dto.account.MarginAccountSettingsRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexCurrencyInformation;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexDepositRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexFundingAccountRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexSpotAccountRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexWithdrawalRecord;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexWithdrawalRequest;
-import org.knowm.xchange.okcoin.v3.dto.account.OkexWithdrawalResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FundsTransferRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.FundsTransferResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesAccountsByCurrencyResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesAccountsResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesPositionsResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginBorrowRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginBorrowResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginRepaymentRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.MarginRepaymentResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapAccountsResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapAccountsResponse.SwapAccountInfo;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapPositionsEntry;
 
 public class OkexAccountServiceRaw extends OkexBaseService {
 
@@ -84,7 +64,9 @@ public class OkexAccountServiceRaw extends OkexBaseService {
     return okex.recentDepositHistory(apikey, digest, timestamp(), passphrase);
   }
 
-  /** ******************************** Futures Account API ********************************* */
+  /**
+   * ******************************* Futures Account API *********************************
+   */
   public List<FuturesPosition> getFuturesPositions() throws IOException {
     FuturesPositionsResponse res =
         okex.getFuturesPositions(apikey, digest, timestamp(), passphrase);
@@ -115,7 +97,9 @@ public class OkexAccountServiceRaw extends OkexBaseService {
     return res;
   }
 
-  /** ******************************** SWAP Account API ********************************* */
+  /**
+   * ******************************* SWAP Account API *********************************
+   */
   public List<SwapPositionsEntry> getSwapPositions() throws IOException {
     return okex.getSwapPositions(apikey, digest, timestamp(), passphrase);
   }

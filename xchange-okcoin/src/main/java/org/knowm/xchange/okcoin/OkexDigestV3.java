@@ -1,10 +1,11 @@
 package org.knowm.xchange.okcoin;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Base64;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.service.BaseParamsDigest;
 import si.mazi.rescu.RestInvocation;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 
 public class OkexDigestV3 extends BaseParamsDigest {
 
@@ -22,8 +23,8 @@ public class OkexDigestV3 extends BaseParamsDigest {
             + ri.getHttpMethod()
             + ri.getPath()
             + (ri.getQueryString() != null && !ri.getQueryString().isEmpty()
-                ? "?" + ri.getQueryString()
-                : "")
+            ? "?" + ri.getQueryString()
+            : "")
             + (ri.getRequestBody() == null ? "" : ri.getRequestBody());
     byte[] signSHA256;
     try {

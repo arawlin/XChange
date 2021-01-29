@@ -1,33 +1,14 @@
 package org.knowm.xchange.okcoin.v3.service;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.okcoin.OkexAdaptersV3;
 import org.knowm.xchange.okcoin.OkexExchangeV3;
 import org.knowm.xchange.okcoin.v3.dto.account.FuturesLeverageResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesMultipleOrderCancellationResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesMultipleOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesOpenOrdersResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.FuturesOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexFuturesOpenOrder;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexFuturesTransaction;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexOpenOrder;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexSwapOpenOrder;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexSwapTransaction;
-import org.knowm.xchange.okcoin.v3.dto.trade.OkexTransaction;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderBatchCancellationRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderCancellationRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderCancellationResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.OrderPlacementResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SpotOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapFuturesMultipleOrderPlacementResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapMultipleOrderCancellationResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapMultipleOrderPlacementRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapOpenOrdersResponse;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapOrderBatchCancellationRequest;
-import org.knowm.xchange.okcoin.v3.dto.trade.SwapOrderPlacementRequest;
+import org.knowm.xchange.okcoin.v3.dto.trade.*;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class OkexTradeServiceRaw extends OkexBaseService {
 
@@ -35,7 +16,9 @@ public class OkexTradeServiceRaw extends OkexBaseService {
     super(exchange);
   }
 
-  /** ******************************** Spot Token Trading API ********************************* */
+  /**
+   * ******************************* Spot Token Trading API *********************************
+   */
   public OrderPlacementResponse spotPlaceOrder(SpotOrderPlacementRequest req) throws IOException {
     OrderPlacementResponse res = okex.spotPlaceOrder(apikey, digest, timestamp(), passphrase, req);
     res.checkResult();
@@ -77,7 +60,9 @@ public class OkexTradeServiceRaw extends OkexBaseService {
         apikey, digest, timestamp(), passphrase, orderId, instrumentId, from, to, limit);
   }
 
-  /** ******************************** Futures Trading API ********************************* */
+  /**
+   * ******************************* Futures Trading API *********************************
+   */
   public List<OkexFuturesOpenOrder> getFuturesOrderList(
       String instrumentId, String from, String to, Integer limit, String state) throws IOException {
     FuturesOpenOrdersResponse res =
@@ -134,7 +119,9 @@ public class OkexTradeServiceRaw extends OkexBaseService {
         apikey, digest, timestamp(), passphrase, orderId, instrumentId, from, to, limit);
   }
 
-  /** ******************************** SWAP Trading API ********************************* */
+  /**
+   * ******************************* SWAP Trading API *********************************
+   */
   public List<OkexSwapOpenOrder> getSwapOrderList(
       String instrumentId, String from, String to, Integer limit, String state) throws IOException {
     SwapOpenOrdersResponse res =
@@ -181,7 +168,9 @@ public class OkexTradeServiceRaw extends OkexBaseService {
         apikey, digest, timestamp(), passphrase, orderId, instrumentId, from, to, limit);
   }
 
-  /** ******************************** MARGIN Trading API ********************************* */
+  /**
+   * ******************************* MARGIN Trading API *********************************
+   */
   public OrderPlacementResponse marginPlaceOrder(SpotOrderPlacementRequest req) throws IOException {
     req.setMarginTrading("2");
     OrderPlacementResponse res =

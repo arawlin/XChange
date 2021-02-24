@@ -26,8 +26,8 @@ public class BinanceFuturesAccountServiceTest {
   private BinanceFuturesExchange exchange;
   private BinanceFuturesAccountService service;
 
-  static String apiKey;
-  static String secretKey;
+  private String apiKey;
+  private String secretKey;
 
   @Before
   public void setUp() {

@@ -1,34 +1,17 @@
 package org.knowm.xchange.binance;
 
-import static org.knowm.xchange.binance.BinanceResilience.*;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.account.*;
+import org.knowm.xchange.binance.dto.trade.*;
+import si.mazi.rescu.ParamsDigest;
+import si.mazi.rescu.SynchronizedValueFactory;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.account.*;
-import org.knowm.xchange.binance.dto.trade.BinanceCancelledOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceListenKey;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceTrade;
-import org.knowm.xchange.binance.dto.trade.OrderSide;
-import org.knowm.xchange.binance.dto.trade.OrderType;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
-import si.mazi.rescu.ParamsDigest;
-import si.mazi.rescu.SynchronizedValueFactory;
 
 @Path("")
 @Produces(MediaType.APPLICATION_JSON)
@@ -389,9 +372,9 @@ public interface BinanceAuthenticated extends Binance {
   /**
    * Fetch small amounts of assets exchanged BNB records.
    *
-   * @param asset optional
-   * @param startTime optional
-   * @param endTime optional
+   * @param asset      optional
+   * @param startTime  optional
+   * @param endTime    optional
    * @param recvWindow optional
    * @param timestamp
    * @param apiKey
@@ -498,7 +481,7 @@ public interface BinanceAuthenticated extends Binance {
   /**
    * Keeps the authenticated websocket session alive.
    *
-   * @param apiKey the api key
+   * @param apiKey    the api key
    * @param listenKey the api secret
    * @return
    * @throws BinanceException
@@ -513,7 +496,7 @@ public interface BinanceAuthenticated extends Binance {
   /**
    * Closes the websocket authenticated connection.
    *
-   * @param apiKey the api key
+   * @param apiKey    the api key
    * @param listenKey the api secret
    * @return
    * @throws BinanceException
@@ -524,4 +507,49 @@ public interface BinanceAuthenticated extends Binance {
   Map<?, ?> closeUserDataStream(
       @HeaderParam(X_MBX_APIKEY) String apiKey, @PathParam("listenKey") String listenKey)
       throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/apiReferral/ifNewUser")
+  IfNewUser ifNewUser(
+      @QueryParam("apiAgentCode") String apiAgentCode,
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @POST
+  @Path("/sapi/v1/apiReferral/userCustomization")
+  Map<String, String> userCustomizationSet(
+      @FormParam("apiAgentCode") String apiAgentCode,
+      @FormParam("customerId") String customerId,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/apiReferral/userCustomization")
+  Map<String, String> userCustomizationGet(
+      @QueryParam("apiAgentCode") String apiAgentCode,
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/apiReferral/rebate/recentRecord")
+  List<RebateInfo> rebateRecentRecord(
+      @QueryParam("customerId") String customerId,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit,
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
 }

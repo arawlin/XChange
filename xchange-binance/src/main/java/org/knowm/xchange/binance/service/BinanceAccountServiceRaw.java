@@ -37,6 +37,20 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
         .call();
   }
 
+  public BinanceAccountInformation account(
+      String apiKeyAnother,
+      ParamsDigest signatureAnother
+  ) throws BinanceException, IOException {
+    return decorateApiCall(
+        () -> binance.account(getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("account"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 5)
+        .call();
+  }
+
   // the /wapi endpoint of binance is not stable yet and can be changed in future, there is also a
   // lack of current documentation
 

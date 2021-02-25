@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.binance.dto.account.BinanceAccountInformation;
 import org.knowm.xchange.binance.dto.account.IfNewUser;
 import org.knowm.xchange.binance.dto.account.RebateInfo;
 import org.knowm.xchange.binance.service.BinanceAccountService;
@@ -126,6 +127,12 @@ public class AccountServiceIntegration {
     for (FundingRecord record : fundingHistory) {
       Assert.assertTrue(record.getAmount().compareTo(BigDecimal.ZERO) > 0);
     }
+  }
+
+  @Test
+  public void testAccount() throws IOException {
+    BinanceAccountInformation a = service.account(apiKey, BinanceHmacDigest.createInstance(apiSecret));
+    Assume.assumeNotNull(a);
   }
 
   @Test

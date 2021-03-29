@@ -1,6 +1,7 @@
 package org.knowm.xchange.binance;
 
 import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.BinanceResponse;
 import org.knowm.xchange.binance.dto.marketdata.BinanceAggTrades;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
@@ -80,6 +81,51 @@ public interface BinanceFutures {
   BinancePositionSide getPositionSide(
       @QueryParam("recvWindow") Long recvWindow,
       @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @POST
+  @Path("v1/positionSide/dual")
+  BinanceResponse setPositionSide(
+      @FormParam("dualSidePosition") Boolean dualSidePosition,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @POST
+  @Path("v1/leverage")
+  BinanceLeverageStatus setLeverage(
+      @FormParam("symbol") String symbol,
+      @FormParam("leverage") Integer leverage,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @POST
+  @Path("v1/marginType")
+  BinanceResponse setMarginType(
+      @FormParam("symbol") String symbol,
+      @FormParam("marginType") MarginType marginType,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @POST
+  @Path("v1/positionMargin")
+  BinanceResponsePositionMargin setPositionMargin(
+      @FormParam("symbol") String symbol,
+      @FormParam("positionSide") PositionSide positionSide,
+      @FormParam("amount") BigDecimal amount,
+      @FormParam("type") Integer type,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
       @HeaderParam(X_MBX_APIKEY) String apiKey,
       @QueryParam(SIGNATURE) ParamsDigest signature)
       throws IOException, BinanceException;

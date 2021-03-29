@@ -7,7 +7,7 @@ public enum MarginType {
   CROSSED;
 
   @JsonCreator
-  public static MarginType getOrderSide(String s) {
+  public static MarginType getMarginType(String s) {
     if ("isolated".equals(s)) {
       return ISOLATED;
     } else {

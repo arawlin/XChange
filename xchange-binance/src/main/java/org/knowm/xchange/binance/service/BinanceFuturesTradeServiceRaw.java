@@ -2,6 +2,7 @@ package org.knowm.xchange.binance.service;
 
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.BinanceResponse;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.client.ResilienceRegistries;
@@ -37,7 +38,98 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
             getTimestampFactory(),
             Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
             Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
-        .withRetry(retry("testNewOrder"))
+        .withRetry(retry("getPositionSide"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+  }
+
+  /**
+   * 更改持仓模式(TRADE)
+   *
+   * @param dualSidePosition "true": 双向持仓模式；"false": 单向持仓模式
+   * @param apiKeyAnother
+   * @param signatureAnother
+   * @return
+   * @throws IOException
+   * @throws BinanceException
+   */
+  public boolean setPositionSide(Boolean dualSidePosition, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
+    BinanceResponse res = decorateApiCall(
+        () -> binance.setPositionSide(
+            dualSidePosition,
+            getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("setPositionSide"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+    return res.code == 200;
+  }
+
+  public BinanceLeverageStatus setLeverage(String symbol, Integer leverage, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
+    return decorateApiCall(
+        () -> binance.setLeverage(
+            symbol,
+            leverage,
+            getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("setLeverage"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+  }
+
+  /**
+   * 变换逐全仓模式 (TRADE)
+   *
+   * @param symbol
+   * @param marginType       保证金模式 ISOLATED(逐仓), CROSSED(全仓)
+   * @param apiKeyAnother
+   * @param signatureAnother
+   * @return
+   * @throws IOException
+   * @throws BinanceException
+   */
+  public boolean setMarginType(String symbol, MarginType marginType, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
+    BinanceResponse res = decorateApiCall(
+        () -> binance.setMarginType(
+            symbol,
+            marginType,
+            getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("setMarginType"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+    return res.code == 200;
+  }
+
+  /**
+   * @param symbol
+   * @param positionSide     持仓方向，单向持仓模式下非必填，默认且仅可填BOTH;在双向持仓模式下必填,且仅可选择 LONG 或 SHORT
+   * @param amount           保证金资金
+   * @param type             调整方向 1: 增加逐仓保证金，2: 减少逐仓保证金
+   * @param apiKeyAnother
+   * @param signatureAnother
+   * @return
+   * @throws IOException
+   * @throws BinanceException
+   */
+  public BinanceResponsePositionMargin setPositionMargin(String symbol, PositionSide positionSide, BigDecimal amount, Integer type, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
+    return decorateApiCall(
+        () -> binance.setPositionMargin(
+            symbol,
+            positionSide,
+            amount,
+            type,
+            getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("setPositionMargin"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
   }

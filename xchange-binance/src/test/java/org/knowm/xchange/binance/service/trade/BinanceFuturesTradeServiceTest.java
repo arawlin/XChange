@@ -11,6 +11,7 @@ import org.knowm.xchange.binance.BinanceFuturesUSDT;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.binance.service.BinanceFuturesTradeService;
+import org.knowm.xchange.binance.service.BinanceHmacDigest;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.Order;
 import org.knowm.xchange.dto.trade.LimitOrder;
@@ -256,4 +257,23 @@ public class BinanceFuturesTradeServiceTest {
     List<BinanceFuturePositionRisk> ls = service.positionRisk("BTCUSDT", null, null, null);
     Assume.assumeNotNull(ls);
   }
+
+  @Test
+  public void setPositionSide() throws IOException {
+    boolean suc = service.setPositionSide(true, apiKey, BinanceHmacDigest.createInstance(secretKey));
+    Assume.assumeTrue(suc);
+  }
+
+  @Test
+  public void setLeverage() throws IOException {
+    BinanceLeverageStatus res = service.setLeverage("BTCUSDT", 6, apiKey, BinanceHmacDigest.createInstance(secretKey));
+    Assume.assumeNotNull(res);
+  }
+
+  @Test
+  public void setPositionMargin() throws IOException {
+    BinanceResponsePositionMargin res = service.setPositionMargin("BTCUSDT", PositionSide.LONG, new BigDecimal(100), 1, apiKey, BinanceHmacDigest.createInstance(secretKey));
+    Assume.assumeNotNull(res);
+  }
+
 }

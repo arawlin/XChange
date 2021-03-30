@@ -344,4 +344,24 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
       return null;
     }
   }
+
+  public String assetTransfer(AssetTransferType type, String asset, BigDecimal amount, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException {
+      Map<String, String> res = decorateApiCall(
+          () -> binance.assetTransfer(
+              type,
+              asset,
+              amount,
+              getRecvWindow(),
+              getTimestampFactory(),
+              Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+              Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+          .withRetry(retry("assetTransfer"))
+          .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+          .call();
+
+      if (res == null) {
+        return null;
+      }
+      return res.get("tranId");
+  }
 }

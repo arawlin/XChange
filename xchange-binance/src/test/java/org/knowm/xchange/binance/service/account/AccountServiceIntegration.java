@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.binance.dto.account.AssetTransferType;
 import org.knowm.xchange.binance.dto.account.BinanceAccountInformation;
 import org.knowm.xchange.binance.dto.account.IfNewUser;
 import org.knowm.xchange.binance.dto.account.RebateInfo;
@@ -165,4 +166,11 @@ public class AccountServiceIntegration {
     List<RebateInfo> ls = service.rebateRecentRecord(null, startTime, endTime, 500, apiKey, BinanceHmacDigest.createInstance(apiSecret));
     Assume.assumeNotNull(ls);
   }
+
+  @Test
+  public void assetTransfer() throws IOException {
+    String res = service.assetTransfer(AssetTransferType.UMFUTURE_MAIN, "BUSD", new BigDecimal(0.02), apiKey, BinanceHmacDigest.createInstance(apiSecret));
+    Assume.assumeNotNull(res);
+  }
+
 }

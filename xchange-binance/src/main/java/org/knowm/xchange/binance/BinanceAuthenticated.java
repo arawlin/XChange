@@ -552,4 +552,16 @@ public interface BinanceAuthenticated extends Binance {
       @QueryParam(SIGNATURE) ParamsDigest signature)
       throws IOException, BinanceException;
 
+  @POST
+  @Path("/sapi/v1/asset/transfer")
+  Map<String, String> assetTransfer(
+      @FormParam("type") AssetTransferType type,
+      @FormParam("asset") String asset,
+      @FormParam("amount") BigDecimal amount,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
 }

@@ -274,6 +274,23 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
         .call();
   }
 
+  public BinanceFutureOrder orderStatus(CurrencyPair pair, long orderId, String origClientOrderId, String apiKeyAnother, ParamsDigest signatureAnother)
+      throws IOException, BinanceException {
+    return decorateApiCall(
+        () ->
+            binance.orderStatus(
+                BinanceAdapters.toSymbol(pair),
+                orderId,
+                origClientOrderId,
+                getRecvWindow(),
+                getTimestampFactory(),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("orderStatus"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+  }
+
   public boolean cancelAllOpenOrders(String symbol, String apiKeyAnother, ParamsDigest signatureAnother)
       throws IOException, BinanceException {
     Map<String, Object> res = decorateApiCall(

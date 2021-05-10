@@ -336,6 +336,34 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
         .call();
   }
 
+  public List<BinanceFutureTrade> userTrades(
+      String symbol,
+      String pair,
+      Long startTime,
+      Long endTime,
+      Long fromId,
+      Integer limit,
+      String apiKeyAnother,
+      ParamsDigest signatureAnother
+  ) throws IOException {
+    return decorateApiCall(
+        () ->
+            binance.userTrades(
+                symbol,
+                pair,
+                startTime,
+                endTime,
+                fromId,
+                limit,
+                getRecvWindow(),
+                getTimestampFactory(),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("userTrades"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), allOrdersPermits(pair))
+        .call();
+  }
+
   public List<BinanceFuturePositionRisk> positionRisk(
       String symbol,
       String pair,

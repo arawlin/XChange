@@ -117,7 +117,7 @@ public class BinanceFuturesTradeServiceTest {
         FutureOrderType.LIMIT,
         null,
         new BigDecimal("0.005"),
-        new BigDecimal("83024.76"),
+        new BigDecimal("53024.76"),
         System.currentTimeMillis() + "",
         null,
         null,
@@ -255,6 +255,19 @@ public class BinanceFuturesTradeServiceTest {
     Long startTime = c.getTimeInMillis();
 
     List<BinanceFutureOrder> ls = service.allOrders("BTCUSDT", null, null, startTime, endTime, null, null, null);
+    Assume.assumeNotNull(ls);
+  }
+
+  @Test
+  public void userTrades() throws IOException {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    Long endTime = c.getTimeInMillis();
+
+    c.add(Calendar.DATE, -1);
+    Long startTime = c.getTimeInMillis();
+
+    List<BinanceFutureTrade> ls = service.userTrades("BTCUSDT", null, startTime, endTime, null, 20, null, null);
     Assume.assumeNotNull(ls);
   }
 

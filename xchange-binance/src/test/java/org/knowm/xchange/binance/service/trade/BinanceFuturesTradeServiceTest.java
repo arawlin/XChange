@@ -272,6 +272,19 @@ public class BinanceFuturesTradeServiceTest {
   }
 
   @Test
+  public void income() throws IOException {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    Long endTime = c.getTimeInMillis();
+
+    c.add(Calendar.MONTH, -1);
+    Long startTime = c.getTimeInMillis();
+
+    List<BinanceIncomeRecord> ls = service.income("BTCUSDT", FutureIncomeType.FUNDING_FEE, startTime, endTime, 20, null, null);
+    Assume.assumeNotNull(ls);
+  }
+
+  @Test
   public void positionRisk() throws IOException {
     List<BinanceFuturePositionRisk> ls = service.positionRisk("BTCUSDT", null, null, null);
     Assume.assumeNotNull(ls);

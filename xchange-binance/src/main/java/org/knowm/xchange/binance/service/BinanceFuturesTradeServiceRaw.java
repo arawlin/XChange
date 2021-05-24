@@ -364,6 +364,32 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
         .call();
   }
 
+  public List<BinanceIncomeRecord> income(
+      String symbol,
+      FutureIncomeType incomeType,
+      Long startTime,
+      Long endTime,
+      Integer limit,
+      String apiKeyAnother,
+      ParamsDigest signatureAnother
+  ) throws IOException {
+    return decorateApiCall(
+        () ->
+            binance.income(
+                symbol,
+                incomeType,
+                startTime,
+                endTime,
+                limit,
+                getRecvWindow(),
+                getTimestampFactory(),
+                Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("income"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 30)
+        .call();
+  }
+
   public List<BinanceFuturePositionRisk> positionRisk(
       String symbol,
       String pair,

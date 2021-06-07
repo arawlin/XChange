@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 public class BinanceLeverageStatus {
 
   public Integer leverage;
-  public BigDecimal maxNotionalValue;
+  public String maxNotionalValue;
   public String symbol;
 
   public BinanceLeverageStatus(
       @JsonProperty("leverage") Integer leverage,
-      @JsonProperty("maxNotionalValue") BigDecimal maxNotionalValue,
+      @JsonProperty("maxNotionalValue") String maxNotionalValue,
       @JsonProperty("msg") String symbol
   ) {
     this.leverage = leverage;

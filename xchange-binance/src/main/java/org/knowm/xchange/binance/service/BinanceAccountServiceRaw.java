@@ -364,4 +364,17 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
       }
       return res.get("tranId");
   }
+
+  public BinanceRestrictions apiRestrictions(String apiKeyAnother, ParamsDigest signatureAnother) throws IOException {
+    return decorateApiCall(
+            () -> binance.apiRestrictions(
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                    Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+            .withRetry(retry("apiRestrictions"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
 }

@@ -7,11 +7,9 @@ import org.junit.Test;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.BinanceExchange;
-import org.knowm.xchange.binance.dto.account.AssetTransferType;
-import org.knowm.xchange.binance.dto.account.BinanceAccountInformation;
-import org.knowm.xchange.binance.dto.account.IfNewUser;
-import org.knowm.xchange.binance.dto.account.RebateInfo;
+import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.binance.service.BinanceAccountService;
+import org.knowm.xchange.binance.service.BinanceAccountServiceRaw;
 import org.knowm.xchange.binance.service.BinanceHmacDigest;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -170,6 +168,12 @@ public class AccountServiceIntegration {
   @Test
   public void assetTransfer() throws IOException {
     String res = service.assetTransfer(AssetTransferType.UMFUTURE_MAIN, "BUSD", new BigDecimal(0.02), apiKey, BinanceHmacDigest.createInstance(apiSecret));
+    Assume.assumeNotNull(res);
+  }
+
+  @Test
+  public void apiRestrictions() throws IOException {
+    BinanceRestrictions res = service.apiRestrictions(apiKey, BinanceHmacDigest.createInstance(apiSecret));
     Assume.assumeNotNull(res);
   }
 

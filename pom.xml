@@ -153,6 +153,7 @@
 <!--    <module>xchange-exx</module>-->
 <!--    <module>xchange-examples</module>-->
 <!--    <module>xchange-fcoin</module>-->
+    <module>xchange-ftx</module>
     <module>xchange-gateio</module>
     <module>xchange-gateio-v4</module>
 <!--    <module>xchange-globitex</module>-->
@@ -203,6 +204,7 @@
 <!--    <module>xchange-stream-coinbasepro</module>-->
 <!--    <module>xchange-stream-coinmate</module>-->
     <module>xchange-stream-core</module>
+    <module>xchange-stream-ftx</module>
 <!--    <module>xchange-stream-gemini</module>-->
 <!--    <module>xchange-stream-hitbtc</module>-->
 <!--    <module>xchange-stream-kraken</module>-->

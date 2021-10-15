@@ -1,5 +1,6 @@
 package org.knowm.xchange.ftx.dto.marketdata;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
@@ -87,6 +88,7 @@ public class FtxFutureInfo {
   @JsonProperty("type")
   private final String type;
 
+  @JsonCreator
   public FtxFutureInfo(
           @JsonProperty("ask") BigDecimal ask,
           @JsonProperty("bid") BigDecimal bid,

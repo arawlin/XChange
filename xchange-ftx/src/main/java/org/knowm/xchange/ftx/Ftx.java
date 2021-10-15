@@ -48,4 +48,25 @@ public interface Ftx {
   @GET
   @Path("/futures")
   FtxResponse<FtxFutureInfos> listAllFutures() throws IOException, FtxException;
+
+  @GET
+  @Path("/futures/{future_name}")
+  FtxResponse<FtxFutureInfo> getFuture(
+          @PathParam("future_name") String future_name
+  ) throws IOException, FtxException;
+
+  @GET
+  @Path("/futures/{future_name}/stats")
+  FtxResponse<FtxFutureStats> getFutureStats(
+          @PathParam("future_name") String future_name
+  ) throws IOException, FtxException;
+
+  @GET
+  @Path("/funding_rates")
+  FtxResponse<FtxFutureFundingRates> getFutureFundingRates(
+          @QueryParam("start_time") Long startTime,
+          @QueryParam("end_time") Long endTime,
+          @QueryParam("future") String future
+  ) throws IOException, FtxException;
+
 }

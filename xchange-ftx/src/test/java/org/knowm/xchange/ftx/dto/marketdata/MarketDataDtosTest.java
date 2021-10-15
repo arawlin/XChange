@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -111,4 +112,30 @@ public class MarketDataDtosTest {
     FtxResponse<FtxFutureInfos> resp = serivce.listAllFutures();
     Assert.assertNotNull(resp);
   }
+
+  @Test
+  public void testGetFuture() throws IOException {
+    FtxResponse<FtxFutureInfo> resp = serivce.getFuture("BTC-PERP");
+    Assert.assertNotNull(resp);
+  }
+
+  @Test
+  public void testGetFutureStats() throws IOException {
+    FtxResponse<FtxFutureStats> resp = serivce.getFutureStats("BTC-PERP");
+    Assert.assertNotNull(resp);
+  }
+
+  @Test
+  public void testGetFutureFundingRates() throws IOException {
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    Long endTime = c.getTimeInMillis() / 1000L;
+
+    c.add(Calendar.HOUR, -10);
+    Long startTime = c.getTimeInMillis() / 1000L;
+
+    FtxResponse<FtxFutureFundingRates> resp = serivce.getFutureFundingRates(startTime, endTime, "BTC-PERP");
+    Assert.assertNotNull(resp);
+  }
+
 }

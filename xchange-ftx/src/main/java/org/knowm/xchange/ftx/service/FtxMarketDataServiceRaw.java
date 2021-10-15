@@ -7,6 +7,8 @@ import org.knowm.xchange.ftx.FtxException;
 import org.knowm.xchange.ftx.dto.FtxResponse;
 import org.knowm.xchange.ftx.dto.marketdata.*;
 
+import javax.ws.rs.QueryParam;
+
 public class FtxMarketDataServiceRaw extends FtxBaseService {
 
   public FtxMarketDataServiceRaw(Exchange exchange) {
@@ -59,6 +61,22 @@ public class FtxMarketDataServiceRaw extends FtxBaseService {
 
   public FtxResponse<FtxFutureInfos> listAllFutures() throws IOException, FtxException {
     return ftx.listAllFutures();
+  }
+
+  public FtxResponse<FtxFutureInfo> getFuture(String future) throws IOException, FtxException {
+    return ftx.getFuture(future);
+  }
+
+  public FtxResponse<FtxFutureStats> getFutureStats(String future) throws IOException, FtxException {
+    return ftx.getFutureStats(future);
+  }
+
+  public FtxResponse<FtxFutureFundingRates> getFutureFundingRates(
+          Long startTime,
+          Long endTime,
+          String future
+  ) throws IOException, FtxException {
+    return ftx.getFutureFundingRates(startTime, endTime, future);
   }
 
 }

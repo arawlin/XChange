@@ -57,6 +57,9 @@ public class FtxMarketDataServiceRaw extends FtxBaseService {
     }
   }
 
+  public FtxResponse<FtxFutureInfos> listAllFutures() throws IOException, FtxException {
+    return ftx.listAllFutures();
+  }
 
 }
 

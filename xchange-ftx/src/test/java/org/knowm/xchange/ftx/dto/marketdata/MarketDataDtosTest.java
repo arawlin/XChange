@@ -10,9 +10,18 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.knowm.xchange.Exchange;
+import org.knowm.xchange.ExchangeFactory;
+import org.knowm.xchange.ExchangeSpecification;
+import org.knowm.xchange.ftx.FtxExchange;
 import org.knowm.xchange.ftx.dto.FtxResponse;
 import org.knowm.xchange.ftx.dto.trade.TradeDtosTest;
+import org.knowm.xchange.ftx.service.FtxMarketDataServiceRaw;
 import org.knowm.xchange.utils.jackson.CurrencyPairDeserializer;
 
 public class MarketDataDtosTest {
@@ -74,5 +83,32 @@ public class MarketDataDtosTest {
                   CurrencyPairDeserializer.getCurrencyPairFromString(ftxMarketDto.getName())
                       .toString());
             });
+  }
+
+  private FtxMarketDataServiceRaw serivce;
+
+  @Before
+  public void init() {
+    ExchangeSpecification spec = new ExchangeSpecification(FtxExchange.class);
+
+    spec.setSslUri("https://ftx.com");
+    spec.setHost("ftx.com");
+    spec.setPort(80);
+    spec.setExchangeName("Ftx");
+    spec.setExchangeDescription("Ftx is a spot and derivatives exchange.");
+
+    spec.setProxyHost("192.168.1.100");
+    spec.setProxyPort(1081);
+
+    spec.setShouldLoadRemoteMetaData(false);
+
+    Exchange ftx = ExchangeFactory.INSTANCE.createExchange(spec);
+    serivce = (FtxMarketDataServiceRaw) ftx.getMarketDataService();
+  }
+
+  @Test
+  public void testListAllFutures() throws IOException {
+    FtxResponse<FtxFutureInfos> resp = serivce.listAllFutures();
+    Assert.assertNotNull(resp);
   }
 }

@@ -5,11 +5,7 @@ import java.util.List;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.ftx.dto.FtxResponse;
-import org.knowm.xchange.ftx.dto.marketdata.FtxMarketDto;
-import org.knowm.xchange.ftx.dto.marketdata.FtxCandleDto;
-import org.knowm.xchange.ftx.dto.marketdata.FtxMarketsDto;
-import org.knowm.xchange.ftx.dto.marketdata.FtxOrderbookDto;
-import org.knowm.xchange.ftx.dto.marketdata.FtxTradeDto;
+import org.knowm.xchange.ftx.dto.marketdata.*;
 
 @Path("/api")
 @Produces(MediaType.APPLICATION_JSON)
@@ -48,4 +44,8 @@ public interface Ftx {
   FtxResponse<FtxOrderbookDto> getOrderbook(
       @PathParam("market_name") String market, @QueryParam("depth") int depth)
       throws IOException, FtxException;
+
+  @GET
+  @Path("/futures")
+  FtxResponse<FtxFutureInfos> listAllFutures() throws IOException, FtxException;
 }

@@ -43,7 +43,7 @@ public class BinanceFuturesMarketDataServiceRawTest {
     spec.setShouldLoadRemoteMetaData(false);
 
     spec.setProxyHost("192.168.1.100");
-    spec.setProxyPort(1081);
+    spec.setProxyPort(1083);
 
     exchange = (BinanceFuturesExchange) ExchangeFactory.INSTANCE.createExchange(spec);
     service = (BinanceFuturesMarketDataServiceRaw) exchange.getMarketDataService();

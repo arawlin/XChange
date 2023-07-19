@@ -50,6 +50,7 @@
     <module>xchange-gateio-v4</module>
     <module>xchange-huobi</module>
     <module>xchange-okcoin</module>
+    <module>xchange-okex</module>
 
     <module>xchange-stream-binance</module>
     <module>xchange-stream-core</module>

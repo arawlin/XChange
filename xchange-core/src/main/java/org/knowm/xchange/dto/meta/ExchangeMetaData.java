@@ -4,10 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.utils.ObjectMapperHelper;
+import org.knowm.xchange.utils.jackson.InstrumentMapDeserializer;
 
 /**
  * This class is loaded during creation of the Exchange and is intended to hold both data that is
@@ -42,6 +47,7 @@ public class ExchangeMetaData implements Serializable {
   @JsonProperty("share_rate_limits")
   private boolean shareRateLimits = true;
 
+  private Map<Instrument, InstrumentMetaData> instruments = new HashMap<>();
   /**
    * Constructor
    *
@@ -100,6 +106,10 @@ public class ExchangeMetaData implements Serializable {
 
   public boolean isShareRateLimits() {
     return shareRateLimits;
+  }
+
+  public Map<Instrument, InstrumentMetaData> getInstruments() {
+    return instruments;
   }
 
   @JsonIgnore

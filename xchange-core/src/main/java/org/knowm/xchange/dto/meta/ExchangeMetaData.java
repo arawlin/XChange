@@ -112,6 +112,10 @@ public class ExchangeMetaData implements Serializable {
     return instruments;
   }
 
+  public void setInstruments(Map<Instrument, InstrumentMetaData> instruments) {
+    this.instruments = instruments;
+  }
+
   @JsonIgnore
   public String toJSONString() {
     return ObjectMapperHelper.toJSON(this);

@@ -31,6 +31,7 @@ import org.knowm.xchange.dto.Order.OrderType;
 import org.knowm.xchange.dto.marketdata.*;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exceptions.RateLimitExceededException;
+import org.knowm.xchange.instrument.Instrument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,11 +61,11 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
   protected final BinanceStreamingService service;
   protected final String orderBookUpdateFrequencyParameter;
 
-  private final Map<CurrencyPair, OrderbookSubscription> orderbooks = new HashMap<>();
-  protected final Map<CurrencyPair, Observable<BinanceTicker24h>> tickerSubscriptions =
+  private final Map<Instrument, OrderbookSubscription> orderbooks = new HashMap<>();
+  protected final Map<Instrument, Observable<BinanceTicker24h>> tickerSubscriptions =
       new HashMap<>();
-  protected final Map<CurrencyPair, Observable<OrderBook>> orderbookSubscriptions = new HashMap<>();
-  protected final Map<CurrencyPair, Observable<BinanceRawTrade>> tradeSubscriptions =
+  protected final Map<Instrument, Observable<OrderBook>> orderbookSubscriptions = new HashMap<>();
+  protected final Map<Instrument, Observable<BinanceRawTrade>> tradeSubscriptions =
       new HashMap<>();
 
   protected final ObjectMapper mapper = StreamingObjectMapperHelper.getObjectMapper();
@@ -130,7 +131,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
                     .build());
   }
 
-  protected String channelFromCurrency(CurrencyPair currencyPair, String subscriptionType) {
+  protected String channelFromCurrency(Instrument currencyPair, String subscriptionType) {
     String currency = String.join("", currencyPair.toString().split("/")).toLowerCase();
     String currencyChannel = currency + "@" + subscriptionType;
 
@@ -168,7 +169,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
                     currencyPair, triggerObservableBody(rawTradeStream(currencyPair).share())));
   }
 
-  private Observable<BinanceTicker24h> rawTickerStream(CurrencyPair currencyPair) {
+  private Observable<BinanceTicker24h> rawTickerStream(Instrument currencyPair) {
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "ticker"))
         .map(this::tickerTransaction)
@@ -186,7 +187,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
       snapshotlastUpdateId = 0L;
     }
 
-    void initSnapshotIfInvalid(CurrencyPair currencyPair) {
+    void initSnapshotIfInvalid(Instrument currencyPair) {
       if (snapshotlastUpdateId != 0L) return;
       try {
         LOG.info("Fetching initial orderbook snapshot for {} ", currencyPair);
@@ -205,7 +206,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
       }
     }
 
-    private BinanceOrderbook fetchBinanceOrderBook(CurrencyPair currencyPair)
+    private BinanceOrderbook fetchBinanceOrderBook(Instrument currencyPair)
         throws IOException, InterruptedException {
       try {
         return marketDataService.getBinanceOrderbook(currencyPair, 1000);
@@ -233,7 +234,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     }
   }
 
-  private OrderbookSubscription connectOrderBook(CurrencyPair currencyPair) {
+  private OrderbookSubscription connectOrderBook(Instrument currencyPair) {
     OrderbookSubscription subscription = new OrderbookSubscription();
 
     // 1. Open a stream to wss://stream.binance.com:9443/ws/bnbbtc@depth
@@ -247,7 +248,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     return subscription;
   }
 
-  protected Observable<OrderBook> orderBookStream(CurrencyPair currencyPair) {
+  protected Observable<OrderBook> orderBookStream(Instrument currencyPair) {
     OrderbookSubscription subscription =
         orderbooks.computeIfAbsent(currencyPair, this::connectOrderBook);
 
@@ -345,7 +346,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
          );
   }
 
-  protected Observable<BinanceRawTrade> rawTradeStream(CurrencyPair currencyPair) {
+  protected Observable<BinanceRawTrade> rawTradeStream(Instrument currencyPair) {
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "trade"))
         .map(this::tradeTransaction)

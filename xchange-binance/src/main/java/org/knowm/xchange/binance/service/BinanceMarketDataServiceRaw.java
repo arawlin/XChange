@@ -17,6 +17,7 @@ import org.knowm.xchange.binance.dto.marketdata.BinanceTicker24h;
 import org.knowm.xchange.binance.dto.marketdata.KlineInterval;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.utils.StreamUtils;
 
 public class BinanceMarketDataServiceRaw extends BinanceBaseService {
@@ -34,7 +35,7 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
         .call();
   }
 
-  public BinanceOrderbook getBinanceOrderbook(CurrencyPair pair, Integer limit) throws IOException {
+  public BinanceOrderbook getBinanceOrderbook(Instrument pair, Integer limit) throws IOException {
     return decorateApiCall(() -> binance.depth(BinanceAdapters.toSymbol(pair), limit))
         .withRetry(retry("depth"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), depthPermits(limit))

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.instrument.Instrument;
 
 /** Created by lin on 2020-11-04. */
 public class BinanceStreamingUtil {
@@ -22,13 +23,13 @@ public class BinanceStreamingUtil {
   }
 
   private static String buildSubscriptionStrings(
-      List<CurrencyPair> currencyPairs, String subscriptionType, String arg) {
+          List<Instrument> currencyPairs, String subscriptionType, String arg) {
     return subscriptionStrings(currencyPairs)
         .map(s -> s + "@" + subscriptionType + arg)
         .collect(Collectors.joining("/"));
   }
 
-  private static Stream<String> subscriptionStrings(List<CurrencyPair> currencyPairs) {
+  private static Stream<String> subscriptionStrings(List<Instrument> currencyPairs) {
     return currencyPairs.stream()
         .map(pair -> String.join("", pair.toString().split("/")).toLowerCase());
   }

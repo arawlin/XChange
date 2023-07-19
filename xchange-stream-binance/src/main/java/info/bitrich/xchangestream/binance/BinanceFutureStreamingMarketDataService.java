@@ -25,6 +25,7 @@ import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.dto.marketdata.OrderBookUpdate;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.exceptions.RateLimitExceededException;
+import org.knowm.xchange.instrument.Instrument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,10 +61,10 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
   protected final BinanceFuturesMarketDataService marketDataService;
   protected final BinanceExchangeSpecification specification;
 
-  private final Map<CurrencyPair, OrderbookSubscription> orderbooks = new HashMap<>();
+  private final Map<Instrument, OrderbookSubscription> orderbooks = new HashMap<>();
 
-  protected final Map<CurrencyPair, Observable<BinanceForceOrder>> forceOrderSubscriptions = new HashMap<>();
-  protected final Map<CurrencyPair, Observable<BinanceAggTrades>> aggTradeSubscriptions = new HashMap<>();
+  protected final Map<Instrument, Observable<BinanceForceOrder>> forceOrderSubscriptions = new HashMap<>();
+  protected final Map<Instrument, Observable<BinanceAggTrades>> aggTradeSubscriptions = new HashMap<>();
 
   public BinanceFutureStreamingMarketDataService(
       BinanceStreamingService service,
@@ -116,7 +117,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
                     currencyPair, triggerObservableBody(aggTradeStream(currencyPair).share())));
   }
 
-  private Observable<BinanceForceOrder> forceOrderStream(CurrencyPair currencyPair) {
+  private Observable<BinanceForceOrder> forceOrderStream(Instrument currencyPair) {
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "forceOrder"))
         .map(this::forceOrderTransaction)
@@ -124,7 +125,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
         .map(transaction -> transaction.getData().getForceOrder());
   }
 
-  private Observable<BinanceAggTrades> aggTradeStream(CurrencyPair currencyPair) {
+  private Observable<BinanceAggTrades> aggTradeStream(Instrument currencyPair) {
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "aggTrade"))
         .map(this::aggTradeTransaction)
@@ -142,7 +143,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
       snapshotlastUpdateId = 0L;
     }
 
-    void initSnapshotIfInvalid(CurrencyPair currencyPair) {
+    void initSnapshotIfInvalid(Instrument currencyPair) {
       if (snapshotlastUpdateId != 0L) return;
       try {
         LOG.info("Fetching initial orderbook snapshot for {} ", currencyPair);
@@ -161,7 +162,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
       }
     }
 
-    private BinanceOrderbook fetchBinanceOrderBook(CurrencyPair currencyPair)
+    private BinanceOrderbook fetchBinanceOrderBook(Instrument currencyPair)
         throws IOException, InterruptedException {
       try {
         return marketDataService.getBinanceOrderbook(currencyPair, 1000);
@@ -189,7 +190,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
     }
   }
 
-  private OrderbookSubscription connectOrderBook(CurrencyPair currencyPair) {
+  private OrderbookSubscription connectOrderBook(Instrument currencyPair) {
     OrderbookSubscription subscription = new OrderbookSubscription();
 
     // 1. Open a stream to wss://stream.binance.com:9443/ws/bnbbtc@depth
@@ -204,7 +205,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
   }
 
   @Override
-  protected Observable<OrderBook> orderBookStream(CurrencyPair currencyPair) {
+  protected Observable<OrderBook> orderBookStream(Instrument currencyPair) {
     OrderbookSubscription subscription =
         orderbooks.computeIfAbsent(currencyPair, this::connectOrderBook);
 

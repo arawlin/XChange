@@ -16,6 +16,7 @@ import org.knowm.xchange.dto.meta.WalletHealth;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.dto.trade.StopOrder;
+import org.knowm.xchange.instrument.Instrument;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -27,11 +28,11 @@ import java.util.stream.Collectors;
 
 public class BinanceAdapters {
 
-  public static String toSymbol(CurrencyPair pair) {
+  public static String toSymbol(Instrument pair) {
     if (pair.equals(CurrencyPair.IOTA_BTC)) {
       return "IOTABTC";
     }
-    return pair.base.getCurrencyCode() + pair.counter.getCurrencyCode();
+    return pair.getBase().getCurrencyCode() + pair.getCounter().getCurrencyCode();
   }
 
   public static String toSymbol(Currency currency) {
@@ -261,7 +262,7 @@ public class BinanceAdapters {
     return new OrderBook(null, asks, bids);
   }
 
-  public static DiffOrderBook convertDiffOrderBook(BinanceOrderbook ob, CurrencyPair pair) {
+  public static DiffOrderBook convertDiffOrderBook(BinanceOrderbook ob, Instrument pair) {
     List<LimitOrder> bids =
         ob.bids.entrySet().stream()
             .map(e -> new LimitOrder(OrderType.BID, e.getValue(), pair, null, null, e.getKey()))

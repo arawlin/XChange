@@ -34,10 +34,10 @@ public class BinanceFutureManualExample {
     spec.setSecretKey(apiSecret);
 
     spec.setProxyHost("192.168.1.100");
-    spec.setProxyPort(1081);
+    spec.setProxyPort(1083);
 
     spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_HOST, "192.168.1.100");
-    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_PORT, 1080);
+    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_PORT, 1082);
 
     spec.setShouldLoadRemoteMetaData(false);
 
@@ -46,11 +46,11 @@ public class BinanceFutureManualExample {
 
     ProductSubscription subscription =
         ProductSubscription.create()
-//            .addOrderbook(CurrencyPair.OMG_USDT)
-//            .addForceOrders(CurrencyPair.DASH_USDT)
-//            .addForceOrders(CurrencyPair.ZEC_USDT)
-//            .addTrades(CurrencyPair.ZEC_USDT)
-//            .addAggTrades(CurrencyPair.BTC_USDT)
+            .addOrderbook(CurrencyPair.OMG_USDT)
+            .addForceOrders(CurrencyPair.DASH_USDT)
+            .addForceOrders(CurrencyPair.ZEC_USDT)
+            .addTrades(CurrencyPair.ZEC_USDT)
+            .addAggTrades(CurrencyPair.BTC_USDT)
             .addTicker(CurrencyPair.BTC_USDT)
             .build();
 
@@ -58,27 +58,27 @@ public class BinanceFutureManualExample {
 
     LOG.info("Subscribing public channels");
 
-//    Disposable orderbooks2 = orderbooks(exchange, "two");
+    Disposable orderbooks2 = orderbooks(exchange, "two");
 
-//    Disposable forceOrder1 = forceOrders(exchange, CurrencyPair.DASH_USDT);
-//    Disposable forceOrder2 = forceOrders(exchange, CurrencyPair.ZEC_USDT);
+    Disposable forceOrder1 = forceOrders(exchange, CurrencyPair.DASH_USDT);
+    Disposable forceOrder2 = forceOrders(exchange, CurrencyPair.ZEC_USDT);
 
-//    Disposable trades =
-//        exchange
-//            .getStreamingMarketDataService()
-//            .getTrades(CurrencyPair.ZEC_USDT)
-//            .subscribe(
-//                trade -> {
-//                  LOG.info("Trade: {}", trade);
-//                });
+    Disposable trades =
+        exchange
+            .getStreamingMarketDataService()
+            .getTrades(CurrencyPair.ZEC_USDT)
+            .subscribe(
+                trade -> {
+                  LOG.info("Trade: {}", trade);
+                });
 
-//    Disposable aggTrades = ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
-//        .getAggTrade(CurrencyPair.BTC_USDT)
-//        .subscribe(
-//            t -> {
-//              LOG.info("{}", t);
-//            }
-//        );
+    Disposable aggTrades = ((BinanceFutureStreamingMarketDataService) exchange.getStreamingMarketDataService())
+        .getAggTrade(CurrencyPair.BTC_USDT)
+        .subscribe(
+            t -> {
+              LOG.info("{}", t);
+            }
+        );
 
     Disposable ticker = exchange.getStreamingMarketDataService().getTicker(CurrencyPair.BTC_USDT).subscribe(
         t -> {
@@ -87,13 +87,13 @@ public class BinanceFutureManualExample {
     );
 
 
-    Thread.sleep(1000000);
+    Thread.sleep(1000000000);
 
-//    orderbooks2.dispose();
-//    forceOrder1.dispose();
-//    forceOrder2.dispose();
-//    trades.dispose();
-//    aggTrades.dispose();
+    orderbooks2.dispose();
+    forceOrder1.dispose();
+    forceOrder2.dispose();
+    trades.dispose();
+    aggTrades.dispose();
     ticker.dispose();
 
     exchange.disconnect().blockingAwait();

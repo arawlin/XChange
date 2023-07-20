@@ -76,6 +76,9 @@ public class BinanceFuturesExchange extends BaseExchange {
     spec.setExchangeDescription("Binance Futures Exchange.");
     spec.setShouldLoadRemoteMetaData(false);
 
+    spec.getResilience().setRetryEnabled(true);
+    spec.getResilience().setRateLimiterEnabled(true);
+
     AuthUtils.setApiAndSecretKey(spec, "binance-futures");
 
     return spec;

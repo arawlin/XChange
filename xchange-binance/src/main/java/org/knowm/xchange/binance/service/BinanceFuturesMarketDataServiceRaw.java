@@ -24,9 +24,17 @@ public class BinanceFuturesMarketDataServiceRaw extends BinanceFuturesBaseServic
     super(exchange, binance, binanceCommon, resilienceRegistries);
   }
 
-  public BinanceFuturesPremiumIndex premiumIndexUSDT(CurrencyPair pair) throws IOException {
+  public List<BinanceFuturesPremiumIndex> premiumIndexUSDT() throws IOException {
     return decorateApiCall(
-        () -> ((BinanceFuturesUSDT) binance).premiumIndex(BinanceAdapters.toSymbol(pair)))
+        () -> ((BinanceFuturesUSDT) binance).premiumIndex())
+        .withRetry(retry("premiumIndex"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
+        .call();
+  }
+
+  public BinanceFuturesPremiumIndex premiumIndexUSDT(String pair) throws IOException {
+    return decorateApiCall(
+        () -> ((BinanceFuturesUSDT) binance).premiumIndex(pair))
         .withRetry(retry("premiumIndex"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 1)
         .call();

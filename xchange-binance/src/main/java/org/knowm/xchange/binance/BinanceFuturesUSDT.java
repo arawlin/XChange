@@ -25,6 +25,10 @@ public interface BinanceFuturesUSDT extends BinanceFutures {
       throws IOException, BinanceException;
 
   @GET
+  @Path("v1/premiumIndex")
+  List<BinanceFuturesPremiumIndex> premiumIndex() throws IOException, BinanceException;
+
+  @GET
   @Path("v1/positionRisk")
   List<BinanceFuturePositionRisk> positionRisk(
       @QueryParam("symbol") String symbol,

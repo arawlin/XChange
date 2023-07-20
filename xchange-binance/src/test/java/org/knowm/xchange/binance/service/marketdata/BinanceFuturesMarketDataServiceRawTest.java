@@ -1,10 +1,5 @@
 package org.knowm.xchange.binance.service.marketdata;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.knowm.xchange.ExchangeFactory;
@@ -17,9 +12,18 @@ import org.knowm.xchange.binance.dto.trade.BinanceOrder;
 import org.knowm.xchange.binance.service.BinanceFuturesMarketDataServiceRaw;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.utils.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /** Created by lin on 2020-10-20. */
 public class BinanceFuturesMarketDataServiceRawTest {
+  private static final Logger log = LoggerFactory.getLogger(BinanceFuturesMarketDataServiceRawTest.class);
 
   private BinanceFuturesExchange exchange;
   private BinanceFuturesMarketDataServiceRaw service;
@@ -58,7 +62,10 @@ public class BinanceFuturesMarketDataServiceRawTest {
 
   @Test
   public void premiumIndex() throws IOException {
-    List<BinanceFuturesPremiumIndex> ls = service.premiumIndexCoin("BTCUSD_PERP", "");
+    BinanceFuturesPremiumIndex i = service.premiumIndexUSDT("BTCUSDT");
+    log.info("1 - {}", i);
+    List<BinanceFuturesPremiumIndex> ls = service.premiumIndexUSDT();
+    log.info("2 - {}", ls);
     Assert.notNull(ls, "");
   }
 

@@ -2,6 +2,7 @@ package org.knowm.xchange.dto.meta;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +31,8 @@ public class ExchangeMetaData implements Serializable {
 
   @JsonProperty("currency_pairs")
   private Map<CurrencyPair, CurrencyPairMetaData> currencyPairs;
+  @JsonIgnore
+  private Map<Instrument, InstrumentMetaData> instruments = new HashMap<>();
 
   @JsonProperty("currencies")
   private Map<Currency, CurrencyMetaData> currencies;
@@ -47,12 +50,11 @@ public class ExchangeMetaData implements Serializable {
   @JsonProperty("share_rate_limits")
   private boolean shareRateLimits = true;
 
-  private Map<Instrument, InstrumentMetaData> instruments = new HashMap<>();
   /**
    * Constructor
    *
    * @param currencyPairs Map of {@link CurrencyPair} -> {@link CurrencyPairMetaData}
-   * @param currency Map of currency -> {@link CurrencyMetaData}
+   * @param currency      Map of currency -> {@link CurrencyMetaData}
    */
   public ExchangeMetaData(
       @JsonProperty("currency_pairs") Map<CurrencyPair, CurrencyPairMetaData> currencyPairs,
@@ -72,8 +74,8 @@ public class ExchangeMetaData implements Serializable {
 
   /**
    * @return minimum number of milliseconds required between any two remote calls, assuming the
-   *     client makes consecutive calls without any bursts or breaks for an infinite period of time.
-   *     Returns null if the rateLimits collection is null or empty
+   * client makes consecutive calls without any bursts or breaks for an infinite period of time.
+   * Returns null if the rateLimits collection is null or empty
    */
   @JsonIgnore
   public static Long getPollDelayMillis(RateLimit[] rateLimits) {

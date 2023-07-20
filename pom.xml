@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +14,8 @@
   <packaging>pom</packaging>
 
   <name>XChange</name>
-  <description>XChange is a Java library providing a simple and consistent API for interacting with a diverse set of cryptocurrency exchanges.
+  <description>XChange is a Java library providing a simple and consistent API for interacting with a diverse set of
+    cryptocurrency exchanges.
   </description>
 
   <properties>
@@ -24,7 +26,7 @@
     <version.assertj>3.18.0</version.assertj>
     <version.commons.io>2.8.0</version.commons.io>
     <version.commons.lang3>3.11</version.commons.lang3>
-    <version.fasterxml>2.11.3</version.fasterxml>
+    <version.fasterxml>2.14.1</version.fasterxml>
     <version.github.mmazi>2.0.4</version.github.mmazi>
     <version.resilience4j>1.7.0</version.resilience4j>
     <version.junit>4.13.1</version.junit>
@@ -129,6 +131,16 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
+        <version>${version.fasterxml}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${version.fasterxml}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
         <version>${version.fasterxml}</version>
       </dependency>
 
@@ -344,14 +356,14 @@
         </configuration>
       </plugin>
       <!-- for deploying to Maven Central -->
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-release-plugin</artifactId>-->
-<!--        <version>2.5.3</version>-->
-<!--        <configuration>-->
-<!--          <autoVersionSubmodules>true</autoVersionSubmodules>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-release-plugin</artifactId>-->
+      <!--        <version>2.5.3</version>-->
+      <!--        <configuration>-->
+      <!--          <autoVersionSubmodules>true</autoVersionSubmodules>-->
+      <!--        </configuration>-->
+      <!--      </plugin>-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -366,24 +378,24 @@
           </execution>
         </executions>
       </plugin>
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-javadoc-plugin</artifactId>-->
-<!--        <version>3.2.0</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>attach-javadocs</id>-->
-<!--            <goals>-->
-<!--              <goal>jar</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--        <configuration>-->
-<!--          <quiet>true</quiet>-->
-<!--          <doclint>none</doclint>-->
-<!--          <source>${version.java}</source>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-javadoc-plugin</artifactId>-->
+      <!--        <version>3.2.0</version>-->
+      <!--        <executions>-->
+      <!--          <execution>-->
+      <!--            <id>attach-javadocs</id>-->
+      <!--            <goals>-->
+      <!--              <goal>jar</goal>-->
+      <!--            </goals>-->
+      <!--          </execution>-->
+      <!--        </executions>-->
+      <!--        <configuration>-->
+      <!--          <quiet>true</quiet>-->
+      <!--          <doclint>none</doclint>-->
+      <!--          <source>${version.java}</source>-->
+      <!--        </configuration>-->
+      <!--      </plugin>-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -393,42 +405,42 @@
         </configuration>
       </plugin>
 
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-failsafe-plugin</artifactId>-->
-<!--        <version>3.0.0-M5</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <goals>-->
-<!--              <goal>integration-test</goal>-->
-<!--              <goal>verify</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--        <configuration>-->
-<!--          <skipTests>${skipIntegrationTests}</skipTests>-->
-<!--          <includes>-->
-<!--            <include>**/*Integration.java</include>-->
-<!--          </includes>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>org.apache.maven.plugins</groupId>-->
+      <!--        <artifactId>maven-failsafe-plugin</artifactId>-->
+      <!--        <version>3.0.0-M5</version>-->
+      <!--        <executions>-->
+      <!--          <execution>-->
+      <!--            <goals>-->
+      <!--              <goal>integration-test</goal>-->
+      <!--              <goal>verify</goal>-->
+      <!--            </goals>-->
+      <!--          </execution>-->
+      <!--        </executions>-->
+      <!--        <configuration>-->
+      <!--          <skipTests>${skipIntegrationTests}</skipTests>-->
+      <!--          <includes>-->
+      <!--            <include>**/*Integration.java</include>-->
+      <!--          </includes>-->
+      <!--        </configuration>-->
+      <!--      </plugin>-->
 
-<!--      <plugin>-->
-<!--        <groupId>com.coveo</groupId>-->
-<!--        <artifactId>fmt-maven-plugin</artifactId>-->
-<!--        <version>2.10</version>-->
-<!--        <configuration>-->
-<!--          <filesNamePattern>.*\.java</filesNamePattern>-->
-<!--          <skip>false</skip>-->
-<!--        </configuration>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <goals>-->
-<!--              <goal>format</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
+      <!--      <plugin>-->
+      <!--        <groupId>com.coveo</groupId>-->
+      <!--        <artifactId>fmt-maven-plugin</artifactId>-->
+      <!--        <version>2.10</version>-->
+      <!--        <configuration>-->
+      <!--          <filesNamePattern>.*\.java</filesNamePattern>-->
+      <!--          <skip>false</skip>-->
+      <!--        </configuration>-->
+      <!--        <executions>-->
+      <!--          <execution>-->
+      <!--            <goals>-->
+      <!--              <goal>format</goal>-->
+      <!--            </goals>-->
+      <!--          </execution>-->
+      <!--        </executions>-->
+      <!--      </plugin>-->
 
     </plugins>
   </build>

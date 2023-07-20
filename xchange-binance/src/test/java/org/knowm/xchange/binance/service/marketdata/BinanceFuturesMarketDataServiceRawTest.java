@@ -69,11 +69,11 @@ public class BinanceFuturesMarketDataServiceRawTest {
     Assert.notNull(ls, "");
   }
 
-  @Test
-  public void allForceOrders() throws IOException {
-    List<BinanceOrder> ls = service.allForceOrders("COMPUSDT", startTime, endTime, 10);
-    Assert.notNull(ls, "");
-  }
+//  @Test
+//  public void allForceOrders() throws IOException {
+//    List<BinanceOrder> ls = service.allForceOrders("COMPUSDT", startTime, endTime, 10);
+//    Assert.notNull(ls, "");
+//  }
 
   @Test
   public void fundingRate() throws ParseException, IOException {

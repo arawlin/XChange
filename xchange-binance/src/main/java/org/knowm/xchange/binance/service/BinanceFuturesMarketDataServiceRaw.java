@@ -56,6 +56,17 @@ public class BinanceFuturesMarketDataServiceRaw extends BinanceFuturesBaseServic
         .call();
   }
 
+  /**
+   * Deprecated. The endpoint has been out of maintenance
+   *
+   * @param symbol
+   * @param startTime
+   * @param endTime
+   * @param limit
+   * @return
+   * @throws IOException
+   */
+  @Deprecated
   public List<BinanceOrder> allForceOrders(
       String symbol, Long startTime, Long endTime, Integer limit) throws IOException {
     return decorateApiCall(() -> binance.allForceOrders(symbol, startTime, endTime, limit))

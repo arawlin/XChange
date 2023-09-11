@@ -3,89 +3,100 @@ package org.knowm.xchange.binance;
 import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
-import org.knowm.xchange.binance.service.BinanceFuturesAccountService;
-import org.knowm.xchange.binance.service.BinanceFuturesMarketDataService;
-import org.knowm.xchange.binance.service.BinanceFuturesTradeService;
+import org.knowm.xchange.binance.dto.account.AssetDetail;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.Filter;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.Symbol;
+import org.knowm.xchange.binance.service.*;
 import org.knowm.xchange.client.ExchangeRestProxyBuilder;
 import org.knowm.xchange.client.ResilienceRegistries;
+import org.knowm.xchange.currency.Currency;
+import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.meta.CurrencyMetaData;
+import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.utils.AuthUtils;
 import si.mazi.rescu.SynchronizedValueFactory;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
+
 public class BinanceFuturesExchange extends BaseExchange {
 
-  private static ResilienceRegistries RESILIENCE_REGISTRIES;
+    private static ResilienceRegistries RESILIENCE_REGISTRIES;
 
-  private SynchronizedValueFactory<Long> timestampFactory;
+    private SynchronizedValueFactory<Long> timestampFactory;
 
-  @Override
-  protected void initServices() {
-    BinanceFutures binance;
-    BinanceExchangeSpecification spec = (BinanceExchangeSpecification) getExchangeSpecification();
-    if (spec.getFuturesSettleType() == FuturesSettleType.USDT) {
-      binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesUSDT.class, getExchangeSpecification()).build();
-    } else if (spec.getFuturesSettleType() == FuturesSettleType.COIN) {
-      binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCoin.class, getExchangeSpecification()).build();
-    } else {
-      throw new ExchangeException("Must setFuturesSettleType in BinanceExchangeSpecification.");
+    @Override
+    protected void initServices() {
+        BinanceFutures binance;
+        BinanceExchangeSpecification spec = (BinanceExchangeSpecification) getExchangeSpecification();
+        if (spec.getFuturesSettleType() == FuturesSettleType.USDT) {
+            binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesUSDT.class, getExchangeSpecification()).build();
+        } else if (spec.getFuturesSettleType() == FuturesSettleType.COIN) {
+            binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCoin.class, getExchangeSpecification()).build();
+        } else {
+            throw new ExchangeException("Must setFuturesSettleType in BinanceExchangeSpecification.");
+        }
+
+        BinanceFuturesCommon binanceCommon = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCommon.class, getExchangeSpecification()).build();
+
+        this.marketDataService = new BinanceFuturesMarketDataService(this, binance, binanceCommon, getResilienceRegistries());
+        this.tradeService = new BinanceFuturesTradeService(this, binance, binanceCommon, getResilienceRegistries());
+        this.accountService = new BinanceFuturesAccountService(this, binance, binanceCommon, getResilienceRegistries());
+        this.timestampFactory = new BinanceFuturesTimestampFactory(binance, getExchangeSpecification().getResilience(), getResilienceRegistries());
+
     }
 
-    BinanceFuturesCommon binanceCommon = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCommon.class, getExchangeSpecification()).build();
-
-    this.marketDataService = new BinanceFuturesMarketDataService(this, binance, binanceCommon, getResilienceRegistries());
-    this.tradeService = new BinanceFuturesTradeService(this, binance, binanceCommon, getResilienceRegistries());
-    this.accountService = new BinanceFuturesAccountService(this, binance, binanceCommon, getResilienceRegistries());
-    this.timestampFactory = new BinanceFuturesTimestampFactory(binance, getExchangeSpecification().getResilience(), getResilienceRegistries());
-
-  }
-
-  public SynchronizedValueFactory<Long> getTimestampFactory() {
-    return timestampFactory;
-  }
-
-  @Override
-  public SynchronizedValueFactory<Long> getNonceFactory() {
-    throw new UnsupportedOperationException(
-        "Binance uses timestamp/recvwindow rather than a nonce");
-  }
-
-  public static void resetResilienceRegistries() {
-    RESILIENCE_REGISTRIES = null;
-  }
-
-  @Override
-  public ResilienceRegistries getResilienceRegistries() {
-    if (RESILIENCE_REGISTRIES == null) {
-      RESILIENCE_REGISTRIES = BinanceResilience.createRegistries();
+    public SynchronizedValueFactory<Long> getTimestampFactory() {
+        return timestampFactory;
     }
-    return RESILIENCE_REGISTRIES;
-  }
 
-  @Override
-  public ExchangeSpecification getDefaultExchangeSpecification() {
+    @Override
+    public SynchronizedValueFactory<Long> getNonceFactory() {
+        throw new UnsupportedOperationException(
+                "Binance uses timestamp/recvwindow rather than a nonce");
+    }
 
-    BinanceExchangeSpecification spec = new BinanceExchangeSpecification(this.getClass());
+    public static void resetResilienceRegistries() {
+        RESILIENCE_REGISTRIES = null;
+    }
 
-    // NOTICE: must set they in code
-    spec.setSslUri("");
-    spec.setHost("");
-    spec.setFuturesSettleType(null);
+    @Override
+    public ResilienceRegistries getResilienceRegistries() {
+        if (RESILIENCE_REGISTRIES == null) {
+            RESILIENCE_REGISTRIES = BinanceResilience.createRegistries();
+        }
+        return RESILIENCE_REGISTRIES;
+    }
 
-    spec.setPort(80);
-    spec.setExchangeName("BinanceFutures");
-    spec.setExchangeDescription("Binance Futures Exchange.");
-    spec.setShouldLoadRemoteMetaData(false);
+    @Override
+    public ExchangeSpecification getDefaultExchangeSpecification() {
 
-    spec.getResilience().setRetryEnabled(true);
-    spec.getResilience().setRateLimiterEnabled(true);
+        BinanceExchangeSpecification spec = new BinanceExchangeSpecification(this.getClass());
 
-    AuthUtils.setApiAndSecretKey(spec, "binance-futures");
+        // NOTICE: must set they in code
+        spec.setSslUri("");
+        spec.setHost("");
+        spec.setFuturesSettleType(null);
 
-    return spec;
-  }
+        spec.setPort(80);
+        spec.setExchangeName("BinanceFutures");
+        spec.setExchangeDescription("Binance Futures Exchange.");
+        spec.setShouldLoadRemoteMetaData(false);
 
-  @Override
-  public String getMetaDataFileName(ExchangeSpecification exchangeSpecification) {
-    return "binance";
-  }
+        spec.getResilience().setRetryEnabled(true);
+        spec.getResilience().setRateLimiterEnabled(true);
+
+        AuthUtils.setApiAndSecretKey(spec, "binance-futures");
+
+        return spec;
+    }
+
+    @Override
+    public String getMetaDataFileName(ExchangeSpecification exchangeSpecification) {
+        return "binance";
+    }
+
 }

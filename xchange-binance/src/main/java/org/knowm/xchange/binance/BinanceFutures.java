@@ -6,6 +6,7 @@ import org.knowm.xchange.binance.dto.marketdata.BinanceAggTrades;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesFundingRate;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
 import org.knowm.xchange.binance.dto.meta.BinanceTime;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
 import org.knowm.xchange.binance.dto.trade.*;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
@@ -27,6 +28,9 @@ public interface BinanceFutures {
   String HOST_TEST = "testnet.binancefuture.com";
   String URL_TEST = "https://" + HOST_TEST;
 
+  @GET
+  @Path("v1/exchangeInfo")
+  BinanceExchangeInfo exchangeInfo() throws IOException;
 
   @GET
   @Path("v1/time")

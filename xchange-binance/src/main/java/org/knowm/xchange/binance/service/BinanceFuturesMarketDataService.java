@@ -4,11 +4,14 @@ import java.io.IOException;
 import org.knowm.xchange.binance.*;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.OrderBook;
 import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.service.marketdata.MarketDataService;
+
+import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LIMITER;
 
 public class BinanceFuturesMarketDataService extends BinanceFuturesMarketDataServiceRaw
     implements MarketDataService {
@@ -19,6 +22,13 @@ public class BinanceFuturesMarketDataService extends BinanceFuturesMarketDataSer
       BinanceFuturesCommon binanceCommon,
       ResilienceRegistries resilienceRegistries) {
     super(exchange, binance, binanceCommon, resilienceRegistries);
+  }
+
+  public BinanceExchangeInfo getExchangeInfo() throws IOException {
+    return decorateApiCall(binance::exchangeInfo)
+            .withRetry(retry("exchangeInfo"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
   }
 
   @Override

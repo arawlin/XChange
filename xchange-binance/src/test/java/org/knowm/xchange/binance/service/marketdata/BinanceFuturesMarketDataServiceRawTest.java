@@ -44,7 +44,7 @@ public class BinanceFuturesMarketDataServiceRawTest {
         spec.setPort(80);
         spec.setExchangeName("BinanceFutures");
         spec.setExchangeDescription("Binance Futures Exchange.");
-        spec.setShouldLoadRemoteMetaData(false);
+        spec.setShouldLoadRemoteMetaData(true);
 
         spec.setProxyHost("192.168.1.100");
         spec.setProxyPort(1083);

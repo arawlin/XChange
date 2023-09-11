@@ -6,7 +6,7 @@ import org.knowm.xchange.currency.CurrencyPair;
 
 public final class BinanceKline {
 
-  private final CurrencyPair pair;
+  private final String pair;
   private final KlineInterval interval;
   private final long openTime;
   private final BigDecimal open;
@@ -20,7 +20,7 @@ public final class BinanceKline {
   private final BigDecimal takerBuyBaseAssetVolume;
   private final BigDecimal takerBuyQuoteAssetVolume;
 
-  public BinanceKline(CurrencyPair pair, KlineInterval interval, Object[] obj) {
+  public BinanceKline(String pair, KlineInterval interval, Object[] obj) {
     this.pair = pair;
     this.interval = interval;
     this.openTime = Long.valueOf(obj[0].toString());
@@ -36,7 +36,7 @@ public final class BinanceKline {
     this.takerBuyQuoteAssetVolume = new BigDecimal(obj[10].toString());
   }
 
-  public CurrencyPair getCurrencyPair() {
+  public String getCurrencyPair() {
     return pair;
   }
 

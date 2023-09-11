@@ -125,7 +125,7 @@ public class BinanceFuturesMarketDataServiceRawTest {
 
   @Test
   public void kline() throws IOException {
-    List<BinanceKline> ls = service.klines(CurrencyPair.BTC_USDT, KlineInterval.h1);
+    List<BinanceKline> ls = service.klines(CurrencyPair.BTC_USDT, KlineInterval.m5, 1000, null, null);
     Assert.notNull(ls, "");
   }
 }

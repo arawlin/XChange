@@ -1,5 +1,7 @@
 package org.knowm.xchange.mexc.service;
 
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.QueryParam;
 import org.knowm.xchange.exceptions.NotYetImplementedForExchangeException;
 import org.knowm.xchange.service.BaseParamsDigest;
 import si.mazi.rescu.HttpMethod;
@@ -8,8 +10,6 @@ import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.RestInvocation;
 
 import javax.crypto.Mac;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.QueryParam;
 import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class MEXCDigest extends BaseParamsDigest {
     String reqTime = headerParams.getParamValue(REQ_TIME).toString();
 
     if (HttpMethod.GET.name().equals(restInvocation.getHttpMethod()) ||
-            HttpMethod.DELETE.name().equals(restInvocation.getHttpMethod())) {
+        HttpMethod.DELETE.name().equals(restInvocation.getHttpMethod())) {
       Params queryParamsMap = paramsMap.get(QueryParam.class);
       return apiKey + reqTime + queryParamsMap.asQueryString();
     }

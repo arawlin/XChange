@@ -1,5 +1,7 @@
 package org.knowm.xchange.mexc;
 
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.knowm.xchange.mexc.dto.MEXCResult;
 import org.knowm.xchange.mexc.dto.account.MEXCBalance;
 import org.knowm.xchange.mexc.dto.trade.MEXCOrder;
@@ -8,8 +10,6 @@ import org.knowm.xchange.mexc.service.MEXCException;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +21,9 @@ public interface MEXCAuthenticated {
   @GET
   @Path("/account/info")
   MEXCResult<Map<String, MEXCBalance>> getWalletBalances(
-          @HeaderParam("ApiKey") String apiKey,
-          @HeaderParam("Request-Time") SynchronizedValueFactory<Long> timestamp,
-          @HeaderParam("Signature") ParamsDigest signature
+      @HeaderParam("ApiKey") String apiKey,
+      @HeaderParam("Request-Time") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("Signature") ParamsDigest signature
   ) throws IOException, MEXCException;
 
   @POST
@@ -37,9 +37,9 @@ public interface MEXCAuthenticated {
   @GET
   @Path("/order/query")
   MEXCResult<List<MEXCOrder>> getOrders(
-          @HeaderParam("ApiKey") String apiKey,
-          @HeaderParam("Request-Time") SynchronizedValueFactory<Long> timestamp,
-          @HeaderParam("Signature") ParamsDigest signature,
-          @QueryParam("order_ids") List<String> orderIds) throws IOException, MEXCException;
+      @HeaderParam("ApiKey") String apiKey,
+      @HeaderParam("Request-Time") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam("Signature") ParamsDigest signature,
+      @QueryParam("order_ids") List<String> orderIds) throws IOException, MEXCException;
 
 }

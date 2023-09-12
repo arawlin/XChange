@@ -1,5 +1,10 @@
 package org.knowm.xchange.okcoin;
 
+import jakarta.ws.rs.FormParam;
+import si.mazi.rescu.Params;
+import si.mazi.rescu.ParamsDigest;
+import si.mazi.rescu.RestInvocation;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -7,15 +12,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.FormParam;
-import si.mazi.rescu.Params;
-import si.mazi.rescu.ParamsDigest;
-import si.mazi.rescu.RestInvocation;
 
 public class OkCoinDigest implements ParamsDigest {
 
   private static final char[] DIGITS_UPPER = {
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
   };
 
   private final String apikey;

@@ -1,22 +1,17 @@
 package org.knowm.xchange.okex;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import jakarta.ws.rs.*;
+import org.knowm.xchange.okex.dto.OkexException;
+import org.knowm.xchange.okex.dto.OkexResponse;
+import org.knowm.xchange.okex.dto.marketdata.*;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import org.knowm.xchange.okex.dto.OkexException;
-import org.knowm.xchange.okex.dto.OkexResponse;
-import org.knowm.xchange.okex.dto.marketdata.*;
+
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 @Path("/api/v5")
 @Produces(APPLICATION_JSON)
@@ -42,7 +37,7 @@ public interface Okex {
 
   @GET
   @Path("/market/trades")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Consumes(APPLICATION_JSON)
   OkexResponse<List<OkexTrade>> getTrades(
       @QueryParam("instId") String instrument,
       @QueryParam("limit") int limit,
@@ -51,11 +46,11 @@ public interface Okex {
 
   @GET
   @Path("/market/ticker")
-  @Consumes(MediaType.APPLICATION_JSON)
+  @Consumes(APPLICATION_JSON)
   OkexResponse<List<OkexTicker>> getTicker(
-          @QueryParam("instId") String instrument,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
-          throws IOException, OkexException;
+      @QueryParam("instId") String instrument,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
+      throws IOException, OkexException;
 
   @GET
   @Path("/market/books")
@@ -79,8 +74,8 @@ public interface Okex {
   @GET
   @Path("/public/funding-rate")
   OkexResponse<List<OkexFundingRate>> getFundingRate(
-          @QueryParam("instId") String instrument,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
-          throws IOException, OkexException;
+      @QueryParam("instId") String instrument,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
+      throws IOException, OkexException;
 
 }

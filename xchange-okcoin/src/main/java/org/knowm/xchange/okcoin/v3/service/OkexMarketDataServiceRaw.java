@@ -3,8 +3,6 @@ package org.knowm.xchange.okcoin.v3.service;
 import org.knowm.xchange.okcoin.OkexExchangeV3;
 import org.knowm.xchange.okcoin.v3.dto.marketdata.*;
 
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import java.io.IOException;
 import java.util.List;
 

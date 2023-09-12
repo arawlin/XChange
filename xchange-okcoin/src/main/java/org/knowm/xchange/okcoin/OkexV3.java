@@ -1,13 +1,13 @@
 package org.knowm.xchange.okcoin;
 
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.knowm.xchange.okcoin.v3.dto.account.*;
 import org.knowm.xchange.okcoin.v3.dto.marketdata.*;
 import org.knowm.xchange.okcoin.v3.dto.trade.*;
 import org.knowm.xchange.okcoin.v3.service.OkexException;
 import si.mazi.rescu.ParamsDigest;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

@@ -1,42 +1,25 @@
 package org.knowm.xchange.okcoin;
 
-import java.io.IOException;
-import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import org.knowm.xchange.okcoin.dto.account.OKCoinWithdraw;
-import org.knowm.xchange.okcoin.dto.account.OkCoinAccountRecords;
-import org.knowm.xchange.okcoin.dto.account.OkCoinFuturesUserInfoCross;
-import org.knowm.xchange.okcoin.dto.account.OkCoinFuturesUserInfoFixed;
-import org.knowm.xchange.okcoin.dto.account.OkCoinUserInfo;
-import org.knowm.xchange.okcoin.dto.marketdata.OkCoinDepth;
-import org.knowm.xchange.okcoin.dto.marketdata.OkCoinFutureComment;
-import org.knowm.xchange.okcoin.dto.marketdata.OkCoinFutureHoldAmount;
-import org.knowm.xchange.okcoin.dto.marketdata.OkCoinTickerResponse;
-import org.knowm.xchange.okcoin.dto.marketdata.OkCoinTrade;
-import org.knowm.xchange.okcoin.dto.trade.OkCoinErrorResult;
-import org.knowm.xchange.okcoin.dto.trade.OkCoinFuturesOrderResult;
-import org.knowm.xchange.okcoin.dto.trade.OkCoinFuturesTradeHistoryResult;
-import org.knowm.xchange.okcoin.dto.trade.OkCoinOrderResult;
-import org.knowm.xchange.okcoin.dto.trade.OkCoinPositionResult;
-import org.knowm.xchange.okcoin.dto.trade.OkCoinPriceLimit;
-import org.knowm.xchange.okcoin.dto.trade.OkCoinTradeResult;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import org.knowm.xchange.okcoin.dto.account.*;
+import org.knowm.xchange.okcoin.dto.marketdata.*;
+import org.knowm.xchange.okcoin.dto.trade.*;
 import org.knowm.xchange.okcoin.dto.trade.result.OkCoinBatchTradeResult;
 import org.knowm.xchange.okcoin.dto.trade.result.OkCoinFutureExplosiveResult;
 import org.knowm.xchange.okcoin.dto.trade.result.OkCoinMoreTradeResult;
 import si.mazi.rescu.ParamsDigest;
 
+import java.io.IOException;
+import java.util.List;
+
 @Path("v1")
 @Produces(MediaType.APPLICATION_JSON)
 public interface OkCoin {
 
-  /** ************* 币币行情 API *************** */
+  /**
+   * ************ 币币行情 API ***************
+   */
   @GET
   @Path("ticker.do")
   OkCoinTickerResponse getTicker(@QueryParam("ok") String ok, @QueryParam("symbol") String symbol)
@@ -67,7 +50,9 @@ public interface OkCoin {
       @QueryParam("since") Long timestamp)
       throws IOException;
 
-  /** ************* 币币交易 API *************** */
+  /**
+   * ************ 币币交易 API ***************
+   */
   @POST
   @Path("userinfo.do")
   OkCoinUserInfo getUserInfo(
@@ -151,7 +136,9 @@ public interface OkCoin {
       @FormParam("sign") ParamsDigest sign)
       throws IOException;
 
-  /** ************* 合约行情 API *************** */
+  /**
+   * ************ 合约行情 API ***************
+   */
   @GET
   @Path("future_ticker.do")
   OkCoinTickerResponse getFuturesTicker(
@@ -215,7 +202,9 @@ public interface OkCoin {
       @QueryParam("contract_type") String contractType)
       throws IOException;
 
-  /** ************* 合约交易 API *************** */
+  /**
+   * ************ 合约交易 API ***************
+   */
   @GET
   @Path("future_trades.do")
   OkCoinTrade[] getFuturesTrades(

@@ -1,30 +1,21 @@
 package org.knowm.xchange.okex;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.okex.dto.OkexException;
 import org.knowm.xchange.okex.dto.OkexResponse;
 import org.knowm.xchange.okex.dto.account.*;
 import org.knowm.xchange.okex.dto.marketdata.OkexCurrency;
 import org.knowm.xchange.okex.dto.subaccount.OkexSubAccountDetails;
-import org.knowm.xchange.okex.dto.trade.OkexAmendOrderRequest;
-import org.knowm.xchange.okex.dto.trade.OkexCancelOrderRequest;
-import org.knowm.xchange.okex.dto.trade.OkexOrderDetails;
-import org.knowm.xchange.okex.dto.trade.OkexOrderRequest;
-import org.knowm.xchange.okex.dto.trade.OkexOrderResponse;
+import org.knowm.xchange.okex.dto.trade.*;
 import si.mazi.rescu.ParamsDigest;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Path("/api/v5")
 @Produces(MediaType.APPLICATION_JSON)
@@ -99,45 +90,45 @@ public interface OkexAuthenticated extends Okex {
   @GET
   @Path(configPath)
   OkexResponse<List<OkexAccountConfig>> getAccountConfiguration(
-          @HeaderParam("OK-ACCESS-KEY") String apiKey,
-          @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
-          @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
-          @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
-          throws OkexException, IOException;
+      @HeaderParam("OK-ACCESS-KEY") String apiKey,
+      @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
+      @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
+      @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
+      throws OkexException, IOException;
 
   @GET
   @Path(getBillsPath)
   OkexResponse<List<OkexBillDetails>> getBills(
-          @QueryParam("instType") String instrumentType,
-          @QueryParam("ccy") String currency,
-          @QueryParam("mgnMode") String marginMode,
-          @QueryParam("ctType") String contractType,
-          @QueryParam("type") String billType,
-          @QueryParam("subType") String billSubType,
-          @QueryParam("after") String afterBillId,
-          @QueryParam("before") String beforeBillId,
-          @QueryParam("begin") String beginTimestamp,
-          @QueryParam("end") String endTimestamp,
-          @QueryParam("limit") String maxNumberOfResults,
-          @HeaderParam("OK-ACCESS-KEY") String apiKey,
-          @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
-          @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
-          @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
-          throws OkexException, IOException;
+      @QueryParam("instType") String instrumentType,
+      @QueryParam("ccy") String currency,
+      @QueryParam("mgnMode") String marginMode,
+      @QueryParam("ctType") String contractType,
+      @QueryParam("type") String billType,
+      @QueryParam("subType") String billSubType,
+      @QueryParam("after") String afterBillId,
+      @QueryParam("before") String beforeBillId,
+      @QueryParam("begin") String beginTimestamp,
+      @QueryParam("end") String endTimestamp,
+      @QueryParam("limit") String maxNumberOfResults,
+      @HeaderParam("OK-ACCESS-KEY") String apiKey,
+      @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
+      @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
+      @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
+      throws OkexException, IOException;
 
   @POST
   @Path(changeMarginPath)
   @Consumes(MediaType.APPLICATION_JSON)
   OkexResponse<List<OkexChangeMarginResponse>> changeMargin(
-          @HeaderParam("OK-ACCESS-KEY") String apiKey,
-          @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
-          @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
-          @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading,
-          OkexChangeMarginRequest requestPayload)
-          throws OkexException, IOException;
+      @HeaderParam("OK-ACCESS-KEY") String apiKey,
+      @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
+      @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
+      @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading,
+      OkexChangeMarginRequest requestPayload)
+      throws OkexException, IOException;
 
   @GET
   @Path(ordersHistoryPath)
@@ -213,37 +204,37 @@ public interface OkexAuthenticated extends Okex {
   @GET
   @Path(positionsPath)
   OkexResponse<List<OkexPosition>> getPositions(
-          @QueryParam("instType") String instrumentType,
-          @QueryParam("instId") String instrumentId,
-          @QueryParam("posId") String positionId,
-          @HeaderParam("OK-ACCESS-KEY") String apiKey,
-          @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
-          @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
-          @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
-  throws IOException, OkexException;
+      @QueryParam("instType") String instrumentType,
+      @QueryParam("instId") String instrumentId,
+      @QueryParam("posId") String positionId,
+      @HeaderParam("OK-ACCESS-KEY") String apiKey,
+      @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
+      @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
+      @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
+      throws IOException, OkexException;
 
   @GET
   @Path(accountPositionAtRiskPath)
   OkexResponse<List<OkexAccountPositionRisk>> getAccountPositionRisk(
-          @HeaderParam("OK-ACCESS-KEY") String apiKey,
-          @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
-          @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
-          @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
-          throws IOException, OkexException;
+      @HeaderParam("OK-ACCESS-KEY") String apiKey,
+      @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
+      @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
+      @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
+      throws IOException, OkexException;
 
   @POST
   @Path(setLeveragePath)
   @Consumes(MediaType.APPLICATION_JSON)
   OkexResponse<List<OkexSetLeverageResponse>> setLeverage(
-          @HeaderParam("OK-ACCESS-KEY") String apiKey,
-          @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
-          @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
-          @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
-          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading,
-          OkexSetLeverageRequest requestPayload)
-          throws IOException, OkexException;
+      @HeaderParam("OK-ACCESS-KEY") String apiKey,
+      @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
+      @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
+      @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
+      @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading,
+      OkexSetLeverageRequest requestPayload)
+      throws IOException, OkexException;
 
   @GET
   @Path(pendingOrdersPath)

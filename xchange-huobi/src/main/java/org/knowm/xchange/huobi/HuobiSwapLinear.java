@@ -1,11 +1,11 @@
 package org.knowm.xchange.huobi;
 
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.knowm.xchange.huobi.dto.HuobiStringResult;
 import org.knowm.xchange.huobi.dto.trade.HuobiFutureCreateOrderRequest;
 import si.mazi.rescu.ParamsDigest;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
 /**

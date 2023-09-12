@@ -101,7 +101,7 @@ public interface TradeService extends BaseService {
   /**
    * Place a market order
    *
-   * <p>If your orders amount does to meet the restrictions dictated by {@link CurrencyPairMetaData}
+   * <p>If your orders amount does to meet the restrictions dictated by {@link org.knowm.xchange.dto.meta.InstrumentMetaData}
    * then the exchange will reject your order. Use {@link org.knowm.xchange.utils.OrderValuesHelper}
    * to validate and / or adjust it while you'r building an order.
    *
@@ -124,7 +124,7 @@ public interface TradeService extends BaseService {
    * Place a limit order
    *
    * <p>If your orders amount or limit price does to meet the restrictions dictated by {@link
-   * CurrencyPairMetaData} then the exchange will reject your order. Use {@link
+   * org.knowm.xchange.dto.meta.InstrumentMetaData} then the exchange will reject your order. Use {@link
    * org.knowm.xchange.utils.OrderValuesHelper} to validate and / or adjust those values while you'r
    * building an order.
    *
@@ -147,7 +147,7 @@ public interface TradeService extends BaseService {
    * Place a stop order
    *
    * <p>If your orders amount or spot price does to meet the restrictions dictated by {@link
-   * CurrencyPairMetaData} then the exchange will reject your order. Use {@link
+   * org.knowm.xchange.dto.meta.InstrumentMetaData} then the exchange will reject your order. Use {@link
    * org.knowm.xchange.utils.OrderValuesHelper} to validate and / or adjust those values while you'r
    * building an order.
    *

@@ -14,6 +14,7 @@ import org.knowm.xchange.binance.service.BinanceMarketDataService;
 import org.knowm.xchange.binance.service.BinanceMarketDataServiceRaw;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 
 import java.io.IOException;
@@ -63,8 +64,8 @@ public class MarketDataServiceIntegration {
   public void testBinanceTicker24h() throws Exception {
 
     List<BinanceTicker24h> tickers = new ArrayList<>();
-    for (CurrencyPair cp : exchange.getExchangeMetaData().getCurrencyPairs().keySet()) {
-      if (cp.counter == Currency.USDT) {
+    for (Instrument cp : exchange.getExchangeMetaData().getInstruments().keySet()) {
+      if (cp.getCounter() == Currency.USDT) {
         tickers.add(getBinanceTicker24h(cp));
       }
     }
@@ -88,7 +89,7 @@ public class MarketDataServiceIntegration {
             });
   }
 
-  private BinanceTicker24h getBinanceTicker24h(CurrencyPair pair) throws IOException {
+  private BinanceTicker24h getBinanceTicker24h(Instrument pair) throws IOException {
     BinanceMarketDataService service = (BinanceMarketDataService) marketService;
     return service.ticker24h(pair);
   }

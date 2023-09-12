@@ -1,27 +1,21 @@
 package org.knowm.xchange.binance.service;
 
-import static org.knowm.xchange.binance.BinanceResilience.*;
-import static org.knowm.xchange.client.ResilienceRegistries.NON_IDEMPOTENTE_CALLS_RETRY_CONFIG_NAME;
+import org.knowm.xchange.binance.BinanceAdapters;
+import org.knowm.xchange.binance.BinanceAuthenticated;
+import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.binance.dto.BinanceException;
+import org.knowm.xchange.binance.dto.trade.*;
+import org.knowm.xchange.client.ResilienceRegistries;
+import org.knowm.xchange.currency.CurrencyPair;
+import si.mazi.rescu.ParamsDigest;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import org.knowm.xchange.binance.BinanceAdapters;
-import org.knowm.xchange.binance.BinanceAuthenticated;
-import org.knowm.xchange.binance.BinanceExchange;
-import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.trade.BinanceCancelledOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceListenKey;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceTrade;
-import org.knowm.xchange.binance.dto.trade.OrderSide;
-import org.knowm.xchange.binance.dto.trade.OrderType;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
-import org.knowm.xchange.client.ResilienceRegistries;
-import org.knowm.xchange.currency.CurrencyPair;
-import si.mazi.rescu.ParamsDigest;
+
+import static org.knowm.xchange.binance.BinanceResilience.*;
+import static org.knowm.xchange.client.ResilienceRegistries.NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME;
 
 public class BinanceTradeServiceRaw extends BinanceBaseService {
 
@@ -42,13 +36,13 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
 
   public List<BinanceOrder> openOrders(CurrencyPair pair, String apiKeyAnother, ParamsDigest signatureAnother) throws BinanceException, IOException {
     return decorateApiCall(
-            () ->
-                binance.openOrders(
-                    Optional.ofNullable(pair).map(BinanceAdapters::toSymbol).orElse(null),
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
+        () ->
+            binance.openOrders(
+                Optional.ofNullable(pair).map(BinanceAdapters::toSymbol).orElse(null),
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
         .withRetry(retry("openOrders"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), openOrdersPermits(pair))
         .call();
@@ -82,22 +76,22 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
       ParamsDigest signatureAnother)
       throws IOException, BinanceException {
     return decorateApiCall(
-            () ->
-                binance.newOrder(
-                    BinanceAdapters.toSymbol(pair),
-                    side,
-                    type,
-                    timeInForce,
-                    quantity,
-                    price,
-                    newClientOrderId,
-                    stopPrice,
-                    icebergQty,
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
-        .withRetry(retry("newOrder", NON_IDEMPOTENTE_CALLS_RETRY_CONFIG_NAME))
+        () ->
+            binance.newOrder(
+                BinanceAdapters.toSymbol(pair),
+                side,
+                type,
+                timeInForce,
+                quantity,
+                price,
+                newClientOrderId,
+                stopPrice,
+                icebergQty,
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
+        .withRetry(retry("newOrder", NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME))
         .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
         .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
@@ -132,21 +126,21 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
       ParamsDigest signatureAnother)
       throws IOException, BinanceException {
     decorateApiCall(
-            () ->
-                binance.testNewOrder(
-                    BinanceAdapters.toSymbol(pair),
-                    side,
-                    type,
-                    timeInForce,
-                    quantity,
-                    price,
-                    newClientOrderId,
-                    stopPrice,
-                    icebergQty,
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
+        () ->
+            binance.testNewOrder(
+                BinanceAdapters.toSymbol(pair),
+                side,
+                type,
+                timeInForce,
+                quantity,
+                price,
+                newClientOrderId,
+                stopPrice,
+                icebergQty,
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
         .withRetry(retry("testNewOrder"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
@@ -160,15 +154,15 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
   public BinanceOrder orderStatus(CurrencyPair pair, long orderId, String origClientOrderId, String apiKeyAnother, ParamsDigest signatureAnother)
       throws IOException, BinanceException {
     return decorateApiCall(
-            () ->
-                binance.orderStatus(
-                    BinanceAdapters.toSymbol(pair),
-                    orderId,
-                    origClientOrderId,
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
+        () ->
+            binance.orderStatus(
+                BinanceAdapters.toSymbol(pair),
+                orderId,
+                origClientOrderId,
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
         .withRetry(retry("orderStatus"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
@@ -184,16 +178,16 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
       CurrencyPair pair, long orderId, String origClientOrderId, String newClientOrderId, String apiKeyAnother, ParamsDigest signatureAnother)
       throws IOException, BinanceException {
     return decorateApiCall(
-            () ->
-                binance.cancelOrder(
-                    BinanceAdapters.toSymbol(pair),
-                    orderId,
-                    origClientOrderId,
-                    newClientOrderId,
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
+        () ->
+            binance.cancelOrder(
+                BinanceAdapters.toSymbol(pair),
+                orderId,
+                origClientOrderId,
+                newClientOrderId,
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
         .withRetry(retry("cancelOrder"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
@@ -207,13 +201,13 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
   public List<BinanceCancelledOrder> cancelAllOpenOrders(CurrencyPair pair, String apiKeyAnother, ParamsDigest signatureAnother)
       throws IOException, BinanceException {
     return decorateApiCall(
-            () ->
-                binance.cancelAllOpenOrders(
-                    BinanceAdapters.toSymbol(pair),
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
+        () ->
+            binance.cancelAllOpenOrders(
+                BinanceAdapters.toSymbol(pair),
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
         .withRetry(retry("cancelAllOpenOrders"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
@@ -227,15 +221,15 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
   public List<BinanceOrder> allOrders(CurrencyPair pair, Long orderId, Integer limit, String apiKeyAnother, ParamsDigest signatureAnother)
       throws BinanceException, IOException {
     return decorateApiCall(
-            () ->
-                binance.allOrders(
-                    BinanceAdapters.toSymbol(pair),
-                    orderId,
-                    limit,
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
+        () ->
+            binance.allOrders(
+                BinanceAdapters.toSymbol(pair),
+                orderId,
+                limit,
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
         .withRetry(retry("allOrders"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
@@ -245,17 +239,17 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
       CurrencyPair pair, Integer limit, Long startTime, Long endTime, Long fromId, String apiKeyAnother, ParamsDigest signatureAnother)
       throws BinanceException, IOException {
     return decorateApiCall(
-            () ->
-                binance.myTrades(
-                    BinanceAdapters.toSymbol(pair),
-                    limit,
-                    startTime,
-                    endTime,
-                    fromId,
-                    getRecvWindow(),
-                    getTimestampFactory(),
-                    apiKeyAnother,
-                    signatureAnother))
+        () ->
+            binance.myTrades(
+                BinanceAdapters.toSymbol(pair),
+                limit,
+                startTime,
+                endTime,
+                fromId,
+                getRecvWindow(),
+                getTimestampFactory(),
+                apiKeyAnother,
+                signatureAnother))
         .withRetry(retry("myTrades"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), myTradesPermits(limit))
         .call();

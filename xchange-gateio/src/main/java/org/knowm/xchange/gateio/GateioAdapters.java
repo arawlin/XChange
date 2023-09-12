@@ -23,6 +23,7 @@ import org.knowm.xchange.dto.marketdata.Trades;
 import org.knowm.xchange.dto.marketdata.Trades.TradeSortType;
 import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
 import org.knowm.xchange.dto.meta.ExchangeMetaData;
+import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.OpenOrders;
 import org.knowm.xchange.dto.trade.UserTrade;
@@ -38,6 +39,7 @@ import org.knowm.xchange.gateio.dto.marketdata.GateioTradeHistory;
 import org.knowm.xchange.gateio.dto.trade.GateioOpenOrder;
 import org.knowm.xchange.gateio.dto.trade.GateioOpenOrders;
 import org.knowm.xchange.gateio.dto.trade.GateioTrade;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.utils.DateUtils;
 
 /** Various adapters for converting from Bter DTOs to XChange DTOs */
@@ -220,6 +222,7 @@ public final class GateioAdapters {
   public static ExchangeMetaData adaptToExchangeMetaData(
       Map<CurrencyPair, GateioMarketInfo> currencyPair2BTERMarketInfoMap) {
 
+    Map<Instrument, InstrumentMetaData> instruments = exchangeMetaData.getInstruments();
     Map<CurrencyPair, CurrencyPairMetaData> currencyPairs = new HashMap<>();
 
     for (Entry<CurrencyPair, GateioMarketInfo> entry : currencyPair2BTERMarketInfoMap.entrySet()) {

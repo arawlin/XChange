@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.knowm.xchange.binance.BinanceResilience.*;
-import static org.knowm.xchange.client.ResilienceRegistries.NON_IDEMPOTENTE_CALLS_RETRY_CONFIG_NAME;
+import static org.knowm.xchange.client.ResilienceRegistries.NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME;
 
 /**
  * Created by lin on 2020-12-22.
@@ -177,7 +177,7 @@ public class BinanceFuturesTradeServiceRaw extends BinanceFuturesBaseService {
                 getTimestampFactory(),
                 Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
                 Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
-        .withRetry(retry("newOrder", NON_IDEMPOTENTE_CALLS_RETRY_CONFIG_NAME))
+        .withRetry(retry("newOrder", NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME))
         .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
         .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))

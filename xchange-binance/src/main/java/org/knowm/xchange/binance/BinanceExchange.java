@@ -1,8 +1,5 @@
 package org.knowm.xchange.binance;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
 import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.dto.account.AssetDetail;
@@ -17,10 +14,15 @@ import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.meta.CurrencyMetaData;
-import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
+import org.knowm.xchange.dto.meta.InstrumentMetaData;
 import org.knowm.xchange.exceptions.ExchangeException;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.utils.AuthUtils;
 import si.mazi.rescu.SynchronizedValueFactory;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
 
 public class BinanceExchange extends BaseExchange {
 
@@ -34,7 +36,7 @@ public class BinanceExchange extends BaseExchange {
   protected void initServices() {
     this.binance =
         ExchangeRestProxyBuilder.forInterface(
-                BinanceAuthenticated.class, getExchangeSpecification())
+            BinanceAuthenticated.class, getExchangeSpecification())
             .build();
     this.timestampFactory =
         new BinanceTimestampFactory(
@@ -89,7 +91,7 @@ public class BinanceExchange extends BaseExchange {
 
     try {
       // populate currency pair keys only, exchange does not provide any other metadata for download
-      Map<CurrencyPair, CurrencyPairMetaData> currencyPairs = exchangeMetaData.getCurrencyPairs();
+      Map<Instrument, InstrumentMetaData> instruments = exchangeMetaData.getInstruments();
       Map<Currency, CurrencyMetaData> currencies = exchangeMetaData.getCurrencies();
 
       BinanceMarketDataService marketDataService =
@@ -136,22 +138,19 @@ public class BinanceExchange extends BaseExchange {
             }
           }
 
-          boolean marketOrderAllowed = Arrays.asList(symbol.getOrderTypes()).contains("MARKET");
-          currencyPairs.put(
+          instruments.put(
               currentCurrencyPair,
-              new CurrencyPairMetaData(
-                  new BigDecimal("0.1"), // Trading fee at Binance is 0.1 %
-                  minQty, // Min amount
-                  maxQty, // Max amount
-                  counterMinQty,
-                  counterMaxQty,
-                  amountPrecision, // base precision
-                  pairPrecision, // counter precision
-                  null, /* TODO get fee tiers, although this is not necessary now
-                        because their API returns current fee directly */
-                  stepSize,
-                  null,
-                  marketOrderAllowed));
+              new InstrumentMetaData.Builder()
+                  .tradingFee(BigDecimal.valueOf(0.1))
+                  .minimumAmount(minQty)
+                  .maximumAmount(maxQty)
+                  .counterMinimumAmount(counterMinQty)
+                  .counterMaximumAmount(counterMaxQty)
+                  .volumeScale(amountPrecision)
+                  .priceScale(pairPrecision)
+                  .amountStepSize(stepSize)
+                  .marketOrderEnabled(Arrays.asList(symbol.getOrderTypes()).contains("MARKET"))
+                  .build());
 
           Currency baseCurrency = currentCurrencyPair.base;
           CurrencyMetaData baseCurrencyMetaData =

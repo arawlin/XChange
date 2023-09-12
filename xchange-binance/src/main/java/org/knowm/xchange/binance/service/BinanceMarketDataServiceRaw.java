@@ -83,7 +83,7 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
                 .call();
     }
 
-    public BinanceTicker24h ticker24h(CurrencyPair pair) throws IOException {
+    public BinanceTicker24h ticker24h(Instrument pair) throws IOException {
         BinanceTicker24h ticker24h =
                 decorateApiCall(() -> binance.ticker24h(BinanceAdapters.toSymbol(pair)))
                         .withRetry(retry("ticker24h"))
@@ -93,7 +93,7 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
         return ticker24h;
     }
 
-    public BinancePrice tickerPrice(CurrencyPair pair) throws IOException {
+    public BinancePrice tickerPrice(Instrument pair) throws IOException {
         return tickerAllPrices().stream()
                 .filter(p -> p.getCurrencyPair().equals(pair))
                 .collect(StreamUtils.singletonCollector());

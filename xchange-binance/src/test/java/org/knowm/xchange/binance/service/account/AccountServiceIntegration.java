@@ -18,6 +18,8 @@ import org.knowm.xchange.dto.account.FundingRecord;
 import org.knowm.xchange.dto.account.Wallet;
 import org.knowm.xchange.dto.meta.CurrencyMetaData;
 import org.knowm.xchange.dto.meta.CurrencyPairMetaData;
+import org.knowm.xchange.dto.meta.InstrumentMetaData;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.service.trade.params.TradeHistoryParams;
 import org.knowm.xchange.utils.StreamUtils;
 
@@ -68,20 +70,19 @@ public class AccountServiceIntegration {
   @Test
   public void testMetaData() throws Exception {
 
-    Map<CurrencyPair, CurrencyPairMetaData> currencyPairs =
-        exchange.getExchangeMetaData().getCurrencyPairs();
+    Map<Instrument, InstrumentMetaData> instruments = exchange.getExchangeMetaData().getInstruments();
     Map<Currency, CurrencyMetaData> currencies = exchange.getExchangeMetaData().getCurrencies();
-    CurrencyPair currPair;
+    Instrument currPair;
     Currency curr;
 
     currPair =
-        currencyPairs.keySet().stream()
+        instruments.keySet().stream()
             .filter(cp -> "ETH/BTC".equals(cp.toString()))
             .collect(StreamUtils.singletonCollector());
     Assert.assertNotNull(currPair);
 
     currPair =
-        currencyPairs.keySet().stream()
+        instruments.keySet().stream()
             .filter(cp -> "IOTX/ETH".equals(cp.toString()))
             .collect(StreamUtils.singletonCollector());
     Assert.assertNotNull(currPair);

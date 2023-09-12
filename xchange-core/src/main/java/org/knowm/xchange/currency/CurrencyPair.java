@@ -242,7 +242,6 @@ public class CurrencyPair extends Instrument implements Comparable<CurrencyPair>
 
   // OMG
   public static final CurrencyPair OMG_USD = new CurrencyPair(Currency.OMG, Currency.USD);
-  public static final CurrencyPair OMG_USDT = new CurrencyPair(Currency.OMG, Currency.USDT);
   public static final CurrencyPair OMG_BTC = new CurrencyPair(Currency.OMG, Currency.BTC);
   public static final CurrencyPair OMG_ETH = new CurrencyPair(Currency.OMG, Currency.ETH);
   // end

@@ -1,14 +1,5 @@
 package org.knowm.xchange.binance.service;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.knowm.xchange.binance.BinanceAuthenticated;
 import org.knowm.xchange.binance.BinanceErrorAdapter;
 import org.knowm.xchange.binance.BinanceExchange;
@@ -18,17 +9,18 @@ import org.knowm.xchange.binance.dto.account.BinanceAccountInformation;
 import org.knowm.xchange.binance.dto.account.DepositAddress;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.Currency;
-import org.knowm.xchange.currency.CurrencyPair;
-import org.knowm.xchange.dto.account.AccountInfo;
-import org.knowm.xchange.dto.account.AddressWithTag;
-import org.knowm.xchange.dto.account.Balance;
-import org.knowm.xchange.dto.account.Fee;
-import org.knowm.xchange.dto.account.FundingRecord;
+import org.knowm.xchange.dto.account.*;
 import org.knowm.xchange.dto.account.FundingRecord.Status;
 import org.knowm.xchange.dto.account.FundingRecord.Type;
-import org.knowm.xchange.dto.account.Wallet;
+import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.service.account.AccountService;
 import org.knowm.xchange.service.trade.params.*;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BinanceAccountService extends BinanceAccountServiceRaw implements AccountService {
 
@@ -39,7 +31,9 @@ public class BinanceAccountService extends BinanceAccountServiceRaw implements A
     super(exchange, binance, resilienceRegistries);
   }
 
-  /** (0:Email Sent,1:Cancelled 2:Awaiting Approval 3:Rejected 4:Processing 5:Failure 6Completed) */
+  /**
+   * (0:Email Sent,1:Cancelled 2:Awaiting Approval 3:Rejected 4:Processing 5:Failure 6Completed)
+   */
   private static FundingRecord.Status withdrawStatus(int status) {
     switch (status) {
       case 0:
@@ -58,7 +52,9 @@ public class BinanceAccountService extends BinanceAccountServiceRaw implements A
     }
   }
 
-  /** (0:pending,6: credited but cannot withdraw,1:success) */
+  /**
+   * (0:pending,6: credited but cannot withdraw,1:success)
+   */
   private static FundingRecord.Status depositStatus(int status) {
     switch (status) {
       case 0:
@@ -86,7 +82,7 @@ public class BinanceAccountService extends BinanceAccountServiceRaw implements A
   }
 
   @Override
-  public Map<CurrencyPair, Fee> getDynamicTradingFees() throws IOException {
+  public Map<Instrument, Fee> getDynamicTradingFeesByInstrument() throws IOException {
     try {
       BinanceAccountInformation acc = account();
       BigDecimal makerFee =
@@ -94,8 +90,8 @@ public class BinanceAccountService extends BinanceAccountServiceRaw implements A
       BigDecimal takerFee =
           acc.takerCommission.divide(new BigDecimal("10000"), 4, RoundingMode.UNNECESSARY);
 
-      Map<CurrencyPair, Fee> tradingFees = new HashMap<>();
-      List<CurrencyPair> pairs = exchange.getExchangeSymbols();
+      Map<Instrument, Fee> tradingFees = new HashMap<>();
+      List<Instrument> pairs = exchange.getExchangeInstruments();
 
       pairs.forEach(pair -> tradingFees.put(pair, new Fee(makerFee, takerFee)));
 

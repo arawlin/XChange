@@ -5,13 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class HuobiResult<V> {
 
-  private String status;
-  private String errCode;
-  private String errMsg;
-  private V result;
-
-  private String ch;
-  private Long ts;
+  private final String status;
+  private final String errCode;
+  private final String errMsg;
+  private final V result;
 
   @JsonCreator
   public HuobiResult(
@@ -22,19 +19,6 @@ public class HuobiResult<V> {
     this.status = status;
     this.errCode = errCode;
     this.errMsg = errMsg;
-    this.result = result;
-  }
-
-  @JsonCreator
-  public HuobiResult(
-      @JsonProperty("status") String status,
-      @JsonProperty("ch") String ch,
-      @JsonProperty("ts") Long ts,
-      V result
-  ) {
-    this.status = status;
-    this.ch = ch;
-    this.ts = ts;
     this.result = result;
   }
 

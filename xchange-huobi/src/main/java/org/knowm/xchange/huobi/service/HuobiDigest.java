@@ -1,36 +1,26 @@
 package org.knowm.xchange.huobi.service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.crypto.Mac;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.QueryParam;
 import org.knowm.xchange.service.BaseParamsDigest;
 import si.mazi.rescu.Params;
 import si.mazi.rescu.RestInvocation;
 
-import javax.crypto.Mac;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLEncoder;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class HuobiDigest extends BaseParamsDigest {
-
-  private final Field invocationUrlField;
-  private static final String PLACEHOLDER = "HUOBI_PLACEHOLDER";
 
   private HuobiDigest(String secretKey) {
     super(secretKey, HMAC_SHA_256);
-    try {
-      invocationUrlField = RestInvocation.class.getDeclaredField("invocationUrl");
-      invocationUrlField.setAccessible(true);
-    } catch (NoSuchFieldException e) {
-      throw new IllegalStateException("rescu library has been updated");
-    }
   }
 
   static HuobiDigest createInstance(String secretKey) {
@@ -44,8 +34,8 @@ public class HuobiDigest extends BaseParamsDigest {
     String method = "/" + restInvocation.getMethodPath();
     String query =
         Stream.of(
-            restInvocation.getParamsMap().get(FormParam.class),
-            restInvocation.getParamsMap().get(QueryParam.class))
+                restInvocation.getParamsMap().get(FormParam.class),
+                restInvocation.getParamsMap().get(QueryParam.class))
             .map(Params::asHttpHeaders)
             .map(Map::entrySet)
             .flatMap(Collection::stream)
@@ -56,8 +46,9 @@ public class HuobiDigest extends BaseParamsDigest {
     String toSign = String.format("%s\n%s\n%s\n%s", httpMethod, host, method, query);
     Mac mac = getMac();
     String signature =
-        encodeValue(Base64.getEncoder().encodeToString(mac.doFinal(toSign.getBytes())).trim());
-    replaceSignatureUrl(restInvocation, signature);
+        Base64.getEncoder()
+            .encodeToString(mac.doFinal(toSign.getBytes(StandardCharsets.UTF_8)))
+            .trim();
     return signature;
   }
 
@@ -79,20 +70,5 @@ public class HuobiDigest extends BaseParamsDigest {
       throw new IllegalStateException(e.getMessage());
     }
     return ret;
-  }
-
-  private void replaceSignatureUrl(RestInvocation restInvocation, String signature) {
-    String invocationUrl = restInvocation.getInvocationUrl();
-    String newInvocationUrl = invocationUrl.replace(PLACEHOLDER, signature);
-    try {
-      invocationUrlField.set(restInvocation, newInvocationUrl);
-    } catch (IllegalAccessException e) {
-      throw new IllegalStateException("rescu library has been updated");
-    }
-  }
-
-  @Override
-  public String toString() {
-    return PLACEHOLDER;
   }
 }

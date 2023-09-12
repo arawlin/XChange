@@ -46,7 +46,6 @@
     <module>xchange-bybit</module>
     <module>xchange-core</module>
     <module>xchange-dydx</module>
-    <module>xchange-ftx</module>
     <module>xchange-gateio</module>
     <module>xchange-gateio-v4</module>
     <module>xchange-huobi</module>

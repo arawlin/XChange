@@ -56,7 +56,6 @@
     <module>xchange-stream-binance</module>
     <module>xchange-stream-core</module>
     <module>xchange-stream-dydx</module>
-    <module>xchange-stream-ftx</module>
     <module>xchange-stream-gateio</module>
     <module>xchange-stream-huobi</module>
     <module>xchange-stream-okex</module>

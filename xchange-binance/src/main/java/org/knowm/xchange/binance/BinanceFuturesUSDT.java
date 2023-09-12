@@ -1,5 +1,7 @@
 package org.knowm.xchange.binance;
 
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.BinanceFutureAccount;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturesPremiumIndex;
@@ -7,8 +9,6 @@ import org.knowm.xchange.binance.dto.trade.BinanceFuturePositionRisk;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.List;
 

@@ -1,13 +1,13 @@
 package org.knowm.xchange.binance;
 
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.binance.dto.trade.*;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -567,10 +567,10 @@ public interface BinanceAuthenticated extends Binance {
   @GET
   @Path("/sapi/v1/account/apiRestrictions")
   BinanceRestrictions apiRestrictions(
-          @QueryParam("recvWindow") Long recvWindow,
-          @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
-          @HeaderParam(X_MBX_APIKEY) String apiKey,
-          @QueryParam(SIGNATURE) ParamsDigest signature)
-          throws IOException, BinanceException;
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
 
 }

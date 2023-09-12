@@ -1,18 +1,20 @@
 package info.bitrich.xchangestream.huobi;
 
-import info.bitrich.xchangestream.core.StreamingExchange;
-import info.bitrich.xchangestream.core.StreamingExchangeFactory;
-import info.bitrich.xchangestream.huobi.dto.HuobiKlineType;
-import info.bitrich.xchangestream.huobi.dto.HuobiStepType;
 import java.util.List;
+
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HuobiManualExample {
+import info.bitrich.xchangestream.core.StreamingExchange;
+import info.bitrich.xchangestream.core.StreamingExchangeFactory;
+import info.bitrich.xchangestream.huobi.dto.HuobiKlineType;
+import info.bitrich.xchangestream.huobi.dto.HuobiStepType;
 
-  private static final Logger LOG = LoggerFactory.getLogger(HuobiManualExample.class);
+public class HuobiManualIntegration {
+
+  private static final Logger LOG = LoggerFactory.getLogger(HuobiManualIntegration.class);
 
   public static void main(String[] args) {
     StreamingExchange exchange =

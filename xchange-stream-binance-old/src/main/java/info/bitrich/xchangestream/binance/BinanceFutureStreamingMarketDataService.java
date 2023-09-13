@@ -129,7 +129,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "aggTrade"))
         .map(this::aggTradeTransaction)
-        .filter(transaction -> transaction.getData().getCurrencyPair().equals(currencyPair))
+        .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair))
         .map(transaction -> transaction.getData().getAggTrades());
   }
 
@@ -200,7 +200,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
         service
             .subscribeChannel(channelFromCurrency(currencyPair, "depth"))
             .map(this::depthTransaction)
-            .filter(transaction -> transaction.getData().getCurrencyPair().equals(currencyPair));
+            .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair));
     return subscription;
   }
 

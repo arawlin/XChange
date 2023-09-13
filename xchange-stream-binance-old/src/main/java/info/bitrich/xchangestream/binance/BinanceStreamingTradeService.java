@@ -42,7 +42,7 @@ public class BinanceStreamingTradeService implements StreamingTradeService {
   public Observable<Order> getOrderChanges() {
     return getRawExecutionReports()
         .filter(r -> !r.getExecutionType().equals(ExecutionType.REJECTED))
-        .map(ExecutionReportBinanceUserTransaction::toOrder);
+        .map(t -> t.toOrder(false));
   }
 
   @Override
@@ -53,7 +53,7 @@ public class BinanceStreamingTradeService implements StreamingTradeService {
   public Observable<UserTrade> getUserTrades() {
     return getRawExecutionReports()
         .filter(r -> r.getExecutionType().equals(ExecutionType.TRADE))
-        .map(ExecutionReportBinanceUserTransaction::toUserTrade);
+        .map(t -> t.toUserTrade(false));
   }
 
   @Override

@@ -113,7 +113,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
 
   @Override
   public Observable<Ticker> getTicker(CurrencyPair currencyPair, Object... args) {
-    return getRawTicker(currencyPair).map(BinanceTicker24h::toTicker);
+    return getRawTicker(currencyPair).map(t -> t.toTicker(false));
   }
 
   @Override
@@ -173,7 +173,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "ticker"))
         .map(this::tickerTransaction)
-        .filter(transaction -> transaction.getData().getCurrencyPair().equals(currencyPair))
+        .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair))
         .map(transaction -> transaction.getData().getTicker());
   }
 
@@ -209,7 +209,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     private BinanceOrderbook fetchBinanceOrderBook(Instrument currencyPair)
         throws IOException, InterruptedException {
       try {
-        return marketDataService.getBinanceOrderbook(currencyPair, 1000);
+        return marketDataService.getBinanceOrderbookAllProducts(currencyPair, 1000);
       } catch (BinanceException e) {
         if (BinanceErrorAdapter.adapt(e) instanceof RateLimitExceededException) {
           if (fallenBack.compareAndSet(false, true)) {
@@ -244,7 +244,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
         service
             .subscribeChannel(channelFromCurrency(currencyPair, "depth"))
             .map(this::depthTransaction)
-            .filter(transaction -> transaction.getData().getCurrencyPair().equals(currencyPair));
+            .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair));
     return subscription;
   }
 
@@ -350,7 +350,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "trade"))
         .map(this::tradeTransaction)
-        .filter(transaction -> transaction.getData().getCurrencyPair().equals(currencyPair))
+        .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair))
         .map(transaction -> transaction.getData().getRawTrade());
   }
 

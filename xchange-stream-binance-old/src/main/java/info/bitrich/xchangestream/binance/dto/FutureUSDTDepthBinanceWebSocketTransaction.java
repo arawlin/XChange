@@ -18,7 +18,7 @@ public class FutureUSDTDepthBinanceWebSocketTransaction extends DepthBinanceWebS
       @JsonProperty("pu") long lastLastUpdateId,
       @JsonProperty("b") List<Object[]> _bids,
       @JsonProperty("a") List<Object[]> _asks) {
-    super(eventType, eventTime, symbol, firstUpdateId, lastUpdateId, _bids, _asks);
+    super(eventType, eventTime, symbol, firstUpdateId, lastUpdateId, lastLastUpdateId, _bids, _asks);
 
     this.transactionTime = transactionTime;
     this.lastLastUpdateId = lastLastUpdateId;

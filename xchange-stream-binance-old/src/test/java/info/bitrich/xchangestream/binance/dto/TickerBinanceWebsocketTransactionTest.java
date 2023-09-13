@@ -36,7 +36,7 @@ public class TickerBinanceWebsocketTransactionTest {
     assertThat(tickerTransaction).isNotNull();
     assertThat(tickerTransaction.eventType).isEqualTo(TICKER_24_HR);
     assertThat(tickerTransaction.getEventTime().getTime()).isEqualTo(1516135684559L);
-    assertThat(tickerTransaction.getCurrencyPair()).isEqualTo(CurrencyPair.ETH_BTC);
+    assertThat(tickerTransaction.getSymbol()).isEqualTo(CurrencyPair.ETH_BTC);
 
     BinanceTicker24h ticker = tickerTransaction.getTicker();
     assertThat(ticker.getPriceChange()).isEqualByComparingTo(BigDecimal.valueOf(-0.00271700));
@@ -55,10 +55,10 @@ public class TickerBinanceWebsocketTransactionTest {
     assertThat(ticker.getLowPrice()).isEqualByComparingTo(BigDecimal.valueOf(0.08100000));
     assertThat(ticker.getVolume()).isEqualByComparingTo(BigDecimal.valueOf(287542.79200000));
     assertThat(ticker.getQuoteVolume()).isEqualByComparingTo(BigDecimal.valueOf(26334.24227973));
-    assertThat(ticker.getOpenTime().getTime()).isEqualTo(1516049284557L);
-    assertThat(ticker.getCloseTime().getTime()).isEqualTo(1516135684557L);
-    assertThat(ticker.getFirstTradeId()).isEqualTo(21702040L);
-    assertThat(ticker.getLastTradeId()).isEqualTo(22120714L);
-    assertThat(ticker.getTradeCount()).isEqualTo(418675L);
+    assertThat(ticker.getOpenTime()).isEqualTo(1516049284557L);
+    assertThat(ticker.getCloseTime()).isEqualTo(1516135684557L);
+    assertThat(ticker.getFirstId()).isEqualTo(21702040L);
+    assertThat(ticker.getLastId()).isEqualTo(22120714L);
+    assertThat(ticker.getCount()).isEqualTo(418675L);
   }
 }

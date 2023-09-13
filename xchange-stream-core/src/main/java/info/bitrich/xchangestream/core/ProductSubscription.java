@@ -20,6 +20,8 @@ public class ProductSubscription {
   private final List<Instrument> orders;
   private final List<Instrument> fundingRates;
   private final List<Currency> balances;
+  private final List<Instrument> forceOrders;
+  private final List<Instrument> aggTrades;
 
   private ProductSubscription(ProductSubscriptionBuilder builder) {
     this.orderBook = asList(builder.orderBook);
@@ -29,6 +31,8 @@ public class ProductSubscription {
     this.fundingRates = asList(builder.fundingRates);
     this.userTrades = asList(builder.userTrades);
     this.balances = asList(builder.balances);
+    this.forceOrders = asList(builder.forceOrders);
+    this.aggTrades = asList(builder.aggTrades);
   }
 
   private <T> List<T> asList(Iterable<T> collection) {
@@ -65,6 +69,14 @@ public class ProductSubscription {
     return balances;
   }
 
+  public List<Instrument> getForceOrders() {
+    return forceOrders;
+  }
+
+  public List<Instrument> getAggTrades() {
+    return aggTrades;
+  }
+
   public boolean isEmpty() {
     return !hasAuthenticated() && !hasUnauthenticated();
   }
@@ -74,7 +86,7 @@ public class ProductSubscription {
   }
 
   public boolean hasUnauthenticated() {
-    return !ticker.isEmpty() || !trades.isEmpty() || !orderBook.isEmpty() || !fundingRates.isEmpty();
+    return !ticker.isEmpty() || !trades.isEmpty() || !orderBook.isEmpty() || !forceOrders.isEmpty() || !aggTrades.isEmpty() || !fundingRates.isEmpty();
   }
 
   public static ProductSubscriptionBuilder create() {
@@ -89,6 +101,8 @@ public class ProductSubscription {
     private final Set<Instrument> orders;
     private final Set<Instrument> fundingRates;
     private final Set<Currency> balances;
+    private final Set<Instrument> forceOrders;
+    private final Set<Instrument> aggTrades;
 
     private ProductSubscriptionBuilder() {
       orderBook = new HashSet<>();
@@ -98,6 +112,8 @@ public class ProductSubscription {
       fundingRates = new HashSet<>();
       userTrades = new HashSet<>();
       balances = new HashSet<>();
+      forceOrders = new HashSet<>();
+      aggTrades = new HashSet<>();
     }
 
     public ProductSubscriptionBuilder addOrderbook(Instrument pair) {
@@ -134,6 +150,16 @@ public class ProductSubscription {
       return this;
     }
 
+    public ProductSubscriptionBuilder addForceOrders(Instrument pair) {
+      forceOrders.add(pair);
+      return this;
+    }
+
+    public ProductSubscriptionBuilder addAggTrades(Instrument pair) {
+      aggTrades.add(pair);
+      return this;
+    }
+
     public ProductSubscriptionBuilder addAll(Instrument pair) {
       orderBook.add(pair);
       trades.add(pair);
@@ -143,6 +169,8 @@ public class ProductSubscription {
       userTrades.add(pair);
       balances.add(pair.getBase());
       balances.add(pair.getCounter());
+      forceOrders.add(pair);
+      aggTrades.add(pair);
       return this;
     }
 

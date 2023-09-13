@@ -46,7 +46,7 @@ public class BinanceFutureManualExample {
 
     ProductSubscription subscription =
         ProductSubscription.create()
-            .addOrderbook(CurrencyPair.OMG_USDT)
+            .addOrderbook(CurrencyPair.BTC_USDT)
             .addForceOrders(CurrencyPair.DASH_USDT)
             .addForceOrders(CurrencyPair.ZEC_USDT)
             .addTrades(CurrencyPair.ZEC_USDT)
@@ -102,7 +102,7 @@ public class BinanceFutureManualExample {
   private static Disposable orderbooks(StreamingExchange exchange, String identifier) {
     return exchange
         .getStreamingMarketDataService()
-        .getOrderBook(CurrencyPair.OMG_USDT)
+        .getOrderBook(CurrencyPair.BTC_USDT)
         .subscribe(
             orderBook -> {
               DiffOrderBook diffOrderBook = (DiffOrderBook) orderBook;

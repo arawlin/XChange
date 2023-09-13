@@ -1,6 +1,7 @@
 package info.bitrich.xchangestream.core;
 
 import io.reactivex.Observable;
+import java.util.List;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.*;
 import org.knowm.xchange.exceptions.NotYetImplementedForExchangeException;
@@ -45,10 +46,11 @@ public interface StreamingMarketDataService {
   }
 
   default Observable<Ticker> getTicker(Instrument instrument, Object... args) {
-    if (instrument instanceof CurrencyPair) {
-      return getTicker((CurrencyPair) instrument, args);
-    }
     throw new NotYetImplementedForExchangeException("getTicker");
+  }
+
+  default Observable<List<Ticker>> getAllTicker(Object... args) {
+    throw new NotYetImplementedForExchangeException("getAllTicker");
   }
 
   /**

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BinanceFutureManualExample {
+
   private static final Logger LOG = LoggerFactory.getLogger(BinanceFutureManualExample.class);
 
   public static void main(String[] args) throws InterruptedException {
@@ -46,12 +47,13 @@ public class BinanceFutureManualExample {
 
     ProductSubscription subscription =
         ProductSubscription.create()
-            .addOrderbook(CurrencyPair.BTC_USDT)
-            .addForceOrders(CurrencyPair.DASH_USDT)
-            .addForceOrders(CurrencyPair.ZEC_USDT)
-            .addTrades(CurrencyPair.ZEC_USDT)
-            .addAggTrades(CurrencyPair.BTC_USDT)
-            .addTicker(CurrencyPair.BTC_USDT)
+//            .addOrderbook(CurrencyPair.BTC_USDT)
+//            .addForceOrders(CurrencyPair.DASH_USDT)
+//            .addForceOrders(CurrencyPair.ZEC_USDT)
+//            .addTrades(CurrencyPair.ZEC_USDT)
+//            .addAggTrades(CurrencyPair.BTC_USDT)
+//            .addTicker(CurrencyPair.BTC_USDT)
+            .setAllTicker(true)
             .build();
 
     exchange.connect(subscription).blockingAwait();
@@ -86,6 +88,9 @@ public class BinanceFutureManualExample {
         }
     );
 
+    Disposable allticker = exchange.getStreamingMarketDataService().getAllTicker().subscribe(t -> {
+      LOG.info("{}", t);
+    });
 
     Thread.sleep(1000000000);
 
@@ -95,6 +100,7 @@ public class BinanceFutureManualExample {
     trades.dispose();
     aggTrades.dispose();
     ticker.dispose();
+    allticker.dispose();
 
     exchange.disconnect().blockingAwait();
   }

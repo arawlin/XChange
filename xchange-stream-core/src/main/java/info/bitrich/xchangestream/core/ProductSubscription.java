@@ -22,6 +22,7 @@ public class ProductSubscription {
   private final List<Currency> balances;
   private final List<Instrument> forceOrders;
   private final List<Instrument> aggTrades;
+  private final boolean allTicker;
 
   private ProductSubscription(ProductSubscriptionBuilder builder) {
     this.orderBook = asList(builder.orderBook);
@@ -33,6 +34,7 @@ public class ProductSubscription {
     this.balances = asList(builder.balances);
     this.forceOrders = asList(builder.forceOrders);
     this.aggTrades = asList(builder.aggTrades);
+    this.allTicker = builder.allTicker;
   }
 
   private <T> List<T> asList(Iterable<T> collection) {
@@ -86,11 +88,15 @@ public class ProductSubscription {
   }
 
   public boolean hasUnauthenticated() {
-    return !ticker.isEmpty() || !trades.isEmpty() || !orderBook.isEmpty() || !forceOrders.isEmpty() || !aggTrades.isEmpty() || !fundingRates.isEmpty();
+    return !ticker.isEmpty() || !trades.isEmpty() || !orderBook.isEmpty() || !forceOrders.isEmpty() || !aggTrades.isEmpty() || !fundingRates.isEmpty() || allTicker;
   }
 
   public static ProductSubscriptionBuilder create() {
     return new ProductSubscriptionBuilder();
+  }
+
+  public boolean isAllTicker() {
+    return allTicker;
   }
 
   public static class ProductSubscriptionBuilder {
@@ -104,6 +110,8 @@ public class ProductSubscription {
     private final Set<Instrument> forceOrders;
     private final Set<Instrument> aggTrades;
 
+    private boolean allTicker;
+
     private ProductSubscriptionBuilder() {
       orderBook = new HashSet<>();
       trades = new HashSet<>();
@@ -114,6 +122,7 @@ public class ProductSubscription {
       balances = new HashSet<>();
       forceOrders = new HashSet<>();
       aggTrades = new HashSet<>();
+      allTicker = false;
     }
 
     public ProductSubscriptionBuilder addOrderbook(Instrument pair) {
@@ -177,5 +186,11 @@ public class ProductSubscription {
     public ProductSubscription build() {
       return new ProductSubscription(this);
     }
+
+    public ProductSubscriptionBuilder setAllTicker(boolean allTicker) {
+      this.allTicker = allTicker;
+      return this;
+    }
+
   }
 }

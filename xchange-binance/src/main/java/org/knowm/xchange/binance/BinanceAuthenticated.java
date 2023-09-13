@@ -549,4 +549,70 @@ public interface BinanceAuthenticated extends Binance {
   Map<?, ?> closeUserDataStream(
       @HeaderParam(X_MBX_APIKEY) String apiKey, @PathParam("listenKey") String listenKey)
       throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/apiReferral/ifNewUser")
+  IfNewUser ifNewUser(
+      @QueryParam("apiAgentCode") String apiAgentCode,
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @POST
+  @Path("/sapi/v1/apiReferral/userCustomization")
+  Map<String, String> userCustomizationSet(
+      @FormParam("apiAgentCode") String apiAgentCode,
+      @FormParam("customerId") String customerId,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/apiReferral/userCustomization")
+  Map<String, String> userCustomizationGet(
+      @QueryParam("apiAgentCode") String apiAgentCode,
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/apiReferral/rebate/recentRecord")
+  List<RebateInfo> rebateRecentRecord(
+      @QueryParam("customerId") String customerId,
+      @QueryParam("startTime") Long startTime,
+      @QueryParam("endTime") Long endTime,
+      @QueryParam("limit") Integer limit,
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @POST
+  @Path("/sapi/v1/asset/transfer")
+  Map<String, String> assetTransfer(
+      @FormParam("type") AssetTransferType type,
+      @FormParam("asset") String asset,
+      @FormParam("amount") BigDecimal amount,
+      @FormParam("recvWindow") Long recvWindow,
+      @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/account/apiRestrictions")
+  BinanceRestrictions apiRestrictions(
+      @QueryParam("recvWindow") Long recvWindow,
+      @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+      @HeaderParam(X_MBX_APIKEY) String apiKey,
+      @QueryParam(SIGNATURE) ParamsDigest signature)
+      throws IOException, BinanceException;
+
 }

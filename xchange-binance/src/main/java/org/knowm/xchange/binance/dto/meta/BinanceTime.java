@@ -10,4 +10,8 @@ public class BinanceTime {
   public Date getServerTime() {
     return new Date(serverTime);
   }
+
+  public long getServerTimeRaw() {
+    return serverTime;
+  }
 }

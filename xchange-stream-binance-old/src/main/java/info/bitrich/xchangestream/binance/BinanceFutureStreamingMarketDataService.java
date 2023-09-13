@@ -325,7 +325,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
     }
   }
 
-  public Observable<BinanceForceOrder> getForceOrder(CurrencyPair currencyPair, Object... args) {
+  public Observable<BinanceForceOrder> getForceOrder(Instrument currencyPair, Object... args) {
     if (!service.getProductSubscription().getForceOrders().contains(currencyPair)) {
       throw new UnsupportedOperationException(
           "Binance exchange only supports up front subscriptions - subscribe at connect time");
@@ -334,7 +334,7 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
     return forceOrderSubscriptions.get(currencyPair);
   }
 
-  public Observable<BinanceAggTrades> getAggTrade(CurrencyPair currencyPair, Object... args) {
+  public Observable<BinanceAggTrades> getAggTrade(Instrument currencyPair, Object... args) {
     if (!service.getProductSubscription().getAggTrades().contains(currencyPair)) {
       throw new UnsupportedOperationException(
           "Binance exchange only supports up front subscriptions - subscribe at connect time");

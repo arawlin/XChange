@@ -4,6 +4,8 @@ import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
+import java.util.Arrays;
+
 public enum KlineInterval {
   m1("1m", MINUTES.toMillis(1)),
   m3("3m", MINUTES.toMillis(3)),
@@ -50,5 +52,10 @@ public enum KlineInterval {
       }
     }
     return result;
+  }
+
+  public static KlineInterval getEnum(String c) {
+    return Arrays.stream(KlineInterval.values()).filter(i -> i.code.equals(c)).findFirst()
+        .orElse(null);
   }
 }

@@ -3,6 +3,7 @@ package org.knowm.xchange.binance.service;
 import org.knowm.xchange.binance.BinanceFutures;
 import org.knowm.xchange.binance.BinanceFuturesCommon;
 import org.knowm.xchange.binance.BinanceFuturesExchange;
+import org.knowm.xchange.binance.BinanceFuturesOld;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.service.account.AccountService;
 
@@ -11,7 +12,7 @@ import org.knowm.xchange.service.account.AccountService;
  */
 public class BinanceFuturesAccountService extends BinanceFuturesAccountServiceRaw implements AccountService {
 
-  public BinanceFuturesAccountService(BinanceFuturesExchange exchange, BinanceFutures binance, BinanceFuturesCommon binanceCommon, ResilienceRegistries resilienceRegistries) {
+  public BinanceFuturesAccountService(BinanceFuturesExchange exchange, BinanceFuturesOld binance, BinanceFuturesCommon binanceCommon, ResilienceRegistries resilienceRegistries) {
     super(exchange, binance, binanceCommon, resilienceRegistries);
   }
 

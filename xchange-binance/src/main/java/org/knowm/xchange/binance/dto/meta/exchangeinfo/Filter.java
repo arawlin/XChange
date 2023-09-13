@@ -16,6 +16,7 @@ public class Filter {
   private String stepSize;
 
   private String minNotional;
+  private String notional;
 
   public String getMaxPrice() {
     return maxPrice;
@@ -81,6 +82,14 @@ public class Filter {
     this.minNotional = minNotional;
   }
 
+  public String getNotional() {
+    return notional;
+  }
+
+  public void setNotional(String notional) {
+    this.notional = notional;
+  }
+
   @Override
   public String toString() {
     return "Filter{"
@@ -108,6 +117,10 @@ public class Filter {
         + ", minNotional='"
         + minNotional
         + '\''
+        + ", notional='"
+        + notional
+        + '\''
         + '}';
   }
+
 }

@@ -1,5 +1,6 @@
 package org.knowm.xchange.binance.service.account;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.knowm.xchange.binance.BinanceExchangeIntegration;
 import org.knowm.xchange.binance.dto.account.AssetDetail;
+import org.knowm.xchange.binance.dto.account.AssetTransferType;
 import org.knowm.xchange.binance.dto.account.BinanceDeposit;
+import org.knowm.xchange.binance.dto.account.BinanceRestrictions;
 import org.knowm.xchange.binance.dto.account.TransferHistory;
 import org.knowm.xchange.binance.service.BinanceAccountService;
+import org.knowm.xchange.binance.service.BinanceHmacDigest;
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.dto.account.Balance;
 import org.knowm.xchange.dto.account.FundingRecord;
@@ -28,6 +32,10 @@ public class AccountServiceIntegration extends BinanceExchangeIntegration {
 
   static BinanceAccountService accountService;
 
+  private String apiKey;
+  private String apiSecret;
+  private String apiAgentCode;
+
   @BeforeClass
   public static void beforeClass() throws Exception {
     createExchange();
@@ -36,6 +44,10 @@ public class AccountServiceIntegration extends BinanceExchangeIntegration {
 
   @Before
   public void before() {
+    apiKey = System.getProperty("apiKey");
+    apiSecret = System.getProperty("apiSecret");
+    apiAgentCode = System.getProperty("apiAgentCode");
+
     Assume.assumeNotNull(exchange.getExchangeSpecification().getApiKey());
   }
 
@@ -128,4 +140,17 @@ public class AccountServiceIntegration extends BinanceExchangeIntegration {
         accountService.getTransferHistory("no@email.com", null, null, 1, 10);
     Assert.assertNotNull(transferHistory);
   }
+
+  @Test
+  public void assetTransfer() throws IOException {
+    String res = accountService.assetTransfer(AssetTransferType.UMFUTURE_MAIN, "BUSD", new BigDecimal(0.02), apiKey, BinanceHmacDigest.createInstance(apiSecret));
+    Assume.assumeNotNull(res);
+  }
+
+  @Test
+  public void apiRestrictions() throws IOException {
+    BinanceRestrictions res = accountService.apiRestrictions(apiKey, BinanceHmacDigest.createInstance(apiSecret));
+    Assume.assumeNotNull(res);
+  }
+
 }

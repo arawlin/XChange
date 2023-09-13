@@ -14,7 +14,7 @@ import java.util.List;
 
 @Path("fapi")
 @Produces(MediaType.APPLICATION_JSON)
-public interface BinanceFuturesUSDT extends BinanceFutures {
+public interface BinanceFuturesUSDT extends BinanceFuturesOld {
 
   String HOST = "fapi.binance.com";
   String URL = "https://" + HOST;

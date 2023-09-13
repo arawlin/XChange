@@ -18,7 +18,7 @@ public class BinanceFuturesMarketDataService extends BinanceFuturesMarketDataSer
 
   public BinanceFuturesMarketDataService(
       BinanceFuturesExchange exchange,
-      BinanceFutures binance,
+      BinanceFuturesOld binance,
       BinanceFuturesCommon binanceCommon,
       ResilienceRegistries resilienceRegistries) {
     super(exchange, binance, binanceCommon, resilienceRegistries);

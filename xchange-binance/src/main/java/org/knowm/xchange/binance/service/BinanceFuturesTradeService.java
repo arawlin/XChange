@@ -24,7 +24,7 @@ public class BinanceFuturesTradeService extends BinanceFuturesTradeServiceRaw im
 
   public BinanceFuturesTradeService(
       BinanceFuturesExchange exchange,
-      BinanceFutures binance,
+      BinanceFuturesOld binance,
       BinanceFuturesCommon binanceCommon,
       ResilienceRegistries resilienceRegistries) {
     super(exchange, binance, binanceCommon, resilienceRegistries);

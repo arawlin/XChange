@@ -14,7 +14,7 @@ import java.util.List;
 
 @Path("dapi")
 @Produces(MediaType.APPLICATION_JSON)
-public interface BinanceFuturesCoin extends BinanceFutures {
+public interface BinanceFuturesCoin extends BinanceFuturesOld {
 
   String HOST = "dapi.binance.com";
   String URL = "https://" + HOST;

@@ -1,5 +1,8 @@
 package org.knowm.xchange.binance;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Map;
 import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
@@ -18,10 +21,6 @@ import org.knowm.xchange.instrument.Instrument;
 import org.knowm.xchange.utils.AuthUtils;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Map;
-
 public class BinanceFuturesExchange extends BaseExchange {
 
   private static ResilienceRegistries RESILIENCE_REGISTRIES;
@@ -30,22 +29,29 @@ public class BinanceFuturesExchange extends BaseExchange {
 
   @Override
   protected void initServices() {
-    BinanceFutures binance;
+    BinanceFuturesOld binance;
     BinanceExchangeSpecification spec = (BinanceExchangeSpecification) getExchangeSpecification();
     if (spec.getFuturesSettleType() == FuturesSettleType.USDT) {
-      binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesUSDT.class, getExchangeSpecification()).build();
+      binance = ExchangeRestProxyBuilder
+          .forInterface(BinanceFuturesUSDT.class, getExchangeSpecification()).build();
     } else if (spec.getFuturesSettleType() == FuturesSettleType.COIN) {
-      binance = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCoin.class, getExchangeSpecification()).build();
+      binance = ExchangeRestProxyBuilder
+          .forInterface(BinanceFuturesCoin.class, getExchangeSpecification()).build();
     } else {
       throw new ExchangeException("Must setFuturesSettleType in BinanceExchangeSpecification.");
     }
 
-    BinanceFuturesCommon binanceCommon = ExchangeRestProxyBuilder.forInterface(BinanceFuturesCommon.class, getExchangeSpecification()).build();
+    BinanceFuturesCommon binanceCommon = ExchangeRestProxyBuilder
+        .forInterface(BinanceFuturesCommon.class, getExchangeSpecification()).build();
 
-    this.marketDataService = new BinanceFuturesMarketDataService(this, binance, binanceCommon, getResilienceRegistries());
-    this.tradeService = new BinanceFuturesTradeService(this, binance, binanceCommon, getResilienceRegistries());
-    this.accountService = new BinanceFuturesAccountService(this, binance, binanceCommon, getResilienceRegistries());
-    this.timestampFactory = new BinanceFuturesTimestampFactory(binance, getExchangeSpecification().getResilience(), getResilienceRegistries());
+    this.marketDataService = new BinanceFuturesMarketDataService(this, binance, binanceCommon,
+        getResilienceRegistries());
+    this.tradeService = new BinanceFuturesTradeService(this, binance, binanceCommon,
+        getResilienceRegistries());
+    this.accountService = new BinanceFuturesAccountService(this, binance, binanceCommon,
+        getResilienceRegistries());
+    this.timestampFactory = new BinanceFuturesTimestampFactory(binance,
+        getExchangeSpecification().getResilience(), getResilienceRegistries());
 
   }
 
@@ -124,7 +130,8 @@ public class BinanceFuturesExchange extends BaseExchange {
 
           Filter[] filters = symbol.getFilters();
 
-          CurrencyPair currentCurrencyPair = new CurrencyPair(symbol.getBaseAsset(), symbol.getQuoteAsset());
+          CurrencyPair currentCurrencyPair = new CurrencyPair(symbol.getBaseAsset(),
+              symbol.getQuoteAsset());
 
           for (Filter filter : filters) {
             if (filter.getFilterType().equals("PRICE_FILTER")) {

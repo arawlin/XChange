@@ -17,7 +17,7 @@ public class BinanceFuturesTimestampFactory implements SynchronizedValueFactory<
 
   private static final Logger LOG = LoggerFactory.getLogger(BinanceFuturesTimestampFactory.class);
 
-  private final BinanceFutures binance;
+  private final BinanceFuturesOld binance;
   private final ExchangeSpecification.ResilienceSpecification resilienceSpecification;
   private final ResilienceRegistries resilienceRegistries;
 
@@ -25,7 +25,7 @@ public class BinanceFuturesTimestampFactory implements SynchronizedValueFactory<
   private Long deltaServerTime;
 
   public BinanceFuturesTimestampFactory(
-      BinanceFutures binance,
+      BinanceFuturesOld binance,
       ExchangeSpecification.ResilienceSpecification resilienceSpecification,
       ResilienceRegistries resilienceRegistries) {
     this.binance = binance;

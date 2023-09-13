@@ -21,7 +21,7 @@ import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LI
  */
 public class BinanceFuturesAccountServiceRaw extends BinanceFuturesBaseService {
 
-  protected BinanceFuturesAccountServiceRaw(BinanceFuturesExchange exchange, BinanceFutures binance, BinanceFuturesCommon binanceCommon, ResilienceRegistries resilienceRegistries) {
+  protected BinanceFuturesAccountServiceRaw(BinanceFuturesExchange exchange, BinanceFuturesOld binance, BinanceFuturesCommon binanceCommon, ResilienceRegistries resilienceRegistries) {
     super(exchange, binance, binanceCommon, resilienceRegistries);
   }
 

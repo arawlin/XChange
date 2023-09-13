@@ -4,6 +4,7 @@ import org.knowm.xchange.binance.BinanceExchangeSpecification;
 import org.knowm.xchange.binance.BinanceFutures;
 import org.knowm.xchange.binance.BinanceFuturesCommon;
 import org.knowm.xchange.binance.BinanceFuturesExchange;
+import org.knowm.xchange.binance.BinanceFuturesOld;
 import org.knowm.xchange.binance.dto.FuturesSettleType;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.service.BaseResilientExchangeService;
@@ -12,10 +13,11 @@ import org.slf4j.LoggerFactory;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
-public class BinanceFuturesBaseService extends BaseResilientExchangeService<BinanceFuturesExchange> {
+public class BinanceFuturesBaseService extends
+    BaseResilientExchangeService<BinanceFuturesExchange> {
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
-  protected final BinanceFutures binance;
+  protected final BinanceFuturesOld binance;
   protected final BinanceFuturesCommon binanceCommon;
 
   protected final BinanceExchangeSpecification specification;
@@ -24,9 +26,9 @@ public class BinanceFuturesBaseService extends BaseResilientExchangeService<Bina
   protected final FuturesSettleType futuresSettleType;
 
   protected BinanceFuturesBaseService(BinanceFuturesExchange exchange,
-                                      BinanceFutures binance,
-                                      BinanceFuturesCommon binanceCommon,
-                                      ResilienceRegistries resilienceRegistries) {
+      BinanceFuturesOld binance,
+      BinanceFuturesCommon binanceCommon,
+      ResilienceRegistries resilienceRegistries) {
     super(exchange, resilienceRegistries);
 
     this.binance = binance;
@@ -34,7 +36,8 @@ public class BinanceFuturesBaseService extends BaseResilientExchangeService<Bina
 
     this.specification = (BinanceExchangeSpecification) exchange.getExchangeSpecification();
     this.apiKey = specification.getApiKey();
-    this.signatureCreator = BinanceHmacDigest.createInstance(exchange.getExchangeSpecification().getSecretKey());
+    this.signatureCreator = BinanceHmacDigest
+        .createInstance(exchange.getExchangeSpecification().getSecretKey());
     this.futuresSettleType = specification.getFuturesSettleType();
   }
 

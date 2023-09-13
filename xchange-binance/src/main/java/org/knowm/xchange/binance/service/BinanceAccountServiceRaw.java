@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.binance.dto.BinanceException;
@@ -14,6 +15,8 @@ import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.binance.dto.account.futures.BinanceFutureAccountInformation;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.Currency;
+import org.knowm.xchange.utils.ObjectMapperHelper;
+import si.mazi.rescu.ParamsDigest;
 
 public class BinanceAccountServiceRaw extends BinanceBaseService {
 
@@ -194,4 +197,131 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
   }
+
+  private <T> T checkWapiResponse(WapiResponse<T> result) {
+    if (!result.success) {
+      BinanceException exception;
+      try {
+        exception = ObjectMapperHelper.readValue(result.msg, BinanceException.class);
+      } catch (Throwable e) {
+        exception = new BinanceException(-1, result.msg);
+      }
+      throw exception;
+    }
+    return result.getData();
+  }
+
+  public IfNewUser ifNewUser(String apiAgentCode, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
+    return decorateApiCall(
+        () -> binance.ifNewUser(
+            apiAgentCode,
+            getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("ifNewUser"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+  }
+
+  public String userCustomizationSet(String apiAgentCode, String customerId, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException, BinanceException {
+    Map<String, String> res = decorateApiCall(
+        () -> binance.userCustomizationSet(
+            apiAgentCode,
+            customerId,
+            getRecvWindow(),
+            getTimestampFactory(),
+            Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+            Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+        .withRetry(retry("userCustomizationSet"))
+        .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+        .call();
+
+    if (res == null) {
+      return null;
+    }
+    return res.get("customerId");
+  }
+
+  public String userCustomizationGet(String apiAgentCode, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException {
+    try {
+      Map<String, String> res = decorateApiCall(
+          () -> binance.userCustomizationGet(
+              apiAgentCode,
+              getRecvWindow(),
+              getTimestampFactory(),
+              Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+              Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+          .withRetry(retry("userCustomizationSet"))
+          .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+          .call();
+
+      if (res == null) {
+        return null;
+      }
+      return res.get("customerId");
+    } catch (BinanceException e) {
+      return null;
+    }
+  }
+
+  public List<RebateInfo> rebateRecentRecord(
+      String customerId,
+      Long startTime,
+      Long endTime,
+      Integer limit,
+      String apiKeyAnother,
+      ParamsDigest signatureAnother
+  ) throws IOException {
+    try {
+      return decorateApiCall(
+          () -> binance.rebateRecentRecord(
+              customerId,
+              startTime,
+              endTime,
+              limit,
+              getRecvWindow(),
+              getTimestampFactory(),
+              Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+              Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+          .withRetry(retry("rebateRecentRecord"))
+          .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+          .call();
+    } catch (BinanceException e) {
+      return null;
+    }
+  }
+
+  public String assetTransfer(AssetTransferType type, String asset, BigDecimal amount, String apiKeyAnother, ParamsDigest signatureAnother) throws IOException {
+      Map<String, String> res = decorateApiCall(
+          () -> binance.assetTransfer(
+              type,
+              asset,
+              amount,
+              getRecvWindow(),
+              getTimestampFactory(),
+              Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+              Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+          .withRetry(retry("assetTransfer"))
+          .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+          .call();
+
+      if (res == null) {
+        return null;
+      }
+      return res.get("tranId");
+  }
+
+  public BinanceRestrictions apiRestrictions(String apiKeyAnother, ParamsDigest signatureAnother) throws IOException {
+    return decorateApiCall(
+            () -> binance.apiRestrictions(
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    Optional.ofNullable(apiKeyAnother).orElse(this.apiKey),
+                    Optional.ofNullable(signatureAnother).orElse(this.signatureCreator)))
+            .withRetry(retry("apiRestrictions"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
 }

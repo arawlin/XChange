@@ -3,7 +3,6 @@ package org.knowm.xchange.binance.dto.marketdata;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.SimpleDateFormat;
-
 import lombok.Getter;
 import org.knowm.xchange.instrument.Instrument;
 
@@ -23,7 +22,7 @@ public final class BinanceKline {
   private final long numberOfTrades;
   private final BigDecimal takerBuyBaseAssetVolume;
   private final BigDecimal takerBuyQuoteAssetVolume;
-  private final boolean closed;
+  private final Object closed;
 
   public BinanceKline(Instrument instrument, KlineInterval interval, Object[] obj) {
     this.instrument = instrument;
@@ -39,7 +38,7 @@ public final class BinanceKline {
     this.numberOfTrades = Long.parseLong(obj[8].toString());
     this.takerBuyBaseAssetVolume = new BigDecimal(obj[9].toString());
     this.takerBuyQuoteAssetVolume = new BigDecimal(obj[10].toString());
-    this.closed = (Boolean)obj[11];
+    this.closed = obj[11];
   }
 
   public BigDecimal getAveragePrice() {

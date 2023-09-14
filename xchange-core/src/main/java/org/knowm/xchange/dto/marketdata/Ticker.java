@@ -40,6 +40,8 @@ public final class Ticker implements Serializable {
   private final BigDecimal bidSize;
   private final BigDecimal askSize;
   private final BigDecimal percentageChange;
+  private BigDecimal lastVolume;
+  private Long count;
 
   /**
    * Constructor
@@ -181,6 +183,22 @@ public final class Ticker implements Serializable {
     return percentageChange;
   }
 
+  public BigDecimal getLastVolume() {
+    return lastVolume;
+  }
+
+  public void setLastVolume(BigDecimal lastVolume) {
+    this.lastVolume = lastVolume;
+  }
+
+  public Long getCount() {
+    return count;
+  }
+
+  public void setCount(Long count) {
+    this.count = count;
+  }
+
   @Override
   public String toString() {
 
@@ -212,6 +230,10 @@ public final class Ticker implements Serializable {
         + askSize
         + ", percentageChange="
         + percentageChange
+        + ", lastVolume="
+        + lastVolume
+        + ", count="
+        + count
         + "]";
   }
 
@@ -239,6 +261,8 @@ public final class Ticker implements Serializable {
     private BigDecimal bidSize;
     private BigDecimal askSize;
     private BigDecimal percentageChange;
+    private BigDecimal lastVolume;
+    private Long count;
 
     // Prevent repeat builds
     private boolean isBuilt = false;
@@ -263,6 +287,8 @@ public final class Ticker implements Serializable {
               bidSize,
               askSize,
               percentageChange);
+      ticker.setLastVolume(lastVolume);
+      ticker.setCount(count);
 
       isBuilt = true;
 
@@ -360,6 +386,16 @@ public final class Ticker implements Serializable {
 
     public Builder percentageChange(BigDecimal percentageChange) {
       this.percentageChange = percentageChange;
+      return this;
+    }
+
+    public Builder lastVolume(BigDecimal lastVolume) {
+      this.lastVolume = lastVolume;
+      return this;
+    }
+
+    public Builder count(Long count) {
+      this.count = count;
       return this;
     }
   }

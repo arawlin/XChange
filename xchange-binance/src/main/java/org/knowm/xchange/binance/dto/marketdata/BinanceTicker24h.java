@@ -110,6 +110,8 @@ public final class BinanceTicker24h {
               .quoteVolume(quoteVolume)
               .timestamp(closeTime > 0 ? new Date(closeTime) : null)
               .percentageChange(priceChangePercent)
+              .lastVolume(lastQty)
+              .count(count)
               .build();
     }
     return ticker;

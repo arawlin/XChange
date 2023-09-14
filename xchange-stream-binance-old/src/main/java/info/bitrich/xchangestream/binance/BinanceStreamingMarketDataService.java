@@ -212,8 +212,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     return service
         .subscribeChannel("!ticker@arr")
         .map(this::allTickerTransaction)
-        .map(transactions -> transactions.getData().stream().map(t -> t.getTicker())
-            .collect(Collectors.toList()));
+        .map(transactions -> transactions.getData().stream().map(t -> t.getTicker()).collect(Collectors.toList()));
   }
 
   private final class OrderbookSubscription {
@@ -397,8 +396,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
   }
 
   /**
-   * Force observable to execute its body, this way we get `BinanceStreamingService` to register the
-   * observables emitter ready for our message arrivals.
+   * Force observable to execute its body, this way we get `BinanceStreamingService` to register the observables emitter ready for our message arrivals.
    */
   protected <T> Observable<T> triggerObservableBody(Observable<T> observable) {
     Consumer<T> NOOP = whatever -> {

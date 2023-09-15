@@ -585,7 +585,7 @@ public class BinanceAdapters {
     return new ExchangeMetaData(instruments, currencies, null, null, true);
   }
 
-  private static int numberOfDecimals(String value) {
+  public static int numberOfDecimals(String value) {
     return new BigDecimal(value).stripTrailingZeros().scale();
   }
 

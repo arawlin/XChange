@@ -1,11 +1,10 @@
 package org.knowm.xchange.dto.marketdata;
 
-import org.knowm.xchange.dto.trade.LimitOrder;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
+import org.knowm.xchange.dto.trade.LimitOrder;
 
 /**
  * Created by lin on 2020-11-05.
@@ -13,9 +12,12 @@ import java.util.stream.Stream;
 public class DiffOrderBook extends OrderBook {
 
   protected boolean isFullUpdate;
+  protected long lastUpdateId;
+  protected long firstUpdateId;
+  protected long lastLastUpdateId;
 
-  protected List<OrderBookUpdate> asksUpdate;
-  protected List<OrderBookUpdate> bidsUpdate;
+  protected List<OrderBookUpdate> asksUpdate = new ArrayList<>();
+  protected List<OrderBookUpdate> bidsUpdate = new ArrayList<>();
 
   public DiffOrderBook(Date timeStamp, List<LimitOrder> asks, List<LimitOrder> bids) {
     super(timeStamp, asks, bids);
@@ -38,8 +40,8 @@ public class DiffOrderBook extends OrderBook {
   }
 
   public void preupdate() {
-    asksUpdate = new ArrayList<>();
-    bidsUpdate = new ArrayList<>();
+    asksUpdate.clear();
+    bidsUpdate.clear();
   }
 
   @Override
@@ -70,5 +72,29 @@ public class DiffOrderBook extends OrderBook {
 
   public List<OrderBookUpdate> getBidsUpdate() {
     return bidsUpdate;
+  }
+
+  public long getLastUpdateId() {
+    return lastUpdateId;
+  }
+
+  public void setLastUpdateId(long lastUpdateId) {
+    this.lastUpdateId = lastUpdateId;
+  }
+
+  public long getFirstUpdateId() {
+    return firstUpdateId;
+  }
+
+  public void setFirstUpdateId(long firstUpdateId) {
+    this.firstUpdateId = firstUpdateId;
+  }
+
+  public long getLastLastUpdateId() {
+    return lastLastUpdateId;
+  }
+
+  public void setLastLastUpdateId(long lastLastUpdateId) {
+    this.lastLastUpdateId = lastLastUpdateId;
   }
 }

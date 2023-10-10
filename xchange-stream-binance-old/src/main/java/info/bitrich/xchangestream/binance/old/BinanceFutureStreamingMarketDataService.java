@@ -272,6 +272,10 @@ public class BinanceFutureStreamingMarketDataService extends BinanceStreamingMar
               // clean last update
               subscription.orderBook.preupdate();
 
+              subscription.orderBook.setFirstUpdateId(depth.getFirstUpdateId());
+              subscription.orderBook.setLastUpdateId(depth.getLastUpdateId());
+              subscription.orderBook.setLastLastUpdateId(depth.getLastLastUpdateId());
+
               BinanceOrderbook ob = depth.getOrderBook();
               ob.bids.forEach(
                   (key, value) ->

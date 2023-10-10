@@ -204,7 +204,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "ticker"))
         .map(this::tickerTransaction)
-        .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair))
+        .filter(transaction -> transaction.getData().getSymbol().equals(BinanceAdapters.toSymbol(currencyPair)))
         .map(transaction -> transaction.getData().getTicker());
   }
 
@@ -285,7 +285,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
         service
             .subscribeChannel(channelFromCurrency(currencyPair, "depth"))
             .map(this::depthTransaction)
-            .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair));
+            .filter(transaction -> transaction.getData().getSymbol().equals(BinanceAdapters.toSymbol(currencyPair)));
     return subscription;
   }
 
@@ -391,7 +391,7 @@ public class BinanceStreamingMarketDataService implements StreamingMarketDataSer
     return service
         .subscribeChannel(channelFromCurrency(currencyPair, "trade"))
         .map(this::tradeTransaction)
-        .filter(transaction -> transaction.getData().getSymbol().equals(currencyPair))
+        .filter(transaction -> transaction.getData().getSymbol().equals(BinanceAdapters.toSymbol(currencyPair)))
         .map(transaction -> transaction.getData().getRawTrade());
   }
 

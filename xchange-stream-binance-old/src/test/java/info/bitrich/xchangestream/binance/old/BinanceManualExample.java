@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
  * Created by Lukas Zaoralek on 15.11.17.
  */
 public class BinanceManualExample {
+
   private static final Logger LOG = LoggerFactory.getLogger(BinanceManualExample.class);
 
   public static void main(String[] args) throws InterruptedException {
@@ -31,13 +32,13 @@ public class BinanceManualExample {
     spec.setApiKey(apiKey);
     spec.setSecretKey(apiSecret);
 
-    spec.setProxyHost("192.168.1.100");
+    spec.setProxyHost("127.0.0.1");
     spec.setProxyPort(1081);
 
-    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_HOST, "192.168.1.100");
+    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_HOST, "127.0.0.1");
     spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_PORT, 1080);
 
-    //    spec.setShouldLoadRemoteMetaData(false);
+    spec.setShouldLoadRemoteMetaData(false);
 
     BinanceStreamingExchange exchange =
         (BinanceStreamingExchange) StreamingExchangeFactory.INSTANCE.createExchange(spec);
@@ -46,8 +47,9 @@ public class BinanceManualExample {
         ProductSubscription.create()
 //            .addTicker(CurrencyPair.ETH_BTC)
 //            .addTicker(CurrencyPair.LTC_BTC)
-            .addOrderbook(CurrencyPair.LTC_BTC)
+//            .addOrderbook(CurrencyPair.LTC_BTC)
 //            .addTrades(CurrencyPair.BTC_USDT)
+            .setAllTicker(true)
             .build();
 
     exchange.connect(subscription).blockingAwait();
@@ -120,14 +122,17 @@ public class BinanceManualExample {
 //
 //    Disposable orderbooks = orderbooks(exchange, "one");
 //    Thread.sleep(5000);
-    Disposable orderbooks2 = orderbooks(exchange, "two");
+//    Disposable orderbooks2 = orderbooks(exchange, "two");
+
+    Disposable allticker = exchange.getStreamingMarketDataService().getAllTicker().subscribe(tickers -> LOG.info("tickers count - {}", tickers.size()));
 
     Thread.sleep(1000000);
 
 //    tickers.dispose();
 //    trades.dispose();
 //    orderbooks.dispose();
-    orderbooks2.dispose();
+//    orderbooks2.dispose();
+    allticker.dispose();
 
 //    if (apiKey != null) {
 //      orderChanges.dispose();

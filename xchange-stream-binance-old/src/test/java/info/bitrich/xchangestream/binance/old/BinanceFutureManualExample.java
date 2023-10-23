@@ -34,11 +34,11 @@ public class BinanceFutureManualExample {
     spec.setApiKey(apiKey);
     spec.setSecretKey(apiSecret);
 
-    spec.setProxyHost("192.168.1.100");
-    spec.setProxyPort(1083);
+    spec.setProxyHost("127.0.0.1");
+    spec.setProxyPort(1081);
 
-    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_HOST, "192.168.1.100");
-    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_PORT, 1082);
+    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_HOST, "127.0.0.1");
+    spec.setExchangeSpecificParametersItem(StreamingExchange.SOCKS_PROXY_PORT, 1080);
 
     spec.setShouldLoadRemoteMetaData(false);
 

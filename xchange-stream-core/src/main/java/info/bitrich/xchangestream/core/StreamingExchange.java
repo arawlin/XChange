@@ -20,8 +20,9 @@ public interface StreamingExchange extends Exchange {
   /**
    * Connects to the WebSocket API of the exchange.
    *
-   * @param args Product subscription is used only in certain exchanges where you need to specify
-   *     subscriptions during the connect phase.
+   * @param args Product subscription is used only in certain exchanges where you
+   *             need to specify
+   *             subscriptions during the connect phase.
    * @return {@link Completable} that completes upon successful connection.
    */
   Completable connect(ProductSubscription... args);
@@ -41,7 +42,8 @@ public interface StreamingExchange extends Exchange {
   boolean isAlive();
 
   /**
-   * Observable for reconnection failure event. When this happens, it usually indicates that the
+   * Observable for reconnection failure event. When this happens, it usually
+   * indicates that the
    * server or the network is down.
    *
    * @return Observable with the exception during reconnection.
@@ -51,7 +53,8 @@ public interface StreamingExchange extends Exchange {
   }
 
   /**
-   * Observable for connection success event. When this happens, it usually indicates that the
+   * Observable for connection success event. When this happens, it usually
+   * indicates that the
    * server or the network is down.
    *
    * @return Observable
@@ -70,7 +73,8 @@ public interface StreamingExchange extends Exchange {
   }
 
   /**
-   * Observable for connectionState. designed to replaces connectionSuccess reconnectFailure
+   * Observable for connectionState. designed to replaces connectionSuccess
+   * reconnectFailure
    * disconnectObservable
    *
    * @return Observable
@@ -80,7 +84,8 @@ public interface StreamingExchange extends Exchange {
   }
 
   /**
-   * Observable for message delay measure. Every time when the client received a message with a
+   * Observable for message delay measure. Every time when the client received a
+   * message with a
    * timestamp, the delay time is calculated and pushed to subscribers.
    *
    * @return Observable with the message delay measure.
@@ -100,8 +105,7 @@ public interface StreamingExchange extends Exchange {
   /** Returns service that can be used to access streaming market data. */
   default StreamingMarketDataService getStreamingMarketDataService() {
     throw new NotYetImplementedForExchangeException("getStreamingMarketDataService");
-  }
-  ;
+  };
 
   /** Returns service that can be used to access streaming account data. */
   default StreamingAccountService getStreamingAccountService() {
@@ -122,28 +126,27 @@ public interface StreamingExchange extends Exchange {
 
   default void applyStreamingSpecification(
       ExchangeSpecification exchangeSpec, NettyStreamingService<?> streamingService) {
+    streamingService.setProxyHost(exchangeSpec.getProxyHost());
+    streamingService.setProxyPort(exchangeSpec.getProxyPort());
     streamingService.setSocksProxyHost(
         (String) exchangeSpec.getExchangeSpecificParametersItem(SOCKS_PROXY_HOST));
     streamingService.setSocksProxyPort(
         (Integer) exchangeSpec.getExchangeSpecificParametersItem(SOCKS_PROXY_PORT));
     streamingService.setBeforeConnectionHandler(
-        (Runnable)
-            exchangeSpec.getExchangeSpecificParametersItem(
-                ConnectableService.BEFORE_CONNECTION_HANDLER));
+        (Runnable) exchangeSpec.getExchangeSpecificParametersItem(
+            ConnectableService.BEFORE_CONNECTION_HANDLER));
 
-    Boolean accept_all_ceriticates =
-        (Boolean) exchangeSpec.getExchangeSpecificParametersItem(ACCEPT_ALL_CERITICATES);
+    Boolean accept_all_ceriticates = (Boolean) exchangeSpec.getExchangeSpecificParametersItem(ACCEPT_ALL_CERITICATES);
     if (accept_all_ceriticates != null && accept_all_ceriticates) {
       streamingService.setAcceptAllCertificates(true);
     }
 
-    Boolean enable_logging_handler =
-        (Boolean) exchangeSpec.getExchangeSpecificParametersItem(ENABLE_LOGGING_HANDLER);
+    Boolean enable_logging_handler = (Boolean) exchangeSpec.getExchangeSpecificParametersItem(ENABLE_LOGGING_HANDLER);
     if (enable_logging_handler != null && enable_logging_handler) {
       streamingService.setEnableLoggingHandler(true);
     }
-    Boolean autoReconnect =
-        (Boolean) exchangeSpec.getExchangeSpecificParametersItem(AUTO_RECONNECT);
-    if (autoReconnect != null) streamingService.setAutoReconnect(autoReconnect);
+    Boolean autoReconnect = (Boolean) exchangeSpec.getExchangeSpecificParametersItem(AUTO_RECONNECT);
+    if (autoReconnect != null)
+      streamingService.setAutoReconnect(autoReconnect);
   }
 }

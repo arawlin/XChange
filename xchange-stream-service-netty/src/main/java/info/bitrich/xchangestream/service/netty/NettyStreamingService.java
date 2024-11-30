@@ -210,12 +210,12 @@ public abstract class NettyStreamingService<T> extends ConnectableService {
                       @Override
                       protected void initChannel(SocketChannel ch) {
                         ChannelPipeline p = ch.pipeline();
-                        if (socksProxyHost != null) {
+                        if (socksProxyHost != null && socksProxyPort != null) {
                           p.addLast(
                               new Socks5ProxyHandler(
                                   SocketUtils.socketAddress(socksProxyHost, socksProxyPort)));
                         }
-                        if (proxyHost != null) {
+                        if (proxyHost != null && proxyPort != null) {
                           p.addLast(new HttpProxyHandler(SocketUtils.socketAddress(proxyHost, proxyPort)));
                         }
                         if (sslCtx != null) {
